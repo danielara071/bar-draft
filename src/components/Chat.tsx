@@ -8,7 +8,8 @@ export function Chat() {
     handleSubmit,
     isLoading
   } = useChat({
-    api: `${import.meta.env.VITE_API_URL}/api/chat`
+    api: '/api/chat',
+    streamProtocol: 'text'
   })
 
   return (
@@ -18,11 +19,11 @@ export function Chat() {
       <div style={{ height: '400px', overflowY: 'auto', border: '1px solid #ccc', padding: '10px', marginBottom: '10px' }}>
         {messages.map(m => (
           <div key={m.id} style={{ marginBottom: '10px' }}>
-            <strong>{m.role === 'user' ? '🧑 Tú' : '🤖 IA'}:</strong>
+            <strong>{m.role === 'user' ? ' Tú' : 'ollama'}:</strong>
             <p>{m.content}</p>
           </div>
         ))}
-        {isLoading && <p>⏳ Pensando...</p>}
+        {isLoading && <p>Pensando...</p>}
       </div>
 
       <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '8px' }}>
