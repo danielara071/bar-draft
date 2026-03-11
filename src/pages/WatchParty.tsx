@@ -113,6 +113,11 @@ const WatchParty = () => {
       ]);
     });
 
+    // Manejo de la presencia de usuario
+    roomOne.on("presence", { event: "sync" }, () => {
+      const state = roomOne.presenceState();
+      setUsersOnline(Object.keys(state));
+    });
     // Seguimiento de usuarios suscritos a la sala
     roomOne.subscribe(async (status) => {
       if (status == "SUBSCRIBED") {
@@ -120,12 +125,6 @@ const WatchParty = () => {
           id: session?.user?.id,
         });
       }
-    });
-
-    // Manejo de la presencia de usuario
-    roomOne.on("presence", { event: "sync" }, () => {
-      const state = roomOne.presenceState();
-      setUsersOnline(Object.keys(state));
     });
 
     return () => {
@@ -155,6 +154,14 @@ const WatchParty = () => {
     setNewMessage("");
   };
 
+  const formatTime = (isoString) => {
+    return new Date(isoString).toLocaleTimeString("en-us", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    });
+  };
+
   if (!session) {
     return (
       <div>
@@ -177,7 +184,7 @@ const WatchParty = () => {
                 Sesión iniciada como {session?.user?.user_metadata?.full_name}
               </p>
               <p className="text-gray-700 italic text-sm">
-                4 usuarios en línea
+                {usersOnline.length} usuarios en línea
               </p>
             </div>
             <button
@@ -191,9 +198,37 @@ const WatchParty = () => {
           <div className="p-4 flex flex-col overflow-y-auto h-125">
             {messages.map((msg) => (
               <div
-                className={`my-2 flex w-full items-start ${msg?.user_name == session?.user?.user_metadata?.full_name ? "justify-end" : "justify-start"}`}
+                className={`my-2 flex w-full items-start ${
+                  msg?.user_name == session?.user?.user_metadata?.full_name
+                    ? "justify-end"
+                    : "justify-start"
+                }`}
               >
-                <p key={`${msg.timestamp}-${msg.user_name}`}>{msg.message}</p>
+                {/* Name of the user */}
+
+                <div className="flex flex-col w-full">
+                  <div
+                    className={`p-1 max-w-[70%] rounded-xl ${
+                      msg?.user_name == session?.user?.user_metadata?.full_name
+                        ? "bg-blue-600 text-white ml-auto"
+                        : "bg-gray-300 text-gray-800 mr-auto"
+                    }`}
+                  >
+                    <p key={`${msg.timestamp}-${msg.user_name}`}>
+                      {msg.message}
+                    </p>
+                  </div>
+                  {/* Timestamp */}
+                  <div
+                    className={`text-xs opacity-75 pt-1 ${
+                      msg?.user_name == session?.user?.user_metadata?.full_name
+                        ? "text-right"
+                        : "text-left"
+                    }`}
+                  >
+                    {formatTime(msg.timestamp)}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
