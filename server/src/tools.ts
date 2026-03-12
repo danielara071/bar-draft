@@ -2,10 +2,16 @@ import { tool } from 'ai'
 import { z } from 'zod'
 import { createClient } from '@supabase/supabase-js'
 
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_ANON_KEY!
-)
+const supabaseUrl = process.env.SUPABASE_URL
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Faltan variables de Supabase. Crea server/.env con SUPABASE_URL y SUPABASE_ANON_KEY (copia server/.env.example).'
+  )
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export const dbTools = {
   getUsuarios: tool({
