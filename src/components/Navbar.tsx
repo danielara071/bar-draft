@@ -6,6 +6,7 @@ const Navbar = () => {
     { name: "Sports API", path: "/sportsapi" },
     { name: "ChatBot", path: "/chat"},
     { name: "Watch Party", path: "/WatchParty" },
+    { name: "Wordle", path: "/wordle" },
   ];
   return (
     <div className="bg-brand-white h-12 w-full px-6 flex items-center space-x-2 ">
