@@ -7,6 +7,7 @@ const Navbar = () => {
     { name: "ChatBot", path: "/chat"},
     { name: "Watch Party", path: "/WatchParty" },
     { name: "Wordle", path: "/wordle" },
+    { name: "RA", path: "/ra" },
   ];
   return (
     <div className="bg-brand-white h-12 w-full px-6 flex items-center space-x-2 ">
