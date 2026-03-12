@@ -22,41 +22,6 @@ const WatchParty = () => {
         data: { session: currentSession },
       } = await supabase.auth.getSession();
       setSession(currentSession);
-
-      const params = new URLSearchParams(window.location.search);
-
-      const token_hash = params.get("token_hash");
-      const type = params.get("type");
-
-      if (token_hash) {
-        const { error } = await supabase.auth.verifyOtp({
-          token_hash,
-          type: (type as "email" | "recovery" | "invite") ?? "email",
-        });
-
-        if (error) {
-          setAuthError(error.message);
-        } else {
-          setAuthSuccess(true);
-          const {
-            data: { session: verifiedSession },
-          } = await supabase.auth.getSession();
-          setSession(verifiedSession);
-          window.history.replaceState(
-            {},
-            document.title,
-            window.location.pathname,
-          );
-        }
-
-        setVerifying(false);
-      }
-
-      const { data } = await supabase.auth.getClaims();
-
-      if (data?.claims) {
-        setClaims(data.claims);
-      }
     };
 
     verifySession();
@@ -65,6 +30,10 @@ const WatchParty = () => {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);
+
+      if (!nextSession?.user) {
+        setUsersOnline([]);
+      }
     });
 
     return () => {
@@ -74,25 +43,8 @@ const WatchParty = () => {
 
   console.log(session);
 
-  // Inicio de sesión
-  const signIn = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}${window.location.pathname}`,
-      },
-    });
-  };
-
-  // Cierre de sesión
-  const signOut = async () => {
-    await supabase.auth.signOut();
-    setSession(null);
-  };
-
   useEffect(() => {
     if (!session?.user) {
-      setUsersOnline([]);
       return;
     }
 
@@ -154,7 +106,7 @@ const WatchParty = () => {
     setNewMessage("");
   };
 
-  const formatTime = (isoString) => {
+  const formatTime = (isoString: string) => {
     return new Date(isoString).toLocaleTimeString("en-us", {
       hour: "numeric",
       minute: "2-digit",
@@ -183,7 +135,7 @@ const WatchParty = () => {
               </p>
             </div>
           </div>
-          {/* Main Chat */}
+          {/* Chat Principal */}
           <div className="p-4 flex flex-col overflow-y-auto h-125">
             {messages.map((msg) => (
               <div
@@ -193,7 +145,7 @@ const WatchParty = () => {
                     : "justify-start"
                 }`}
               >
-                {/* Name of the user */}
+                {/* Nombre del usuario */}
 
                 <div className="flex flex-col w-full">
                   <div
@@ -221,7 +173,7 @@ const WatchParty = () => {
               </div>
             ))}
           </div>
-          {/* Message Input */}
+          {/* Input Mensaje */}
           <form
             onSubmit={sendMessage}
             className="flex flex-col sm:flex-row p-4 border-t broder-gray-700"
