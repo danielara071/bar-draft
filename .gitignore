@@ -23,7 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
+# Variables de Entorno
 .env
 server/node_modules/
 server/.env
 .env.local
+.env.example

@@ -1,15 +1,6 @@
 
 
-export interface ApiFixturesResponse {
-  results: number
-  paging: Paging
-  response: Fixture[]
-}
 
-export interface Paging {
-  current: number
-  total: number
-}
 
 export interface Fixture {
   fixture: FixtureInfo
