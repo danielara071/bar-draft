@@ -148,6 +148,11 @@ const WatchParty = () => {
                 {/* Nombre del usuario */}
 
                 <div className="flex flex-col w-full">
+                  {msg?.user_name !== session?.user?.user_metadata?.full_name && (
+                    <div className="text-xs opacity-75 pt-1 text-left">
+                      {msg?.user_name}
+                    </div>
+                  )}
                   <div
                     className={`p-1 max-w-[70%] rounded-xl ${
                       msg?.user_name == session?.user?.user_metadata?.full_name
