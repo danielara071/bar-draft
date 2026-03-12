@@ -175,7 +175,7 @@ const WatchParty = () => {
     );
   } else {
     return (
-      <div className="w-full flex h-screen justify-center items-center p-4">
+      <div className="w-full flex h-[calc(100vh-3rem)] justify-center items-start p-4 overflow-y-auto">
         <div className="border border-gray-700 max-w-6xl w-full min-h-150 rounded-lg">
           {/* Header */}
           <div className="flex justify-between h-20 border-b border-gray-700">
