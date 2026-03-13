@@ -15,6 +15,7 @@ const app = new Hono()
 
 app.use('*', cors())
 
+// Devuelve usuarios directo de la BD, es para el recuadro debajo del chat
 app.get('/api/usuarios', async (c) => {
   try {
     const data = await (dbTools.getUsuarios.execute as any)({ limit: 3 })
@@ -25,6 +26,7 @@ app.get('/api/usuarios', async (c) => {
   }
 })
 
+// Recibe el historial de mensajes del frontend, llama al modelo (Ollama) con la herramienta getUsuarios y devuelve la respuesta en streaming
 app.post('/api/chat', async (c) => {
   try {
     const { messages } = await c.req.json()
@@ -32,6 +34,7 @@ app.post('/api/chat', async (c) => {
 
     const modelName = process.env.OLLAMA_MODEL ?? 'qwen2.5:7b'
 
+    // El modelo puede usar getUsuarios para consultar la BD y la respuesta se manda por chunks al navegador.
     const result = streamText({
       model: ollama(modelName),
       system: 'Eres un asistente útil que puede consultar información de usuarios en la base de datos. Cuando el usuario pregunte sobre usuarios, usa la herramienta getUsuarios para obtener la información.',
