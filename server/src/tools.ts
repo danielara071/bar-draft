@@ -7,7 +7,7 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY2
 
 if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error(
-    'Faltan variables de Supabase. Crea server/.env con SUPABASE_URL y SUPABASE_ANON_KEY (copia server/.env.example).'
+    'Faltan variables de Supabase'
   )
 }
 

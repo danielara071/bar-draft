@@ -34,14 +34,22 @@ app.post('/api/chat', async (c) => {
 
     const modelName = process.env.OLLAMA_MODEL ?? 'qwen2.5:7b'
 
-    // El modelo puede usar getUsuarios para consultar la BD y la respuesta se manda por chunks al navegador.
+    // El modelo puede usar getUsuarios para consultar la BD y la respuesta se manda por chunks al navegador
     const result = streamText({
       model: ollama(modelName),
       system: 'Eres un asistente útil que puede consultar información de usuarios en la base de datos. Cuando el usuario pregunte sobre usuarios, usa la herramienta getUsuarios para obtener la información.',
       messages,
       tools: dbTools,
       maxSteps: 5,
-      toolChoice: { type: 'tool', toolName: 'getUsuarios' }
+      toolChoice: 'auto',
+      onError: (error) => {
+        console.error('Error del streamText:', error)
+      },
+      onFinish: ({ text, toolCalls, toolResults }) => {
+        console.log('Finalizó respuesta:', text)
+        console.log('Tool calls:', toolCalls)
+        console.log('Tool results:', toolResults)
+      }
     })
 
     result.text.then(t => console.log('Respuesta:', t))
