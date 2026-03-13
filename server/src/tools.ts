@@ -13,6 +13,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
+// hace la consulta real a Supabase
 export const dbTools = {
   getUsuarios: tool({
     description: 'Obtiene la lista de usuarios de la base de datos',
@@ -23,7 +24,7 @@ export const dbTools = {
       const { data, error } = await supabase
         .from('usuarios')
         .select('*')
-        .limit(limit)
+        .limit(limit) // evita traer toda la tabla de golpe
 
       if (error) throw error
       return data ?? []

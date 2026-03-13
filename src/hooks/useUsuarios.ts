@@ -11,6 +11,7 @@ interface UseUsuariosResult {
   error: string | null
 }
 
+// Al montar el componente pide la lista de usuarios al backend (GET /api/usuarios) y la guarda en estado
 export const useUsuarios = (): UseUsuariosResult => {
   const [usuarios, setUsuarios] = useState<Usuario[]>([])
   const [loading, setLoading] = useState<boolean>(true)
@@ -20,7 +21,7 @@ export const useUsuarios = (): UseUsuariosResult => {
     const fetchUsuarios = async () => {
       try {
         setLoading(true)
-        const response = await fetch('/api/usuarios')
+        const response = await fetch('/api/usuarios') // datos directos de la BD, sin pasar por el modelo
         if (!response.ok) {
           throw new Error(`Error HTTP: ${response.status}`)
         }

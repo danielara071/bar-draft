@@ -1,6 +1,7 @@
 import type { FC } from 'react'
 import { useUsuarios } from '../hooks/useUsuarios'
 
+// Recuadro debajo del chat con los usuarios que vienen directo de la base de datos
 export const UsuariosPanel: FC = () => {
   const { usuarios, loading, error } = useUsuarios()
 
