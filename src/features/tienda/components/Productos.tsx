@@ -1,4 +1,5 @@
 import {useState, useEffect, useRef} from "react";
+import ProductoCard from "./ProductoCard";
 import prod1 from "@/data/img/imagenbarca.jpg";
 import prod2 from "@/data/img/imagenbarca2.jpg";
 import prod3 from "@/data/img/imagenbarca3.jpg";
@@ -18,14 +19,7 @@ const Productos = () => {
             <h1 className=" text-2xl font-bold mt-4 px-20">Tienda FC Barcelona</h1>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-6 px-20">
                 {productos.map((producto) => (
-                    <div key={producto.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img src={producto.imagen} alt={producto.nombre} className="w-full h-48 object-cover" />
-                        <div className="p-4">
-                            <p className="text-gray-600">{producto.categoria}</p>
-                            <h2 className="text-lg font-bold">{producto.nombre}</h2>
-                            <p className="text-xl font-bold text-[#A50044]">{producto.precio}</p>
-                        </div>
-                    </div>
+                    <ProductoCard key={producto.id} producto={producto} />
                 ))}
             </div>
 
