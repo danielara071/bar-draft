@@ -14,6 +14,7 @@ const Navbar = () => {
     { name: "Watch Party", path: "/WatchParty" },
     { name: "Wordle", path: "/wordle" },
     { name: "RA", path: "/ra" },
+    { name: "Perfil", path: "/perfil" },
   ];
 
   return (
