@@ -1,0 +1,36 @@
+import {useState, useEffect, useRef} from "react";
+import prod1 from "@/data/img/imagenbarca.jpg";
+import prod2 from "@/data/img/imagenbarca2.jpg";
+import prod3 from "@/data/img/imagenbarca3.jpg";
+import prod4 from "@/data/img/imagenbarca4.jpg";
+
+const productos = [
+    { id: 1, imagen: prod1, categoria: "Rifa de Experiencia", nombre: "Tour por el Camp Nou", precio: "10 Monedas" },
+    { id: 2, imagen: prod2, categoria: "Rifa de Viaje", nombre: "Visita al vestuario", precio: "15 monedas" },
+    { id: 3, imagen: prod3, categoria: "Insignea Virtual", nombre: "Clase de fútbol", precio: "10 monedas" },
+    { id: 4, imagen: prod4, categoria: "Rifa de Experiencia", nombre: "Entrenamiento con el equipo", precio: "5 monedas" }
+]
+
+const Productos = () => {
+    return (
+        <div>
+            <div className="w-full h-28 bg-brand-navy" />
+            <h1 className=" text-2xl font-bold mt-4 px-20">Tienda FC Barcelona</h1>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-6 px-20">
+                {productos.map((producto) => (
+                    <div key={producto.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                        <img src={producto.imagen} alt={producto.nombre} className="w-full h-48 object-cover" />
+                        <div className="p-4">
+                            <p className="text-gray-600">{producto.categoria}</p>
+                            <h2 className="text-lg font-bold">{producto.nombre}</h2>
+                            <p className="text-xl font-bold text-[#A50044]">{producto.precio}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+        </div>
+    );
+};
+
+export default Productos;

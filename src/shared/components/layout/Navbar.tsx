@@ -6,6 +6,7 @@ const Navbar = () => {
     { name: "Inicio", path: "/" },
     { name: "Sports API", path: "/sportsapi" },
     { name: "ChatBot", path: "/chat" },
+    { name: "Tienda", path: "/tienda" },
     { name: "Watch Party", path: "/WatchParty" },
     { name: "Wordle", path: "/wordle" },
     { name: "RA", path: "/ra" },

@@ -7,6 +7,7 @@ import WatchParty from "./pages/WatchParty";
 import Wordle from "./pages/Wordle"
 import Ra from "./pages/ra"
 import Reels from "./pages/Reels"
+import Tienda from "./pages/Tienda"
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/sportsapi" element={<SportsApi />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/tienda" element={<Tienda />} />
         <Route path="/WatchParty" element={<WatchParty />} />
         <Route path="/wordle" element={<Wordle />} />
         <Route path="/ra" element={<Ra />} />
