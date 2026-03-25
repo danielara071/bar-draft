@@ -5,6 +5,7 @@ import Index from "./pages/Index"
 import Chat from "./pages/Chat"
 import WatchParty from "./pages/WatchParty";
 import Wordle from "./pages/Wordle"
+import Perfil from "./pages/Perfil"
 import Ra from "./pages/ra"
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/WatchParty" element={<WatchParty />} />
         <Route path="/wordle" element={<Wordle />} />
         <Route path="/ra" element={<Ra />} />
+        <Route path="/perfil" element={<Perfil />} />
       </Route>
     </Routes>
   );
