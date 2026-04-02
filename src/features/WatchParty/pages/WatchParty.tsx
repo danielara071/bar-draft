@@ -5,6 +5,7 @@ import type { ChatMessage } from "../Types/chatType";
 import InfoCard from "../Components/InfoCard";
 import ChatHeader from "../Components/ChatHeader";
 import ChatMessageBubble from "../Components/ChatMessageBubble";
+import ChatInput from "../Components/ChatInput";
 
 const WatchParty = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -141,21 +142,11 @@ const WatchParty = () => {
             ))}
           </div>
           {/* Input Mensaje */}
-          <form
+          <ChatInput
+            value={newMessage}
+            onChange={setNewMessage}
             onSubmit={sendMessage}
-            className="flex flex-col sm:flex-row p-4 border-t broder-gray-700"
-          >
-            <input
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              type="text"
-              placeholder="Participa en el chat!"
-              className="p-2 w-full text-gray-200 bg-[#00000040] rounded-lg"
-            />
-            <button className="mt-4 sm:mt-0 sm:ml-8 text-black bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded-lg">
-              Enviar
-            </button>
-          </form>
+          />
         </div>
       </div>
     );
