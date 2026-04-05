@@ -1,36 +1,14 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../../../shared/services/supabaseClient";
 import InfoCard from "../Components/InfoCard";
 import ChatHeader from "../Components/ChatHeader";
 import ChatMessageBubble from "../Components/ChatMessageBubble";
 import ChatInput from "../Components/ChatInput";
 import useWatchPartyChat from "../Hooks/ChatLogic";
-import type { Session } from "@supabase/supabase-js";
+import useSession from "../Hooks/SessionLogic";
 
 const WatchParty = () => {
-  const [session, setSession] = useState<Session | null>(null);
+  const session = useSession();
 
-  useEffect(() => {
-    const verifySession = async () => {
-      const {
-        data: { session: currentSession },
-      } = await supabase.auth.getSession();
-      setSession(currentSession);
-    };
-
-    verifySession();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-
+  // Para ver las cosas que nos trae la sesión DEBUG
   console.log(session);
 
   const { messages, newMessage, setNewMessage, usersOnline, sendMessage } =
