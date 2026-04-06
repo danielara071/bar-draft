@@ -4,6 +4,7 @@ import ChatMessageBubble from "../Components/ChatMessageBubble";
 import ChatInput from "../Components/ChatInput";
 import useWatchPartyChat from "../Hooks/ChatLogic";
 import useSession from "../Hooks/SessionLogic";
+import ScoreCard from "../Components/ScoreCard";
 
 const WatchParty = () => {
   const session = useSession();
@@ -22,20 +23,32 @@ const WatchParty = () => {
     );
   } else {
     return (
-      <div className="w-full flex h-[calc(100vh-3rem)] justify-center items-start p-4 overflow-y-auto bg-brand-navy">
-        <div className="border border-gray-700 max-w-6xl w-full min-h-150 rounded-lg">
-          <InfoCard
-            label="COMPETICIÓN"
-            title="UEFA Champions League"
-            subtitle="Jornada 26"
+      <div className="w-full flex gap-4 h-[calc(100vh-3rem)] justify-center items-start p-8 py-22 overflow-y-auto bg-brand-navy">
+        <div className="w-270">
+          <ScoreCard
+            date="Lunes 6 de Abril 2026"
+            homeTeam="FC Barcelona"
+            homeTeamShort="FCB"
+            awayTeam="Chelsea"
+            awayTeamShort="CH"
+            matchTime={20}
+            location="Camp Nou"
+            fansWatching={4}
           />
-          <InfoCard
-            label="ESTADIO"
-            title="Camp Nou"
-            subtitle="Barcelona, España"
-          />
+          <div className="flex gap-4 w-max">
+            <InfoCard
+              label="COMPETICIÓN"
+              title="UEFA Champions League"
+              subtitle="Jornada 26"
+            />
+            <InfoCard
+              label="ESTADIO"
+              title="Camp Nou"
+              subtitle="Barcelona, España"
+            />
+          </div>
         </div>
-        <div className="border border-gray-700 max-w-6xl w-full min-h-150 rounded-lg">
+        <div className="border border-gray-700 max-w-6xl w-130 min-h-150 rounded-lg">
           {/* Header */}
           <ChatHeader
             fullName={session?.user?.user_metadata?.full_name}

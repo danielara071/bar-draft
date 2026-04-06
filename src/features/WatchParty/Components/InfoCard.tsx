@@ -6,7 +6,7 @@ type InfoCardProps = {
 
 const InfoCard = ({ label, title, subtitle }: InfoCardProps) => {
   return (
-    <div className="bg-brand-white rounded-3xl p-7">
+    <div className="bg-brand-white rounded-3xl p-7 w-max">
       <p className="text-label tracking-spaced text-brand-gray-mid font-semibold mb-4">
         {label}
       </p>
