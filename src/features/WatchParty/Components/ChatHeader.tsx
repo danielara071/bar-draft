@@ -1,15 +1,11 @@
-type ChatHeaderProps = {
-  fullName?: string;
-  usersOnline: number;
-};
-const ChatHeader = ({ fullName, usersOnline }: ChatHeaderProps) => {
+import { MessageCircle } from "lucide-react";
+
+const ChatHeader = () => {
   return (
-    <div className="flex justify-between h-20 border-b border-gray-700">
-      <div className="p-4">
-        <p className="text-gray-200">Sesión iniciada como {fullName}</p>
-        <p className="text-gray-200 italic text-sm">
-          {usersOnline} usuarios en línea
-        </p>
+    <div className="h-14 border-b border-brand-gray-light px-4 flex items-center justify-between bg-brand-white">
+      <div className="flex items-center gap-2 text-brand-black">
+        <MessageCircle size={16} className="text-brand-crimson" />
+        <p className="text-sm font-semibold">Chat en vivo</p>
       </div>
     </div>
   );

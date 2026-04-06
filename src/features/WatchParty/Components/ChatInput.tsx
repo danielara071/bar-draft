@@ -8,16 +8,16 @@ const ChatInput = ({ value, onChange, onSubmit }: ChatInputProps) => {
   return (
     <form
       onSubmit={onSubmit}
-      className="flex flex-col sm:flex-row p-4 border-t broder-gray-700"
+      className="flex items-center gap-3 p-3 border-t border-brand-gray-light bg-brand-white"
     >
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         type="text"
-        placeholder="Participa en el chat!"
-        className="p-2 w-full text-gray-200 bg-[#00000040] rounded-lg"
+        placeholder="Escribe un mensaje..."
+        className="px-4 py-2 w-full text-sm text-brand-black bg-brand-white border border-brand-gray-light rounded-full focus:outline-none focus:ring-1 focus:ring-brand-crimson"
       />
-      <button className="mt-4 sm:mt-0 sm:ml-8 text-black bg-gray-200 hover:bg-gray-300 py-2 px-4 rounded-lg">
+      <button className="text-sm font-semibold text-brand-white bg-brand-crimson hover:opacity-90 py-2 px-5 rounded-full transition-opacity">
         Enviar
       </button>
     </form>
