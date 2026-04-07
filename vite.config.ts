@@ -9,7 +9,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "lucide-React": "lucide-react",
     },
+    dedupe: ["react", "react-dom", "lucide-react"],
   },
   optimizeDeps: {
     exclude: ["aframe", "ar.js"],
