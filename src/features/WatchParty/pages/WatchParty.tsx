@@ -19,7 +19,7 @@ const WatchParty = () => {
   // Para ver las cosas que nos trae la sesión DEBUG
   console.log(session);
 
-  const { messages, newMessage, setNewMessage, sendMessage } =
+  const { messages, newMessage, setNewMessage, sendMessage, chatContainerRef } =
     useWatchPartyChat(session);
 
   if (!session) {
@@ -65,7 +65,10 @@ const WatchParty = () => {
           {/* Chat Header */}
           <ChatHeader />
           {/* Mensaje Chat */}
-          <div className="p-4 flex flex-col overflow-y-auto h-125 bg-brand-white">
+          <div
+            ref={chatContainerRef}
+            className="p-4 flex flex-col overflow-y-auto h-125 bg-brand-white"
+          >
             {messages.map((msg) => (
               <ChatMessageBubble
                 key={`${msg.timestamp}-${msg.user_name}`}

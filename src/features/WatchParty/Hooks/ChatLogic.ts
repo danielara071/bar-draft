@@ -9,6 +9,14 @@ const useWatchPartyChat = (session: Session | null) => {
   const [newMessage, setNewMessage] = useState("");
   const [usersOnline, setUsersOnline] = useState<string[]>([]);
   const roomOneRef = useRef<RealtimeChannel | null>(null);
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+  if (chatContainerRef.current) {
+    chatContainerRef.current.scrollTop =
+      chatContainerRef.current.scrollHeight;
+  }
+}, [messages]);
 
   useEffect(() => {
     if (!session?.user) {
@@ -72,12 +80,13 @@ const useWatchPartyChat = (session: Session | null) => {
     setNewMessage("");
   };
   return {
-    messages, 
-    newMessage,
-    setNewMessage,
-    usersOnline,
-    sendMessage
-  };
+  messages,
+  newMessage,
+  setNewMessage,
+  usersOnline,
+  sendMessage,
+  chatContainerRef,
+};
 };
 
 export default useWatchPartyChat;

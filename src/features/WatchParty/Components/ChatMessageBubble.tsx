@@ -22,7 +22,7 @@ const ChatMessageBubble = ({
         }`}
       >
         <p className="font-semibold text-brand-crimson">
-          {isCurrentUser ? "Tu" : message.user_name}
+          {isCurrentUser ? "" : message.user_name}
         </p>
         <p className="text-brand-gray-mid">{formatTime(message.timestamp)}</p>
       </div>
