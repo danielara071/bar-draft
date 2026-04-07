@@ -73,7 +73,8 @@ function Home() {
                 <div className="relative grid grid-cols-2 gap-10 mt-30 ">
                     <img src='src\data\img\fanBarca.jpeg' className="w-full h-auto" />
                     <div className="flex flex-col gap-10">
-                        <p className="text-2xl md:text-3xl lg:text-4xl font-light">“Era fan del Barça, pero solo del varonil. Entré a Més Que Un Club, me enganché con el equipo femenino, acumulé puntos — y gané un viaje al Camp Nou para verlas en vivo. Nunca lo hubiera imaginado.”</p>
+                        <hr className="border-brand-gray-light" />
+                        <p className="text-1xl md:text-3xl lg:text-4xl font-light">“Era fan del Barça, pero solo del varonil. Entré a Més Que Un Club, me enganché con el equipo femenino, acumulé puntos — y gané un viaje al Camp Nou para verlas en vivo. Nunca lo hubiera imaginado.”</p>
                         <div className="flex flex-col gap-1 leading-tight">
                             <p className="text-sm md:text-md font-medium">Carlos M.</p>
                             <p className="text-xs md:text-sm font-light text-brand-navy">Culé Mexicano</p>
