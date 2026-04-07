@@ -7,12 +7,14 @@ import WatchParty from "./pages/WatchParty";
 import Wordle from "./pages/Wordle"
 import Ra from "./pages/ra"
 import Reels from "./pages/Reels"
+import Home from "./pages/Home"
 
 function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Index />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/sportsapi" element={<SportsApi />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/WatchParty" element={<WatchParty />} />
