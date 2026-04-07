@@ -1,32 +1,28 @@
 import { useState, useEffect } from "react";
 
-// 1. Define the shape of one article
 interface Article {
   category: string;
   title: string;
   description: string;
-  link: string;
-  pubDate: string;
   image: string;
 }
 
 export default function Noticias() {
-  // 2. Tell useState what type the array holds
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
-  // 3. Error state holds a string or null
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.all([
       fetch("/rss/cat/masculino").then((r) => r.text()),
+      //fetch("/rss/last-posts").then((r) => r.text()),
       fetch("/rss/cat/femenino").then((r) => r.text()),
     ])
-      .then(([menXml, womenXml]) => {
-        const menArticles   = parseRss(menXml,  "masculino").slice(0, 2);
-        const womenArticles = parseRss(womenXml, "femenino").slice(0, 2);
+      .then(([varXml, femXml]) => {
+        const varArticles   = parseRss(varXml,  "masculino").slice(0, 2);
+        const femArticles = parseRss(femXml, "femenino").slice(0, 2);
 
-        setArticles([...menArticles, ...womenArticles]);
+        setArticles([...varArticles, ...femArticles]);
         setLoading(false);
       })
       .catch((err: Error) => {
@@ -35,16 +31,11 @@ export default function Noticias() {
       });
   }, []);
 
-  if (loading) return <p style={{ textAlign: "center", padding: "2rem" }}>Cargando noticias…</p>;
-  if (error)   return <p style={{ textAlign: "center", color: "red" }}>Error: {error}</p>;
+  if (loading) return <p className="text-center py-8">Cargando noticias…</p>;
+  if (error)   return <p className="text-center text-red-500">Error: {error}</p>;
 
   return (
-    <div style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-      gap: "28px",
-      padding: "20px 24px 24px",
-    }}>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-7 p-5 md:p-6">
       {articles.map((article, i) => (
         <NewsCard key={i} article={article} />
       ))}
@@ -52,7 +43,6 @@ export default function Noticias() {
   );
 }
 
-// 4. Type the props with the interface we made above
 interface NewsCardProps {
   article: Article;
 }
@@ -61,31 +51,31 @@ function NewsCard({ article }: NewsCardProps) {
   const [imgBroken, setImgBroken] = useState(false);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+     <div className="flex flex-col">
       <hr className="mb-10 border-brand-gray-light" />
 
-      <div style={{ height: 280, overflow: "hidden" }}>
+      <div className="h-64 md:h-72 lg:h-80 overflow-hidden">
         {article.image && !imgBroken ? (
           <img
             src={article.image}
             alt={article.title}
             onError={() => setImgBroken(true)}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            className="w-full h-full object-cover"
           />
         ) : (
           <img
             src="https://pbs.twimg.com/media/GxwEjq0XIAALuQp.jpg"
             alt={article.title}
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            className="w-full h-full object-cover"
           />
         )}
       </div>
 
-      <div style={{ paddingTop: 12 }}>
-        <h2 style={{ fontSize: 15, fontWeight: 400, margin: 0, lineHeight: 1.3 }}>
+      <div className="pt-3">
+        <h2 className="text-sm md:text-base font-normal m-0 leading-tight">
           {article.title}
         </h2>
-        <p style={{ fontSize: 13, color: "#888", margin: "6px 0 0" }}>
+        <p className="text-xs md:text-sm text-gray-500 mt-1.5 mb-0">
           {article.description}
         </p>
       </div>
@@ -93,7 +83,6 @@ function NewsCard({ article }: NewsCardProps) {
   );
 }
 
-// 5. Return type is Article[] so TypeScript knows what comes out
 function parseRss(xml: string, category: string): Article[] {
   const parser = new DOMParser();
   const doc = parser.parseFromString(xml, "application/xml");
@@ -111,8 +100,6 @@ function parseRss(xml: string, category: string): Article[] {
       category,
       title:       item.querySelector("title")?.textContent?.trim() ?? "",
       description: rawDesc.replace(/<[^>]*>/g, "").trim().slice(0, 200),
-      link:        item.querySelector("link")?.textContent ?? "#",
-      pubDate:     item.querySelector("pubDate")?.textContent ?? "",
       image,
     };
   });

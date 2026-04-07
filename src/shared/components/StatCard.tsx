@@ -9,8 +9,8 @@ const StatCard = ({ number, text } : StatCardProps) => {
         <>
         <div className="relative flex justify-between">
             <div className="relative grid grid-rows-2 justify-items-start">
-                <h2 className="font-bold text-[50px] text-brand-crimson leading-none">{number}</h2>
-                <p className="font-bold text-[16px] text-brand-gray-mid tracking-wider leading-none mt-1">{text}</p>
+               <h2 className="font-bold text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-brand-crimson leading-none">{number}</h2>
+                <p className="font-bold text-sm md:text-base text-brand-gray-mid tracking-wider leading-none mt-1">{text}</p>
             </div>
         </div>
         </>
