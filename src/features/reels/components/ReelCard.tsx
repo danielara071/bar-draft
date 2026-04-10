@@ -1,6 +1,6 @@
 import { VolumeX, Volume2, Play } from "lucide-react";
 import { motion, type Transition } from "motion/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const spring: Transition = {
   type: "spring",
@@ -17,6 +17,8 @@ interface ReelCardProps {
   duration?: number | null;
   animateState: string;
   position: string;
+  muted: boolean;
+  changeMute: () => void;
   changeActiveIndex: () => void;
 }
 
@@ -28,6 +30,8 @@ const ReelCard = ({
   duration,
   animateState,
   position,
+  muted,
+  changeMute,
   changeActiveIndex,
 }: ReelCardProps) => {
   const variants = {
@@ -79,7 +83,15 @@ const ReelCard = ({
       rotate: 5,
     },
   };
-  const [muted, setMuted] = useState(true);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = muted;
+    }
+  }, [muted]);
+
+  
 
   return (
     <motion.div
@@ -97,7 +109,7 @@ const ReelCard = ({
           <video
             src={video_url}
             autoPlay
-            muted
+            muted={muted}
             loop
             playsInline
             controls
@@ -111,7 +123,10 @@ const ReelCard = ({
           />
           <button
             className="absolute top-6 left-6 cursor-pointer"
-            onClick={() => setMuted((prev) => !prev)}
+            onClick={(e) => {
+              e.stopPropagation();
+              changeMute();
+            }}
           >
             {muted ? (
               <VolumeX color="white" fill="white" className="w-8 h-8" />

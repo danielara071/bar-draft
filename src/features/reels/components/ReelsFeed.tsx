@@ -1,5 +1,5 @@
 // ReelsSection.tsx
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import reels1 from "@/data/img/reels1.jpg";
 import reels2 from "@/data/img/reels2.jpg";
 import reels3 from "@/data/img/reels3.jpg";
@@ -19,9 +19,10 @@ const reels = [
 ];
 
 const ReelsFeed = () => {
-  // right now returns promise
+
 
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(true);
 
   const getPosition = (i: number) => {
     const diff = i - activeIndex;
@@ -73,9 +74,6 @@ const ReelsFeed = () => {
     console.log(videos);
   }, [videos]);
 
-  useEffect(() => {
-    console.log("updateando :  ",activeIndex);
-  }, [activeIndex]);
 
   return (
     <div
@@ -87,7 +85,6 @@ const ReelsFeed = () => {
       <div className="w-full mt-24 py-8 px-4">
         <h2 className="text-white text-xl font-bold mb-6 px-2">Reels</h2>
 
-        {/* Carousel */}
         <div className="relative flex items-center justify-center h-155 overflow-hidden py-14">
           {videos.map((reel, i) => {
             const position = getPosition(i);
@@ -101,13 +98,14 @@ const ReelsFeed = () => {
                 caption={reel.caption}
                 animateState={animateState}
                 position={position}
+                muted={isMuted}
+                changeMute={() => setIsMuted((prev) => !prev)}
                 changeActiveIndex={() => setActiveIndex(i)}
               />
             );
           })}
         </div>
 
-        {/* Action bar animates separately below the carousel */}
         <motion.div className="flex justify-center mt-4" layout>
           <ReelsActionBar />
         </motion.div>
