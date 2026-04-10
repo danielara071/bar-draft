@@ -1,8 +1,4 @@
-
-
-interface WatchPartyHeroProps {
-  onCreateParty: () => void;
-}
+import type { WatchPartyHeroProps } from "../interfaces/index.interfaces";
 
 export default function WatchPartyHero({ onCreateParty }: WatchPartyHeroProps) {
   return (
@@ -13,7 +9,6 @@ export default function WatchPartyHero({ onCreateParty }: WatchPartyHeroProps) {
           <h1 className="wp-hero__title">Watch Party</h1>
         </div>
       </div>
-
       <div className="wp-hero__card">
         <div className="wp-hero__card-text">
           <h2 className="wp-hero__card-heading">Mira el partido con todos</h2>

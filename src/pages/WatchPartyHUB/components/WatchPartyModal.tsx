@@ -1,42 +1,25 @@
-import  { useState, type  MouseEvent } from "react";
-import type { CreatePartyForm, Privacy } from "./types";
-
-
-interface WatchPartyModalProps {
-  open: boolean;
-  onClose?: () => void;
-}
-
-const INITIAL_FORM: CreatePartyForm = {
-  name: "",
-  match: "",
-  privacy: "publica",
-};
+import type { MouseEvent } from "react";
+import type { WatchPartyModalProps, Privacy } from "../interfaces/index.interfaces";
+import { useWatchPartyModal } from "../hooks/useWatchPartyModal";
 
 export default function WatchPartyModal({ open, onClose }: WatchPartyModalProps) {
-  const [step, setStep] = useState<1 | 2>(1);
-  const [form, setForm] = useState<CreatePartyForm>(INITIAL_FORM);
+  const {
+    step,
+    form,
+    roomCode,
+    canSubmit,
+    isLoading,
+    setName,
+    setMatch,
+    setPrivacy,
+    handleCreate,
+    handleClose,
+    handleGoToRoom,
+  } = useWatchPartyModal(onClose);
 
   if (!open) return null;
 
-  const handleCreate = (): void => {
-    // No-op: no backend connection yet
-    setStep(2);
-  };
-
-  const handleClose = (): void => {
-    setStep(1);
-    setForm(INITIAL_FORM);
-    onClose?.();
-  };
-
-  const handleBackdropClick = (_e: MouseEvent<HTMLDivElement>): void => {
-    handleClose();
-  };
-
-  const setPrivacy = (p: Privacy): void => {
-    setForm((prev) => ({ ...prev, privacy: p }));
-  };
+  const handleBackdropClick = (_e: MouseEvent<HTMLDivElement>) => handleClose();
 
   return (
     <div className="wp-modal__backdrop" onClick={handleBackdropClick}>
@@ -46,23 +29,21 @@ export default function WatchPartyModal({ open, onClose }: WatchPartyModalProps)
         {step === 1 ? (
           <>
             <h2 className="wp-modal__title">Crear Watch Party</h2>
-            <p className="wp-modal__sub">
-              Configura tu sala y comparte el código con tus amigos.
-            </p>
+            <p className="wp-modal__sub">Configura tu sala y comparte el código con tus amigos.</p>
 
             <label className="wp-modal__label">Nombre de la sala</label>
             <input
               className="wp-modal__input"
               placeholder="Ej: Culers de MTY 🔵🔴"
               value={form.name}
-              onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+              onChange={(e) => setName(e.target.value)}
             />
 
             <label className="wp-modal__label">Partido</label>
             <select
               className="wp-modal__input"
               value={form.match}
-              onChange={(e) => setForm((prev) => ({ ...prev, match: e.target.value }))}
+              onChange={(e) => setMatch(e.target.value)}
             >
               <option value="">Selecciona un partido...</option>
               <option value="fem-chelsea">Barca vs Chelsea – UCL Cuartos (Femenil)</option>
@@ -86,10 +67,10 @@ export default function WatchPartyModal({ open, onClose }: WatchPartyModalProps)
 
             <button
               className="wp-modal__submit"
-              disabled={!form.name || !form.match}
+              disabled={!canSubmit || isLoading}
               onClick={handleCreate}
             >
-              Crear sala
+              {isLoading ? "Creando..." : "Crear sala"}
             </button>
           </>
         ) : (
@@ -99,8 +80,8 @@ export default function WatchPartyModal({ open, onClose }: WatchPartyModalProps)
             <p className="wp-modal__sub">
               Comparte este código con tus amigos para que se unan.
             </p>
-            <div className="wp-modal__code-display">FEM-2004</div>
-            <button className="wp-modal__submit" onClick={handleClose}>
+            <div className="wp-modal__code-display">{roomCode}</div>
+            <button className="wp-modal__submit" onClick={handleGoToRoom}>
               Ir a mi Watch Party →
             </button>
           </div>

@@ -1,5 +1,5 @@
-import type { WatchPartyMatch } from "./types";
-
+import type { WatchPartyCardProps } from "../interfaces/index.interfaces";
+import { getMatchTypeLabel } from "../utils/index.utils";
 
 const CalendarIcon = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -9,22 +9,6 @@ const CalendarIcon = () => (
     <line x1="3" y1="10" x2="21" y2="10" />
   </svg>
 );
-
-// ── Variant: add card ──────────────────────────────────────────────────────
-interface AddCardProps {
-  variant: "add";
-  onClick?: () => void;
-  match?: never;
-}
-
-// ── Variant: normal match card ─────────────────────────────────────────────
-interface MatchCardProps {
-  variant?: "default";
-  match: WatchPartyMatch;
-  onClick?: () => void;
-}
-
-type WatchPartyCardProps = AddCardProps | MatchCardProps;
 
 export default function WatchPartyCard(props: WatchPartyCardProps) {
   if (props.variant === "add") {
@@ -40,7 +24,7 @@ export default function WatchPartyCard(props: WatchPartyCardProps) {
   return (
     <button className="wp-card" onClick={onClick}>
       <span className={`wp-card__badge wp-card__badge--${match.type}`}>
-        {match.type === "femenil" ? "FEMENIL" : "VARONIL"}
+        {getMatchTypeLabel(match.type)}
       </span>
       <h3 className="wp-card__title">{match.title}</h3>
       <p className="wp-card__competition">{match.competition}</p>

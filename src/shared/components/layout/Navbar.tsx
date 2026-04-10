@@ -8,13 +8,14 @@ const navItems = [
   { name: "Joc!",        path: "/wordle" },
   { name: "RA",          path: "/ra" },
   { name: "Reels",       path: "/reels" },
-  { name: "Watch Party", path: "/WatchParty" },
+  { name: "Watch Party", path: "/watchParty" },
+  { name: "Watch PartyHUB", path: "/watchPartyHUB" }, //eliminar solo es para pruebas
   { name: "Tienda",      path: "/tienda" },
   { name: "Perfil",      path: "/perfil" },
 ];
 
 const Navbar = () => {
-  const session = useSession();
+  const session = useSession(); 
   const isLoggedIn = session !== null;
   const coins = 120;
   const navigate = useNavigate();

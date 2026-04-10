@@ -4,6 +4,7 @@ import Layout from "./layouts/Layout";
 import Index from "./pages/Index";
 import Chat from "./pages/Chat";
 import WatchParty from "./features/WatchParty/pages/WatchParty";
+import WatchPartyHUB from "./pages/WatchPartyHUB/pages/WatchPartyPage";
 import Wordle from "./pages/Wordle";
 import Perfil from "./pages/Perfil";
 import Ra from "./pages/ra";
@@ -18,7 +19,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/sportsapi" element={<SportsApi />} />
         <Route path="/chat" element={<Chat />} />
-        <Route path="/watchParty" element={<WatchParty />} />
+        <Route path="/watchParty/:code" element={<WatchParty />} />
+        <Route path="/watchPartyHUB" element={<WatchPartyHUB />} />
         <Route path="/wordle" element={<Wordle />} />
         <Route path="/ra" element={<Ra />} />
         <Route path="/reels" element={<Reels />} />
