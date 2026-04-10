@@ -9,7 +9,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "lucide-React": "lucide-react",
     },
+    dedupe: ["react", "react-dom", "lucide-react"],
   },
   optimizeDeps: {
     exclude: ["aframe", "ar.js"],
@@ -19,6 +21,14 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:3000",
         changeOrigin: true,
+      },
+      "/rss": {
+      target: "https://carpetasfcb.com",
+      changeOrigin: true,
+      },
+      "/next-game": {
+      target: "https://barca-scraper-7tag.onrender.com",
+      changeOrigin: true,
       },
     },
   },

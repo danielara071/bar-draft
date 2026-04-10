@@ -40,3 +40,4 @@ export async function fetchFixtureEvents(fixtureId: number) : Promise<ApiRespons
     
     return handleResponse<ApiResponse>(response, "Error");
 }
+

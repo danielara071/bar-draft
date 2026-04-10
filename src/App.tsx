@@ -13,7 +13,8 @@ function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<Index />} />
+        <Route path="/login" element={<Index />} />
+        <Route path="/" element={<Home />} />
         <Route path="/sportsapi" element={<SportsApi />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/tienda" element={<Tienda />} />
@@ -21,6 +22,7 @@ function App() {
         <Route path="/wordle" element={<Wordle />} />
         <Route path="/ra" element={<Ra />} />
         <Route path="/reels" element={<Reels />} />
+        <Route path="/perfil" element={<Perfil />} />
       </Route>
     </Routes>
   );
