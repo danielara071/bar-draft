@@ -1,7 +1,7 @@
 import PerfilUsuario from "../features/perfil/PerfilUsuario";
 import AmigosContainer from "../features/perfil/AmigosContainer";
 import LogrosContainer from "../features/perfil/LogrosContainer";
-
+import { useSession } from "../shared/hooks/useSession"
 
 const amigos = [
   {
@@ -31,12 +31,14 @@ const logros = [
 
 
 function Perfil() {
+  const session = useSession();
+  const fullName = session?.user?.user_metadata?.full_name || "";
   return (
     <div className="min-h-screen">
       <div className="bg-[#002244] px-6 py-6">
         <div className="max-w-5xl mx-auto">
           <PerfilUsuario
-            username="pedroTrej5"
+            username= {fullName}
             ranking={14}
             pais="Chile"
             avatarUrl="https://i.pravatar.cc/150?img=12"
