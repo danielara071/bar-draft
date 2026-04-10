@@ -1,12 +1,12 @@
-import InfoCard from "../Components/InfoCard";
-import ChatHeader from "../Components/ChatHeader";
-import ChatMessageBubble from "../Components/ChatMessageBubble";
-import ChatInput from "../Components/ChatInput";
-import useWatchPartyChat from "../Hooks/ChatLogic";
-import useSession from "../Hooks/SessionLogic";
-import ScoreCard from "../Components/ScoreCard";
-import PrediccionesPopulares from "../Components/PrediccionesPopulares";
-import { useMatch } from "../Hooks/UseMatchScore";
+import InfoCard from "../features/WatchParty/Components/InfoCard";
+import ChatHeader from "../features/WatchParty/Components/ChatHeader";
+import ChatMessageBubble from "../features/WatchParty/Components/ChatMessageBubble";
+import ChatInput from "../features/WatchParty/Components/ChatInput";
+import useWatchPartyChat from "../features/WatchParty/Hooks/ChatLogic";
+import useSession from "../features/WatchParty/Hooks/SessionLogic";
+import ScoreCard from "../features/WatchParty/Components/ScoreCard";
+import PrediccionesPopulares from "../features/WatchParty/Components/PrediccionesPopulares";
+import { useMatch } from "../features/WatchParty/Hooks/UseMatchScore";
 
 const WatchParty = () => {
   const session = useSession();
