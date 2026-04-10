@@ -15,6 +15,7 @@ const [session, setSession] = useState<Session | null>(null);
       setSession(currentSession);
     };
 
+    console.log(session);
     verifySession();
 
     const {

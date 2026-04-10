@@ -21,6 +21,12 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:3000",
         changeOrigin: true,
+      }, 
+      // Proxy para la API de Watch Party SOLO PARA SPRINT #1
+      "/watchparty-api": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/watchparty-api/, ""),
       },
       "/rss": {
       target: "https://carpetasfcb.com",

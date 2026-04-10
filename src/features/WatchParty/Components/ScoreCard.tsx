@@ -2,9 +2,9 @@ import { Calendar, MapPin, Users } from "lucide-react";
 type ScoreCardProps = {
   date: string;
   homeTeam: string;
-  homeTeamShort: string;
+  homeTeamScore: number;
   awayTeam: string;
-  awayTeamShort: string;
+  awayTeamScore: number;
   matchTime: number;
   location: string;
   fansWatching: number;
@@ -13,9 +13,9 @@ type ScoreCardProps = {
 const ScoreCard = ({
   date,
   homeTeam,
-  homeTeamShort,
+  homeTeamScore,
   awayTeam,
-  awayTeamShort,
+  awayTeamScore,
   matchTime,
   location,
   fansWatching,
@@ -39,7 +39,7 @@ const ScoreCard = ({
       <div className="flex justify-between items-end mx-20">
         <div>
           <div className="w-16 h-16 rounded-full bg-brand-crimsonlight flex items-center justify-center text-white font-bold text-2xl">
-            {homeTeamShort}
+            {homeTeamScore}
           </div>
           <p className="mt-3 text-base font-semibold text-white">{homeTeam}</p>
         </div>
@@ -53,7 +53,7 @@ const ScoreCard = ({
         </div>
         <div>
           <div className="w-16 h-16 rounded-full bg-brand-crimsonlight flex items-center justify-center text-white font-bold text-2xl">
-            {awayTeamShort}
+            {awayTeamScore}
           </div>
           <p className="mt-3 text-base font-semibold text-white">{awayTeam}</p>
         </div>
