@@ -14,33 +14,16 @@ const navItems = [
 ];
 
 const Navbar = () => {
-  const session = useSession();
-  const isLoggedIn = session !== null;
-  const coins = 120;
-  const navigate = useNavigate();
-
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
-
-  // mostrar y esconder navbar
-  useEffect(() => {
-    let lastScrollY = window.scrollY;
-
-    const controlNavbar = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY < lastScrollY || currentScrollY < 10) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-        lastScrollY = currentScrollY;
-    }
-
-    window.addEventListener("scroll", controlNavbar)
-    return () => window.removeEventListener("scroll", controlNavbar)
-  }
-
-)
+  const navItems = [
+    { name: "Inicio", path: "/" },
+    { name: "Sports API", path: "/sportsapi" },
+    { name: "ChatBot", path: "/chat" },
+    { name: "Tienda", path: "/tienda" },
+    { name: "Watch Party", path: "/WatchParty" },
+    { name: "Wordle", path: "/wordle" },
+    { name: "RA", path: "/ra" },
+    { name: "Reels", path: "/reels" },
+  ];
 
   return (
     <>
