@@ -1,26 +1,12 @@
 // ReelsSection.tsx
-import { useEffect, useRef, useState } from "react";
-import reels1 from "@/data/img/reels1.jpg";
-import reels2 from "@/data/img/reels2.jpg";
-import reels3 from "@/data/img/reels3.jpg";
-import reels4 from "@/data/img/reels4.jpg";
+import { useState } from "react";
 import ReelsActionBar from "./ReelsActionBar";
-import { motion, type Transition } from "motion/react";
-import { fetchReels } from "../services/supabase";
-import type { VideoReel } from "../interfaces/VideoReel";
-import { Play, Volume2, VolumeX } from "lucide-react";
+import { motion } from "motion/react";
 import ReelCard from "./ReelCard";
-
-const reels = [
-  { id: 1, title: "El Barcelona gana contra Levante 3-1", thumbnail: reels1 },
-  { id: 2, title: "Lewandowski hat-trick vs Villarreal", thumbnail: reels2 },
-  { id: 3, title: "Highlights Clásico 2025", thumbnail: reels3 },
-  { id: 4, title: "Entrenamiento Camp Nou", thumbnail: reels4 },
-];
+import useSession from "../../../shared/hooks/useSession";
+import { useReels } from "../hooks/useReels";
 
 const ReelsFeed = () => {
-
-
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
 
@@ -53,23 +39,9 @@ const ReelsFeed = () => {
     }
   };
 
-  const [videos, setVideos] = useState<VideoReel[]>([]);
-
-  useEffect(() => {
-    async function fetchVids() {
-      const { data, error } = await fetchReels();
-
-      if (error) {
-        console.log(error);
-        return;
-      }
-      if (data) {
-        setVideos(data);
-      }
-    }
-    fetchVids();
-  }, []);
-
+  const userId = useSession()?.user.id;
+  const { videos, toggleLike } = useReels(userId);
+  const activeVideo = videos[activeIndex];
 
   return (
     <div
@@ -102,10 +74,15 @@ const ReelsFeed = () => {
             );
           })}
         </div>
-
-        <motion.div className="flex justify-center mt-4" layout>
-          <ReelsActionBar />
-        </motion.div>
+        {activeVideo && (
+          <motion.div className="flex justify-center mt-4" layout>
+            <ReelsActionBar
+              onLike={toggleLike}
+              video_id={activeVideo.id}
+              liked={activeVideo.liked}
+            />
+          </motion.div>
+        )}
       </div>
     </div>
   );
