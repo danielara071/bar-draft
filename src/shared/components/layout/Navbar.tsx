@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSession } from "../../hooks/useSession";
+import { useProfile } from "../../hooks/useProfile";
 import { LoginButton } from "../Buttons";
 
 const navItems = [
@@ -15,8 +16,8 @@ const navItems = [
 
 const Navbar = () => {
   const session = useSession();
+  const profile = useProfile();
   const isLoggedIn = session !== null;
-  const coins = 120;
   const navigate = useNavigate();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -72,10 +73,10 @@ const Navbar = () => {
           {isLoggedIn ? (
             <div className="flex items-center gap-1.5 rounded-full px-3 py-1">
               <span>🪙</span>
-              <span className="text-sm font-semibold">{coins} Monedas</span>
+              <span className="text-sm font-semibold">{profile?.monedas} Monedas</span>
             </div>
           ) : (
-            <LoginButton onClick={() => navigate("/")} size="sm">Iniciar Sesión</LoginButton>
+            <LoginButton onClick={() => navigate("/login")} size="sm">Iniciar Sesión</LoginButton>
           )}
 
           {/* boton menu */}
