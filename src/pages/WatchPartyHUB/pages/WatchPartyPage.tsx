@@ -1,46 +1,63 @@
 import { useState } from "react";
-import {
-  WatchPartyHero,
-  WatchPartyUpcoming,
-  WatchPartyCodeInput,
-  WatchPartyGrid,
-  WatchPartyModal,
-} from "../components/index.components";
+import useSession from "../../../features/WatchParty/Hooks/SessionLogic";
 import type { WatchPartyMatch } from "../interfaces/index.interfaces";
-import { MY_PARTIES, LIVE_PARTIES } from "../utils/index.utils";
+import { useFriendWatchParties } from "../hooks/useFriendWatchParties";
+import { usePublicWatchParties } from "../hooks/usePublicWatchParties";
+import WatchPartyHero from "../components/WatchPartyHero";
+import WatchPartyUpcoming from "../components/WatchPartyUpcoming";
+import WatchPartyCodeInput from "../components/WatchPartyCodeInput";
+import WatchPartyGrid from "../components/WatchPartyGrid";
+import WatchPartyModal from "../components/WatchPartyModal";
+import WatchPartyJoinModal from "../components/WatchPartyJoinModal";
 
 export default function WatchPartyPage() {
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const session = useSession();
+  const userId = session?.user?.id;
+
+  const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
+  const [selectedMatch, setSelectedMatch] = useState<WatchPartyMatch | null>(null);
+
+  const { parties: friendParties, isLoading: friendsLoading } =
+    useFriendWatchParties(userId);
+
+  const { parties: publicParties, isLoading: publicLoading } =
+    usePublicWatchParties();
 
   const handleCardClick = (match: WatchPartyMatch): void => {
-    console.log("Abrir sala", match.id);
-  };
-
-  const handleJoinCode = (code: string): void => {
-    console.log("Unirse con código", code);
+    setSelectedMatch(match);
   };
 
   return (
     <div className="wp-page">
-      <WatchPartyHero onCreateParty={() => setModalOpen(true)} />
+      <WatchPartyHero onCreateParty={() => setCreateModalOpen(true)} />
 
       <div className="wp-page__body">
         <WatchPartyUpcoming
-          parties={MY_PARTIES}
+          parties={friendParties}
           onCardClick={handleCardClick}
-          onAddClick={() => setModalOpen(true)}
+          onAddClick={() => setCreateModalOpen(true)}
+          isLoading={friendsLoading}
         />
 
-        <WatchPartyCodeInput onJoin={handleJoinCode} />
+        <WatchPartyCodeInput />
 
         <WatchPartyGrid
           title="En Vivo"
-          matches={LIVE_PARTIES}
+          matches={publicParties}
           onCardClick={handleCardClick}
+          isLoading={publicLoading}
         />
       </div>
 
-      <WatchPartyModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <WatchPartyModal
+        open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
+      />
+
+      <WatchPartyJoinModal
+        match={selectedMatch}
+        onClose={() => setSelectedMatch(null)}
+      />
     </div>
   );
 }

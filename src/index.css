@@ -32,10 +32,15 @@
 
 body {
   font-family: var(--font-sans);
+}
+/* ==========================================================================
+   WatchParty – estilos completos
+   ========================================================================== */
+
 /* ── Page ─────────────────────────────────────────────────────────────────── */
 
 .wp-page {
-  background: #002244;
+  background: #f1f5f9;
   min-height: 100vh;
 }
 
@@ -283,7 +288,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: #64748b;
   margin: 0 0 16px;
 }
 
@@ -603,4 +608,68 @@ body {
   border-radius: 12px;
   margin: 16px 0 8px;
 }
+
+/* ── Join Modal ───────────────────────────────────────────────────────────── */
+
+.wp-modal--join {
+  max-width: 380px;
+}
+
+.wp-modal__join-info {
+  width: 100%;
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin: 20px 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wp-modal__join-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wp-modal__join-label {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.wp-modal__join-value {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #12192c;
+}
+
+.wp-modal__join-code {
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+  color: #a5004b;
+}
+
+.wp-modal__error {
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.82rem;
+  color: #dc2626;
+  margin: 8px 0 0;
+}
+
+/* ── Loading skeletons ────────────────────────────────────────────────────── */
+
+.wp-skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: wp-shimmer 1.4s infinite;
+  border-radius: 12px;
+  min-height: 160px;
+}
+
+@keyframes wp-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }

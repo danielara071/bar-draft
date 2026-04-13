@@ -1,21 +1,18 @@
 import type { MouseEvent } from "react";
 import type { WatchPartyModalProps, Privacy } from "../interfaces/index.interfaces";
 import { useWatchPartyModal } from "../hooks/useWatchPartyModal";
+import { useFixtures } from "../hooks/useFixtures";
+import useSession from "../../../features/WatchParty/Hooks/SessionLogic";
 
 export default function WatchPartyModal({ open, onClose }: WatchPartyModalProps) {
+  const session = useSession();
+  const { fixtures, isLoading: fixturesLoading } = useFixtures();
+
   const {
-    step,
-    form,
-    roomCode,
-    canSubmit,
-    isLoading,
-    setName,
-    setMatch,
-    setPrivacy,
-    handleCreate,
-    handleClose,
-    handleGoToRoom,
-  } = useWatchPartyModal(onClose);
+    step, form, roomCode, canSubmit, isLoading, error,
+    setName, setFixtureId, setPrivacy,
+    handleCreate, handleClose, handleGoToRoom,
+  } = useWatchPartyModal(session?.user?.id, fixtures, onClose);
 
   if (!open) return null;
 
@@ -29,7 +26,9 @@ export default function WatchPartyModal({ open, onClose }: WatchPartyModalProps)
         {step === 1 ? (
           <>
             <h2 className="wp-modal__title">Crear Watch Party</h2>
-            <p className="wp-modal__sub">Configura tu sala y comparte el código con tus amigos.</p>
+            <p className="wp-modal__sub">
+              Configura tu sala y comparte el código con tus amigos.
+            </p>
 
             <label className="wp-modal__label">Nombre de la sala</label>
             <input
@@ -42,12 +41,24 @@ export default function WatchPartyModal({ open, onClose }: WatchPartyModalProps)
             <label className="wp-modal__label">Partido</label>
             <select
               className="wp-modal__input"
-              value={form.match}
-              onChange={(e) => setMatch(e.target.value)}
+              value={form.fixture_id}
+              onChange={(e) => setFixtureId(e.target.value)}
+              disabled={fixturesLoading}
             >
-              <option value="">Selecciona un partido...</option>
-              <option value="fem-chelsea">Barca vs Chelsea – UCL Cuartos (Femenil)</option>
-              <option value="var-valencia">Barca vs Valencia – La Liga J26 (Varonil)</option>
+              <option value="">
+                {fixturesLoading ? "Cargando partidos..." : "Selecciona un partido..."}
+              </option>
+              {fixtures.map((f) => (
+                <option key={f.fixture_id} value={String(f.fixture_id)}>
+                  {f.homeTeam} vs {f.awayTeam} —{" "}
+                  {new Date(f.date).toLocaleDateString("es-MX", {
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </option>
+              ))}
             </select>
 
             <label className="wp-modal__label">Privacidad</label>
@@ -64,6 +75,8 @@ export default function WatchPartyModal({ open, onClose }: WatchPartyModalProps)
                 </button>
               ))}
             </div>
+
+            {error && <p className="wp-modal__error">{error}</p>}
 
             <button
               className="wp-modal__submit"
