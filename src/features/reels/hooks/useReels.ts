@@ -7,12 +7,12 @@ import type { VideoReel } from "../interfaces/VideoReel";
 
 
 export function useReels(userId: any) {
-    if (!userId) return;
     const [videos, setVideos] = useState<VideoReel[]>([]);
 
 
     useEffect(() => {
-
+    if (!userId) return;
+  
     const fetchVideos = async () => {
         const { data, error } = await supabase
           .from('videos')
