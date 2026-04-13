@@ -16,9 +16,8 @@ function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Index />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/sportsapi" element={<SportsApi />} />
         <Route path="/chat" element={<Chat />} />
         <Route path="/watchParty/:code" element={<WatchParty />} />
