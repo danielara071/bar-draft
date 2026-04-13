@@ -88,14 +88,16 @@ const Productos = () => {
         .order("id");
 
       if (cancelled) return;
-
       if (supaError) {
         console.error("Supabase products:", supaError);
         setError(supaError.message || "No se pudieron cargar los productos");
         setProductos([]);
-      } else {
-        setProductos((data ?? []).map((row) => mapProducto(row as Record<string, unknown>)));
+        return;
       }
+
+      setError(null);
+      setProductos((data ?? []).map((row) => mapProducto(row as Record<string, unknown>)));
+
     };
 
     void fetchProductos();
@@ -140,10 +142,6 @@ const Productos = () => {
       {mostrarPremium && (
         <PremiumWindow
           onClose={() => setMostrarPremium(false)}
-          onSubscribe={() => {
-            setMostrarPremium(false);
-            alert("Comprando");
-          }}
         />
       )}
     </div>
