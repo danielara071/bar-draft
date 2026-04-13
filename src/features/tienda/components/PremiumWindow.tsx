@@ -1,39 +1,9 @@
-import { loadStripe } from '@stripe/stripe-js';
-import { useState } from 'react';
-
-// Carga Stripe UNA SOLA VEZ
-const stripePromise = loadStripe('pk_test_51TKQcPIoDuz1EoIWR489rG84IiZl305Yq2NCZiCSBnKh0QrRWWGgts82Pfzz1nSsbPkm0Ze7tWtFxuWVmZMJZVQY00oHzbRwkZ');
-
 type PremiumWindowPros = {
     onClose: () => void;
+    onSubscribe: () => void;
 }
 
-const PremiumWindow = ({ onClose }: PremiumWindowPros) => {
-
-    const [loading, setLoading] = useState(false);
-
-    const handleSubscribe = async () => {
-        setLoading(true);
-        
-        try {
-        // Llama a tu backend para crear sesión Stripe
-        const response = await fetch('http://localhost:5000/create-checkout-session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-            email: 'usuario@ejemplo.com' // Obtén del session de Supabase
-            }),
-        });
-
-        const { url } = await response.json();
-        
-        // Redirige a Stripe Checkout (SIN TypeScript errors)
-        window.location.href = url;
-        } catch (error) {
-        console.error('Error Stripe:', error);
-        alert('Error al procesar pago. Intenta de nuevo.');
-        }
-    };
+const PremiumWindow = ({ onClose, onSubscribe }: PremiumWindowPros) => {
 
     return (
         <div
@@ -97,10 +67,10 @@ const PremiumWindow = ({ onClose }: PremiumWindowPros) => {
 
                     <div className="mt-auto space-y-3">
                         <button
-                            onClick={handleSubscribe} disabled={loading}
+                            onClick={onSubscribe} 
                             className="w-full bg-[#F5BF00] hover:bg-[#D4A400] text-[#004D98] font-bold py-3 rounded-full transition-colors shadow-md"
                         >
-                            {loading ? 'Procesando...' : 'Suscríbete Ahora - $50/mes'}
+                            Subscribirme
                         </button>
                         <button
                             onClick={onClose}

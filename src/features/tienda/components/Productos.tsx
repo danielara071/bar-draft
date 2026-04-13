@@ -3,6 +3,7 @@ import ProductoCard from "./ProductoCard";
 import PremiumWindow from "./PremiumWindow";
 import { supabase } from "../../../shared/services/supabaseClient";
 import { useSession } from "../../../shared/hooks/useSession";
+import StripeModal from "./StripeModal";
 
 function mapProducto(row: Record<string, unknown>) { // Mapea los datos de la fila a la estructura esperada por ProductoCard
   const categories = row.categories as { name?: string } | null | undefined;
@@ -23,6 +24,7 @@ const Productos = () => {
   const [esPremium, setEsPremium] = useState(false);
   const [mostrarPremium, setMostrarPremium] = useState(false);
   const [monedas, setMonedas] = useState<number>(0);
+  const [showStripe, setShowStripe] = useState(false);
   
 
   useEffect(() => {
@@ -139,10 +141,18 @@ const Productos = () => {
         ))}
       </div>
 
-      {mostrarPremium && (
+        {mostrarPremium && (
         <PremiumWindow
           onClose={() => setMostrarPremium(false)}
+          onSubscribe={() => {
+            setMostrarPremium(false);
+            setShowStripe(true); // 👈 abre el formulario de Stripe
+          }}
         />
+      )}
+
+      {showStripe && (
+        <StripeModal onClose={() => setShowStripe(false)} />
       )}
     </div>
   );
