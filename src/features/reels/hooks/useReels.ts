@@ -49,31 +49,34 @@ export function useReels(userId: any) {
     },[userId])
 
     const reelWatched = async (videoId: string) => {
+
       setVideos( 
             (prev) => prev.map(v => v.id === videoId ? {...v, watched: true} : v)
         );
 
-        const video = videos.find((v) => v.id === videoId);
-
         await supabase.from('user_video_actions').upsert({
         user_id: userId,
         video_id: videoId,
-        liked: video?.liked,
         watched: true
         });
     }
 
     const toggleLike = async (videoId: string) => {
+        let newLike: boolean | undefined;
         setVideos( 
-            (prev) => prev.map(v => v.id === videoId ? {...v, liked: !v.liked} : v)
-        );
-
-        const video = videos.find((v) => v.id === videoId);
+            (prev) => prev.map(v => {
+              if (v.id === videoId){
+                newLike = !v.liked;
+                return {...v, newLike }
+              }
+              return v;
+            }
+        ));
 
         await supabase.from('user_video_actions').upsert({
         user_id: userId,
         video_id: videoId,
-        liked: !video?.liked
+        liked: newLike
         });
 }
     
