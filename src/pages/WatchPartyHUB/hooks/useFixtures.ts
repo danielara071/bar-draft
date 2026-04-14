@@ -23,7 +23,7 @@ function mapFixture(item: any): Fixture {
     date: item.fixture.date,
     homeTeam: item.teams.home.name,
     awayTeam: item.teams.away.name,
-    venue: item.fixture.venue?.name ?? "Por confirmar",
+    venue: item.fixture.venue?.name ?? "No disponible",
     status: item.fixture.status.short, 
     competition: item.league.name,
   };

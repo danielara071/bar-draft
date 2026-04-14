@@ -79,7 +79,7 @@ const WatchParty = () => {
           awayTeam={liveMatch.teams.away.name}
           awayTeamScore={liveMatch.goals.away ?? 0}
           matchTime={matchClock}
-          location={liveMatch.fixture.venue.name ?? "Por confirmar"}
+          location={liveMatch.fixture.venue.name ?? "No disponible"}
           fansWatching={usersOnline.length}
         />
         <div className="flex gap-4 w-full mt-4">
@@ -90,7 +90,7 @@ const WatchParty = () => {
           />
           <InfoCard
             label="ESTADIO"
-            title={liveMatch.fixture.venue.name ?? "Por confirmar"}
+            title={liveMatch.fixture.venue.name ?? "No disponible"}
             subtitle={liveMatch.fixture.venue.city ?? ""}
           />
         </div>
