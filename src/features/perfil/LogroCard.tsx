@@ -11,6 +11,7 @@ type LogroCardProps = {
 };
 
 export default function LogroCard({
+  logro_id,
   nombre,
   descripcion,
   url_image,
