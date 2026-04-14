@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ProductoCard from "./ProductoCard";
 import PremiumWindow from "./PremiumWindow";
 import { supabase } from "../../../shared/services/supabaseClient";
-import useSession from "../../../shared/hooks/useSessionn";
+import useSession from "../../../shared/hooks/useSession";
 import StripeModal from "./StripeModal";
 
 function mapProducto(row: Record<string, unknown>) { // Mapea los datos de la fila a la estructura esperada por ProductoCard

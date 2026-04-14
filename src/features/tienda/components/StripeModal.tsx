@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import axios from "axios";
 import { Crown } from "lucide-react";
 import { supabase } from "../../../shared/services/supabaseClient";
-import useSession from "../../../shared/hooks/useSession";
+import useSession from "../../../shared/hooks/useSessionn";
 
 const stripePromise = loadStripe(
   "pk_test_51TKQcPIoDuz1EoIWR489rG84IiZl305Yq2NCZiCSBnKh0QrRWWGgts82Pfzz1nSsbPkm0Ze7tWtFxuWVmZMJZVQY00oHzbRwkZ",
