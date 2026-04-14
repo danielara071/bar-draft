@@ -46,7 +46,7 @@ export const useMatch = () => {
 
     const intervalId = setInterval(() => {
       void getMatch();
-    }, 30000);
+    }, 45000);
 
     return () => {
       clearInterval(intervalId);

@@ -44,7 +44,7 @@ export const useMatchPredictions = () => {
 
     const intervalId = setInterval(() => {
       void getPredictions();
-    }, 30000);
+    }, 600000);
 
     return () => {
       clearInterval(intervalId);
