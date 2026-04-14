@@ -9,8 +9,8 @@ const navItems = [
   { name: "Joc!",        path: "/wordle" },
   { name: "RA",          path: "/ra" },
   { name: "Reels",       path: "/reels" },
-  { name: "Watch Party", path: "/watchParty" },
-  { name: "Watch PartyHUB", path: "/watchPartyHUB" }, //eliminar solo es para pruebas
+  { name: "Watch Party", path: "/watchPartyHUB" },
+  // { name: "Watch PartyHUB", path: "/watchPartyHUB" }, //eliminar solo es para pruebas
   { name: "Tienda",      path: "/tienda" },
   { name: "Perfil",      path: "/perfil" },
 ];
