@@ -9,10 +9,11 @@ interface CountdownProps {
 const Countdown = ({ onCategoryLoad }: CountdownProps) => {
   const [matchDate, setMatchDate] = useState<Date | null>(null);
   const [time, setTime] = useState({ d: "--", h: "--", m: "--", s: "--" });
+  const PROXY = "https://fcb-proxy.onrender.com";
 
   useEffect(() => {
     const loadMatch = async () => {
-      const response = await fetch("/next-game");
+      const response = await fetch(`${PROXY}/api/scraper/next-game`);
       const data = await response.json();
       setMatchDate(new Date(data.datetime));
       onCategoryLoad(data.category);
