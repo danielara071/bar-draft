@@ -5,6 +5,7 @@ import { PrimaryButton, SecondaryButton } from '../../shared/components/Buttons'
 import Noticias from '../../shared/components/Noticias'
 import StatCard from '../../shared/components/StatCard'
 import InfoCard from '../../shared/components/InfoCard';
+import fan from "../../data/img/fanBarca.jpeg"
 
 function LoggedOut() {
     const navigate = useNavigate()
@@ -73,7 +74,7 @@ function LoggedOut() {
                     </div>
                 </div>
                 <div className="relative grid grid-cols-2 gap-10 mt-30 ">
-                    <img src='src\data\img\fanBarca.jpeg' className="w-full h-auto" />
+                    <img src={fan} className="w-full h-auto" />
                     <div className="flex flex-col gap-10">
                         <hr className="border-brand-gray-light" />
                         <p className="text-1xl md:text-3xl lg:text-4xl font-light">“Era fan del Barça, pero solo del varonil. Entré a Més Que Un Club, me enganché con el equipo femenino, acumulé puntos — y gané un viaje al Camp Nou para verlas en vivo. Nunca lo hubiera imaginado.”</p>
