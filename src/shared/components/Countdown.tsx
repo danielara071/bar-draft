@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 const pad = (n: number) => String(Math.floor(n)).padStart(2, "0");
 
 interface CountdownProps {
-  onCategoryLoad: (category: "var" | "fem") => void;
+  onCategoryLoad: (category: "varonil" | "femenil") => void;
 }
 
 const Countdown = ({ onCategoryLoad }: CountdownProps) => {

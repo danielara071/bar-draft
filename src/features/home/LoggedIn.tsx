@@ -15,7 +15,7 @@ function LoggedIn() {
     const name = profile?.nombre || session?.user?.user_metadata?.full_name.split(" ")[0];
     const levelXP = 2000;
     const progreso = profile ? ((profile.puntos % levelXP) / levelXP) * 100 : 0;
-    const [category, setCategory] = useState<"var" | "fem" | null>(null);
+    const [category, setCategory] = useState<"varonil" | "femenil" | null>(null);
     return (
         <>
             <section className="relative bg-cover bg-center min-h-screen flex items-center justify-center text-center bg-[url('https://www.fcbarcelona.com/photo-resources/2025/11/15/43dcea0d-71dc-414f-9bcc-4e827c927693/JCAG3702.jpg?width=3200&_gl=1*1t7pif5*_gcl_aw*R0NMLjE3NzMzNDE0MTcuQ2p3S0NBand5TW5OQmhCTkVpd0EtS2NndTVneXE2dEVQNGZldjVWZmNwa2dJRGZ0clpiZGxNZTVDZGNwTXo4UkNZUnFWVmZuM19GcW5Sb0NTNGdRQXZEX0J3RQ..*_gcl_dc*R0NMLjE3NzMzNDE0MTcuQ2p3S0NBand5TW5OQmhCTkVpd0EtS2NndTVneXE2dEVQNGZldjVWZmNwa2dJRGZ0clpiZGxNZTVDZGNwTXo4UkNZUnFWVmZuM19GcW5Sb0NTNGdRQXZEX0J3RQ..*_gcl_au*OTk4NjYyNjc0LjE3NzA5MjMxMDM.')]">
@@ -77,10 +77,10 @@ function LoggedIn() {
                     <p className="text-xl md:text-2xl lg:text-3xl font-sans text-black">Faltan ...</p>
                     <div className="grid grid-cols-2 gap-2 mt-4 md:mt-0">
                         <div className="grid grid-cols-2 gap-1 pt-1">
-                            <span className={`material-icons ${category === "var" ? "text-brand-crimson" : "text-brand-gray-mid"}`}>
+                            <span className={`material-icons ${category === "varonil" ? "text-brand-crimson" : "text-brand-gray-mid"}`}>
                                 sports_soccer
                             </span>
-                            <span className={`material-symbols-outlined ${category === "fem" ? "text-brand-crimson" : "text-brand-gray-mid"}`}>
+                            <span className={`material-symbols-outlined ${category === "femenil" ? "text-brand-crimson" : "text-brand-gray-mid"}`}>
                                 chess_queen
                             </span>
                         </div>
