@@ -5,7 +5,7 @@ import type { WatchParty, WatchPartyMatch } from "../interfaces/index.interfaces
 function mapToWatchPartyMatch(wp: WatchParty): WatchPartyMatch {
   return {
     id: wp.fixture_id,
-    type: "femenil",           // ajusta según tu lógica
+    type: "femenil",           
     title: `${wp.home_team} vs ${wp.away_team}`,
     competition: wp.name,
     time: new Date(wp.match_date).toLocaleString("es-MX", {
@@ -54,7 +54,7 @@ export function usePublicWatchParties(): UsePublicWatchPartiesReturn {
 
     fetchPublic();
 
-    // Suscripción en tiempo real para actualizar cuando se creen nuevas salas
+    // Suscripción al canal en tiempo real para actualizar cuando se creen nuevas salas
     const channel = supabase
       .channel("public-watch-parties")
       .on(
