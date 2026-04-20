@@ -14,7 +14,9 @@ const INITIAL_FORM: CreatePartyForm = {
   privacy: "publica",
 };
 
-function generateRoomCode(): string {
+
+// El código REAL y ÚNICO lo genera la función SQL en Supabase
+function generateLocalCode(): string {
   const letters = Math.random().toString(36).substring(2, 5).toUpperCase();
   const numbers = Math.floor(1000 + Math.random() * 9000);
   return `${letters}-${numbers}`;
@@ -47,7 +49,7 @@ export function useWatchPartyModal(
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canSubmit = Boolean(form.name && form.fixture_id && userId);
+  const canSubmit = Boolean(form.name.trim() && form.fixture_id && userId);
 
   const setName = (name: string) => setForm((prev) => ({ ...prev, name }));
   const setFixtureId = (id: string) => setForm((prev) => ({ ...prev, fixture_id: id }));
@@ -58,33 +60,62 @@ export function useWatchPartyModal(
     setIsLoading(true);
     setError(null);
 
-    const code = generateRoomCode();
-    const fixture = fixtures.find((f) => String(f.fixture_id) === form.fixture_id);
-
+    // 1. Buscar fixture seleccionado
+    const fixture = fixtures.find((f) => f.fixture_id === form.fixture_id);
     if (!fixture) {
-      setError("Partido no encontrado");
+      setError("Partido no encontrado. Selecciona uno de la lista.");
       setIsLoading(false);
       return;
     }
 
-    const { error: sbError } = await supabase.from("watch_parties").insert({
-      code,
-      name: form.name,
-      fixture_id: fixture.fixture_id,
-      home_team: fixture.homeTeam,
-      away_team: fixture.awayTeam,
-      match_date: fixture.date,
-      privacy: form.privacy,
-      created_by: userId,
-    });
+    // 2. Obtener código único desde Supabase (garantiza no duplicados)
+    let code: string;
+    try {
+      const { data: codeData, error: codeError } = await supabase
+        .rpc("generate_unique_room_code");
+
+      if (codeError || !codeData) {
+        // Fallback: generar local (menos seguro pero funcional)
+        code = generateLocalCode();
+      } else {
+        code = codeData as string;
+      }
+    } catch {
+      code = generateLocalCode();
+    }
+
+    // 3. Insertar en Supabase con select() para confirmar persistencia
+    const { data, error: sbError } = await supabase
+      .from("watch_parties")
+      .insert({
+        code,
+        name: form.name.trim(),
+        fixture_id: fixture.fixture_id,   // string: "varonil-xxx"
+        home_team: fixture.homeTeam,
+        away_team: fixture.awayTeam,
+        match_date: fixture.date,
+        privacy: form.privacy,
+        created_by: userId,
+      })
+      .select("code")                      // confirma que realmente se insertó
+      .single();
 
     if (sbError) {
-      setError(sbError.message);
+      // Código duplicado (constraint UNIQUE)
+      if (sbError.code === "23505") {
+        setError("Ocurrió un conflicto al generar la sala. Intenta de nuevo.");
+      } else if (sbError.code === "42501") {
+        setError("No tienes permisos para crear una sala. Verifica tu sesión.");
+      } else {
+        setError(`Error al crear la sala: ${sbError.message}`);
+      }
       setIsLoading(false);
       return;
     }
 
-    setRoomCode(code);
+    // 4. Usar el código confirmado por la BD
+    const confirmedCode = data?.code ?? code;
+    setRoomCode(confirmedCode);
     setIsLoading(false);
     setStep(2);
   };

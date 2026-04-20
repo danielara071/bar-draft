@@ -2,8 +2,10 @@ import type { WatchPartyCodeInputProps } from "../interfaces/index.interfaces";
 import { useWatchPartyCode } from "../hooks/useWatchPartyCode";
 
 export default function WatchPartyCodeInput({ onJoin }: WatchPartyCodeInputProps) {
-  const { code, refs, isComplete, handleChange, handleKeyDown, handlePaste, handleJoin } =
-    useWatchPartyCode(onJoin);
+  const {
+    code, refs, isComplete, isValidating, validationError,
+    handleChange, handleKeyDown, handlePaste, handleJoin,
+  } = useWatchPartyCode(onJoin);
 
   return (
     <div className="wp-code">
@@ -14,7 +16,7 @@ export default function WatchPartyCodeInput({ onJoin }: WatchPartyCodeInputProps
             <input
               key={i}
               ref={(el) => { refs.current[i] = el; }}
-              className="wp-code__box"
+              className={`wp-code__box ${validationError ? "wp-code__box--error" : ""}`}
               maxLength={1}
               value={code[i]}
               onChange={(e) => handleChange(i, e.target.value)}
@@ -22,6 +24,7 @@ export default function WatchPartyCodeInput({ onJoin }: WatchPartyCodeInputProps
               onPaste={i === 0 ? handlePaste : undefined}
               inputMode="text"
               autoComplete="off"
+              disabled={isValidating}
             />
           ))}
           <span className="wp-code__sep">—</span>
@@ -29,20 +32,28 @@ export default function WatchPartyCodeInput({ onJoin }: WatchPartyCodeInputProps
             <input
               key={i}
               ref={(el) => { refs.current[i] = el; }}
-              className="wp-code__box"
+              className={`wp-code__box ${validationError ? "wp-code__box--error" : ""}`}
               maxLength={1}
               value={code[i]}
               onChange={(e) => handleChange(i, e.target.value)}
               onKeyDown={(e) => handleKeyDown(i, e)}
               inputMode="text"
               autoComplete="off"
+              disabled={isValidating}
             />
           ))}
         </div>
-        <button className="wp-code__btn" onClick={handleJoin} disabled={!isComplete}>
-          Unirme →
+        <button
+          className="wp-code__btn"
+          onClick={handleJoin}
+          disabled={!isComplete || isValidating}
+        >
+          {isValidating ? "Verificando..." : "Unirme →"}
         </button>
       </div>
+      {validationError && (
+        <p className="wp-code__error">{validationError}</p>
+      )}
     </div>
   );
 }

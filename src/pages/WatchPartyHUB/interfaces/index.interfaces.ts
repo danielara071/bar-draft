@@ -1,14 +1,14 @@
-// ── API Football ──────────────────────────────────────────────────────────
+// ── Scraper / Fixtures ────────────────────────────────────────────────────
 
 export interface Fixture {
-  fixture_id: string;
-  category: "varonil" | "femenil";
+  fixture_id: string;           // "varonil-1776193200000"
   date: string;
   homeTeam: string;
   awayTeam: string;
+  venue?: string;               // opcional, scraper no siempre lo incluye
+  status: string;
   competition: string;
-  venue?: string;  
-  status?: string; 
+  category: "varonil" | "femenil";
 }
 
 // ── Supabase watch_parties ────────────────────────────────────────────────
@@ -17,7 +17,7 @@ export interface WatchParty {
   id: string;
   code: string;
   name: string;
-  fixture_id: number;
+  fixture_id: string;           // TEXT en BD — era number (BUG corregido)
   home_team: string;
   away_team: string;
   match_date: string;
@@ -45,7 +45,7 @@ export type Privacy = "publica" | "privada";
 export type ModalStep = 1 | 2;
 
 export interface WatchPartyMatch {
-  id: number;
+  id: string;                   // era number — BUG corregido
   type: MatchType;
   title: string;
   competition: string;
