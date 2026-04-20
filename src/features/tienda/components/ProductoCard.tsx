@@ -20,6 +20,7 @@ type Props = {
 
 const ProductoCard = ({ producto, esPremium, monedas, onPremiumClick, onComprar }: Props) => {
   const [isHovered, setIsHovered] = useState(false);
+  const formatPrice = (price: number) => `${price.toLocaleString('en-US')} Monedas`;
 
   const handleComprarClick = () => {
     if (producto.premium && !esPremium) {
@@ -49,7 +50,7 @@ const ProductoCard = ({ producto, esPremium, monedas, onPremiumClick, onComprar 
         <p className="text-gray-600">{producto.categoria?.nombre ?? "Objeto"}</p>
         <h2 className="text-lg font-bold">{producto.nombre}</h2>
         <p className={`text-xl font-bold ${sinMonedas ? "text-gray-400" : "text-[#A50044]"}`}>
-          {producto.precio} Monedas
+          {formatPrice(producto.precio)}
         </p>
       </div>
       <div className="absolute inset-0 px-10 flex items-center justify-center pointer-events-none">
