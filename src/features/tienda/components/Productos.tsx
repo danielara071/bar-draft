@@ -5,6 +5,7 @@ import { supabase } from "../../../shared/services/supabaseClient";
 import useSession from "../../../shared/hooks/useSession";
 import StripeModal from "./StripeModal";
 import AlertModal from "./AlertModal";
+import  {useUserInfo} from "./hooks/useUserInfo";
 
 function mapProducto(row: Record<string, unknown>) { // Mapea los datos de la fila a la estructura esperada por ProductoCard
   const categories = row.categories as { name?: string } | null | undefined;
@@ -19,7 +20,7 @@ function mapProducto(row: Record<string, unknown>) { // Mapea los datos de la fi
 }
 
 const Productos = () => {
-  const session = useSession();
+  const session = useUserInfo();
   const [productos, setProductos] = useState<ReturnType<typeof mapProducto>[]>([]); // El tipo de productos se infiere a partir de la función mapProducto
   const [error, setError] = useState<string | null>(null);
   const [esPremium, setEsPremium] = useState(false);
@@ -90,6 +91,7 @@ const Productos = () => {
   useEffect(() => {
     let cancelled = false;
     const fetchProductos = async () => {
+      if (session === undefined) return;
       let purchaseiD: number[] = [];
 
       if (session?.user?.id){
@@ -126,7 +128,7 @@ const Productos = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [session]);
 
   return (
     <div>
