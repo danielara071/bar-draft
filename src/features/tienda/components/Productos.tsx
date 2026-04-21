@@ -79,6 +79,7 @@ const Productos = () => {
       amount: producto.precio,
     });
 
+    setProductos((prev) => prev.filter((p) => p.id !== producto.id));
     setMonedas((prev) => prev - producto.precio); // Actualiza el estado local
     setModal({
       title: "¡Compra exitosa!",
@@ -89,6 +90,16 @@ const Productos = () => {
   useEffect(() => {
     let cancelled = false;
     const fetchProductos = async () => {
+      let purchaseiD: number[] = [];
+
+      if (session?.user?.id){
+        const { data: purchases } = await supabase
+          .from("purchases")
+          .select("product_id")
+          .eq("user_id", session.user.id);
+        purchaseiD = (purchases ?? []).map((p) => Number(p.product_id));
+      }
+
       const { data, error: supaError } = await supabase
         .from("products")
         .select("*, categories(name)")
@@ -102,8 +113,12 @@ const Productos = () => {
         return;
       }
 
+      const filtered = (data ?? [])
+        .map((row) => mapProducto(row as Record<string, unknown>))
+        .filter((p) => !purchaseiD.includes(p.id));
+
       setError(null);
-      setProductos((data ?? []).map((row) => mapProducto(row as Record<string, unknown>)));
+      setProductos(filtered);
 
     };
 
