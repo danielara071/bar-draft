@@ -33,7 +33,7 @@ async function handleResponse<T>(response: Response, defaultMessage: string): Pr
   return response.json() as Promise<T>;
 }
 
-export async function fetchUsuarioByName(user_id: string): Promise<Usuario[]> {
+export async function fetchUsuarioById(user_id: string): Promise<Usuario[]> {
   console.log(user_id, "   NOMBRE DEL USUARIO")
   const response = await fetch(
     `${supabaseUrl}/rest/v1/rpc/get_user_with_logro`,

@@ -3,7 +3,7 @@ import AmigosContainer from "../features/perfil/AmigosContainer";
 import LogrosContainer from "../features/perfil/LogrosContainer";
 import useSession  from "../shared/hooks/useSession"
 
-import { useUsuarioByName } from "../shared/hooks/useUsuario";
+import { useUsuarioById } from "../shared/hooks/useUsuario";
 import { useUsuarioLogros } from "../shared/hooks/useLogros";
 
 
@@ -43,7 +43,7 @@ function Perfil() {
   console.log("Perfil")
   const session = useSession();
   const user_id = session?.user?.id || "";
-  const { usuario : Usuario } = useUsuarioByName(user_id);
+  const { usuario : Usuario } = useUsuarioById(user_id);
   const { logros : Logro } = useUsuarioLogros(Usuario?.id ?? "");
   console.log("Usuario: ", session?.user?.id)
   if (user_id == ""){

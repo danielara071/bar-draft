@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchUsuarioByName, type Usuario } from "../../lib/DummyAPI";
+import { fetchUsuarioById, type Usuario } from "../../lib/DummyAPI";
 
-export function useUsuarioByName(nombre: string) { 
+export function useUsuarioById(id: string) { 
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,7 +15,7 @@ export function useUsuarioByName(nombre: string) {
       try {
         setLoading(true);
         setError("");
-        const data = await fetchUsuarioByName(nombre);
+        const data = await fetchUsuarioById(id);
         if (active) {
           //console.log("successful use, but length ",data.length)
           setUsuario(data.length > 0 ? data[0] : null);
@@ -39,7 +39,7 @@ export function useUsuarioByName(nombre: string) {
     return () => {
       active = false;
     };
-  }, [nombre]);
+  }, [id]);
 
   return {
     usuario,
