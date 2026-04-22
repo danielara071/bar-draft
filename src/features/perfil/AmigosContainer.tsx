@@ -1,4 +1,5 @@
 import AmigoCard from "./AmigoCard";
+import BuscarAmigosContainer from "./BuscarAmigosContainer";
 
 type Amigo = {
   nombre_usuario: string;
@@ -8,12 +9,11 @@ type Amigo = {
 
 type AmigosContainerProps = {
   amigos: Amigo[];
-  onAddFriend: () => void;
+
 };
 
 export default function AmigosContainer({
-  amigos,
-  onAddFriend,
+  amigos
 }: AmigosContainerProps) {
   return (
     <div className="w-full">
@@ -24,12 +24,8 @@ export default function AmigosContainer({
           MIS AMIGOS
         </h2>
 
-        <button
-          onClick={onAddFriend}
-          className="bg-pink-600 hover:bg-pink-700 text-white text-xs px-4 py-2 rounded-full"
-        >
-          + Añadir Amigos
-        </button>
+        <BuscarAmigosContainer/>
+
       </div>
 
       {/* Grid */}

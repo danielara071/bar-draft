@@ -85,7 +85,6 @@ function Perfil() {
           
           <AmigosContainer
             amigos={(Amigo || [])}
-            onAddFriend={() => alert("Agregar amigo")}
           />
 
           <LogrosContainer logros={Logro || logrosHardcoded} />
