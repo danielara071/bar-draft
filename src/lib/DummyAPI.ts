@@ -6,6 +6,9 @@ export type Usuario = {
   experiencia : number;
   usuario_premium : boolean;
   logro : string;
+  logros : number;
+  predicciones : number;
+  pais : string;
 };
 export type Logro = {
   logro_id: number;
@@ -30,8 +33,8 @@ async function handleResponse<T>(response: Response, defaultMessage: string): Pr
   return response.json() as Promise<T>;
 }
 
-export async function fetchUsuarioByName(nombre: string): Promise<Usuario[]> {
-  console.log(supabaseUrl, "FROm fetchUsuarioByName but apikey ", supabaseAPIKey)
+export async function fetchUsuarioByName(user_id: string): Promise<Usuario[]> {
+  console.log(user_id, "   NOMBRE DEL USUARIO")
   const response = await fetch(
     `${supabaseUrl}/rest/v1/rpc/get_user_with_logro`,
     {
@@ -40,7 +43,7 @@ export async function fetchUsuarioByName(nombre: string): Promise<Usuario[]> {
         "Content-Type": "application/json",
         apikey: supabaseAPIKey,
       },
-      body: JSON.stringify({ "user_name": nombre })
+      body: JSON.stringify({ "user_id": user_id })
     }
   );
 

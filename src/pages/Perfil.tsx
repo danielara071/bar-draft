@@ -42,10 +42,11 @@ const logrosHardcoded = [
 function Perfil() {
   console.log("Perfil")
   const session = useSession();
-  const fullName = session?.user?.user_metadata?.full_name || "";
-  const { usuario : Usuario } = useUsuarioByName(fullName);
+  const user_id = session?.user?.id || "";
+  const { usuario : Usuario } = useUsuarioByName(user_id);
   const { logros : Logro } = useUsuarioLogros(Usuario?.id ?? "");
-  if (fullName == ""){
+  console.log("Usuario: ", session?.user?.id)
+  if (user_id == ""){
     return (
     <div className="min-h-screen">
       <div className="bg-[#002244] px-6 py-6">
@@ -63,12 +64,12 @@ function Perfil() {
           <PerfilUsuario
             username= {Usuario?.nombre_usuario || "Usuario"}
             ranking={14}
-            pais="Chile"
+            pais={Usuario?.pais || ""}
             avatarUrl={Usuario?.url_avatar || "https://i.pravatar.cc/150?img=3"}
             onLogout={() => alert("Funcionalidad de cerrar sesion")}
-            puntos={2400}
-            logros={3}
-            predicciones={4}
+            puntos={Usuario?.experiencia || 0}
+            logros={Usuario?.logros || 0}
+            predicciones={Usuario?.predicciones || 0}
             nivel={Usuario?.nivel || 1}
             xpActual={Usuario?.experiencia || 0}
             xpMax={4000}
