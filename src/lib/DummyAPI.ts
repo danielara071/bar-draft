@@ -18,7 +18,12 @@ export type Logro = {
   desbloqueado: boolean;
   user_id: string;
 };
-
+export type Amigo = {
+  id: string;
+  nombre_usuario: string;
+  url_avatar: string;
+  logro : string;
+};
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAPIKey =import.meta.env.VITE_SUPABASE_APIKEY
@@ -49,7 +54,21 @@ export async function fetchUsuarioById(user_id: string): Promise<Usuario[]> {
 
   return handleResponse<Usuario[]>(response, "No se pudo cargar el usuario");
 }
+export async function fetchAmigos(user_id: string): Promise<Amigo[]> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/get_friends`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseAPIKey,
+      },
+      body: JSON.stringify({ "user_id": user_id })
+    }
+  );
 
+  return handleResponse<Amigo[]>(response, "No se pudo cargar el usuario");
+}
 
 export async function fetchUsuarioLogros(id: string): Promise<Logro[]> {
   console.log(supabaseUrl, "FROm fetchUsuarioByName but apikey ", supabaseAPIKey);

@@ -1,30 +1,30 @@
 type AmigoCardProps = {
-  username: string;
-  avatarUrl: string;
-  badgeUrl?: string;
+  nombre_usuario: string;
+  url_avatar: string;
+  logro?: string;
 };
 
 export default function AmigoCard({
-  username,
-  avatarUrl,
-  badgeUrl,
+  nombre_usuario,
+  url_avatar,
+  logro,
 }: AmigoCardProps) {
   return (
     <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm">
       <div className="flex items-center gap-3">
         <img
-          src={avatarUrl}
-          alt={username}
-          className="w-10 h-10 rounded-full object-cover"
+          src={url_avatar}
+          alt={nombre_usuario}
+          className="w-20 h-20 rounded-full object-cover"
         />
 
-        <span className="text-sm font-medium text-gray-800">
-          @{username}
+        <span className="text-xl font-medium text-gray-800">
+          @{nombre_usuario}
         </span>
       </div>
 
-      {badgeUrl && (
-        <img src={badgeUrl} alt="badge" className="w-6 h-6" />
+      {logro && (
+        <img src={`src/assets/Logros/${logro}.png`} alt="badge" className="w-20 h-20 object-cover rounded-lg" />
       )}
     </div>
   );

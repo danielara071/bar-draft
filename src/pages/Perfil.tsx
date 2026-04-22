@@ -5,10 +5,10 @@ import useSession  from "../shared/hooks/useSession"
 
 import { useUsuarioById } from "../shared/hooks/useUsuario";
 import { useUsuarioLogros } from "../shared/hooks/useLogros";
+import { useFetchAmigos } from "../shared/hooks/useAmigos";
 
 
-
-const amigos = [
+const amigosHardcoded = [
   {
     username: "marckiecrack",
     avatarUrl: "https://i.pravatar.cc/100?img=14",
@@ -45,6 +45,7 @@ function Perfil() {
   const user_id = session?.user?.id || "";
   const { usuario : Usuario } = useUsuarioById(user_id);
   const { logros : Logro } = useUsuarioLogros(Usuario?.id ?? "");
+  const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "");
   console.log("Usuario: ", session?.user?.id)
   if (user_id == ""){
     return (
@@ -83,7 +84,7 @@ function Perfil() {
         <div className="max-w-5xl mx-auto flex flex-col gap-8">
           
           <AmigosContainer
-            amigos={amigos}
+            amigos={(Amigo || [])}
             onAddFriend={() => alert("Agregar amigo")}
           />
 

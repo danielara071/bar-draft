@@ -1,9 +1,9 @@
 import AmigoCard from "./AmigoCard";
 
 type Amigo = {
-  username: string;
-  avatarUrl: string;
-  badgeUrl?: string;
+  nombre_usuario: string;
+  url_avatar: string;
+  logro?: string;
 };
 
 type AmigosContainerProps = {
