@@ -1,30 +1,23 @@
 import { useState } from "react";
+import { usefetchAmigosByName } from "../../shared/hooks/useBuscarAmigos"; 
 import AmigoCard from "./AmigoCard";
-
-// Definimos un tipo básico para los resultados de búsqueda
-type UsuarioBusqueda = {
-  nombre_usuario: string;
-  url_avatar: string;
-  logro?: string;
-};
 
 export default function BuscarAmigosContainer() {
   const [showModal, setShowModal] = useState(false);
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [resultados, setResultados] = useState<UsuarioBusqueda[]>([]);
+  const [inputValue, setInputValue] = useState(""); // lo que se escribe
+  const [searchTerm, setSearchTerm] = useState(""); // el valor a buscar
 
-  // Función simulada de búsqueda
-  const handleBuscar = async () => {
-    if (!query) return;
-    setLoading(true);
-    
-    // Integrar API 
-    setTimeout(() => {
-      setResultados([
-      ]);
-      setLoading(false);
-    }, 800);
+  // uso de hook con el valor escrito por el usuario 
+  const { amigos, loading, error } = usefetchAmigosByName(searchTerm);
+
+  const handleBuscar = () => {
+    setSearchTerm(inputValue);
+  };
+
+  const closeAndReset = () => {
+    setShowModal(false);
+    setInputValue("");
+    setSearchTerm("");
   };
 
   return (
@@ -40,7 +33,7 @@ export default function BuscarAmigosContainer() {
       {/* pop up */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-md rounded-[32px] p-8 shadow-2xl overflow-hidden">
+          <div className="bg-white w-full max-w-md rounded-[32px] p-8 shadow-2xl overflow-hidden border border-gray-100">
             <h2 className="text-3xl font-bold text-black mb-4">Buscar Perfil</h2>
             
             <p className="text-gray-500 text-sm mb-6">
@@ -51,9 +44,9 @@ export default function BuscarAmigosContainer() {
             <div className="relative mb-8">
               <input
                 type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="@messi10..."
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="@messi10"
                 className="w-full border border-gray-200 rounded-xl py-3 px-4 text-gray-700 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all"
               />
             </div>
@@ -61,11 +54,7 @@ export default function BuscarAmigosContainer() {
             {/* Acciones */}
             <div className="flex gap-4 mb-8">
               <button
-                onClick={() => {
-                  setShowModal(false);
-                  setResultados([]);
-                  setQuery("");
-                }}
+                onClick={closeAndReset}
                 className="flex-1 bg-[#A50044] text-white py-3 rounded-2xl font-bold hover:bg-[#800035] transition-colors"
               >
                 Cancelar
@@ -80,9 +69,13 @@ export default function BuscarAmigosContainer() {
             </div>
 
             {/* resultados */}
-            <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2">
-              {resultados.map((amigo) => (
-                <div key={amigo.nombre_usuario} className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+            <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+              {error && (
+                <p className="text-center text-red-500 text-sm py-2">{error}</p>
+              )}
+
+              {amigos && amigos.map((amigo) => (
+                <div key={amigo.nombre_usuario} className="border border-gray-100 rounded-2xl shadow-sm transition-transform hover:scale-[1.02]">
                   <AmigoCard 
                     nombre_usuario={amigo.nombre_usuario}
                     url_avatar={amigo.url_avatar}
@@ -91,9 +84,9 @@ export default function BuscarAmigosContainer() {
                 </div>
               ))}
               
-              {resultados.length === 0 && !loading && query && (
+              {searchTerm && !loading && !amigos && !error && (
                 <p className="text-center text-gray-400 text-sm py-4">
-                  No se encontraron usuarios con ese nombre.
+                  No se encontró a ningún amigo con ese nombre.
                 </p>
               )}
             </div>

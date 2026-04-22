@@ -70,6 +70,22 @@ export async function fetchAmigos(user_id: string): Promise<Amigo[]> {
   return handleResponse<Amigo[]>(response, "No se pudo cargar el usuario");
 }
 
+export async function fetchAmigosByName(friend_name: string): Promise<Amigo[]> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/buscar_amigos`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseAPIKey,
+      },
+      body: JSON.stringify({ "texto_busqueda": friend_name })
+    }
+  );
+
+  return handleResponse<Amigo[]>(response, "No se pudo cargar el usuario");
+}
+
 export async function fetchUsuarioLogros(id: string): Promise<Logro[]> {
   console.log(supabaseUrl, "FROm fetchUsuarioByName but apikey ", supabaseAPIKey);
   
