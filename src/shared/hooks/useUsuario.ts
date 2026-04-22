@@ -17,7 +17,6 @@ export function useUsuarioByName(nombre: string) {
         setError("");
         const data = await fetchUsuarioByName(nombre);
         if (active) {
-          // tu RPC devuelve un array, así que tomamos el primero
           //console.log("successful use, but length ",data.length)
           setUsuario(data.length > 0 ? data[0] : null);
         }

@@ -1,0 +1,90 @@
+create or replace function update_logro(user_id uuid, nuevo_logro int8)
+returns void as 
+$$
+begin
+  update public.profiles
+  set logro = nuevo_logro
+  where id = user_id;
+end;
+$$ language plpgsql;
+
+
+create or replace function public.get_user_with_logro(user_name text)
+returns table (
+  id uuid,
+  nombre_usuario text,
+  url_avatar text,
+  nivel integer,
+  experiencia integer,
+  usuario_premium boolean,
+  logro int
+)
+language sql
+as $$
+  select 
+    u.id,
+    u.nombre as nombre_usuario,
+    u.url_avatar,
+    u.nivel, 
+    u.puntos as experiencia, 
+    u.membership as usuario_premium,
+    l.url_image as logro
+  from public.profiles as u
+  join public.logros as l on u.logro = l.id
+  where u.nombre = user_name;
+$$;
+
+create or replace function public.get_user_logros(p_id uuid)
+returns table (
+  logro_id int8,
+  nombre text,
+  descripcion text,
+  url_image text,
+  desbloqueado boolean
+)
+language sql
+as $$
+  SELECT 
+    l.id,
+    l.nombre,
+    l.descripcion,
+    l.url_image,
+    CASE 
+      WHEN lu.usuario_id IS NOT NULL THEN true
+      ELSE false
+    END AS desbloqueado
+  FROM public.logros AS l
+  LEFT JOIN public.logros_obtenidos_usuarios AS lu 
+    ON lu.logro_id = l.id 
+    AND lu.usuario_id = p_id
+  ORDER BY l.id;
+
+$$;
+alter table public.profiles enable row level security;
+alter table public.logros enable row level security;
+alter table public.logros_obtenidos_usuarios enable row level security;
+
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+create policy "Allow read for all"
+on profiles
+for select
+using (true);
+
+ALTER TABLE logros ENABLE ROW LEVEL SECURITY;
+create policy "Allow read for all"
+on logros
+for select
+using (true);
+
+
+ALTER TABLE logros_obtenidos_usuarios ENABLE ROW LEVEL SECURITY;
+create policy "Allow read for all"
+on logros_obtenidos_usuarios
+for select
+using (true);
+
+grant select on public.profiles to anon;
+grant select on public.logros to anon;
+grant select on public.logros_obtenidos_usuarios to anon;
+
+grant execute on function public.get_user_with_logro(text) to anon;

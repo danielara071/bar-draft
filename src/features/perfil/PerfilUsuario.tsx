@@ -15,6 +15,7 @@ type PerfilUsuarioProps = {
   xpMax: number;
 
   logro:string;
+  
 };
 
 export default function PerfilUsuario({

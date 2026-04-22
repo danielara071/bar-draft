@@ -28,7 +28,7 @@ export default function LogroCard({
       setStatus('success');
       setShowConfirm(false);
     } catch (error) {
-      console.error(error); //Nota, sigo sin saber bien porque me regresa error, creo que debo de manejarlo por status del response
+      console.error(error); //Nota, el void me lo marca como error 
       setStatus('idle');
       setShowConfirm(false)
     }
