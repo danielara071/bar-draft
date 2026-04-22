@@ -6,52 +6,48 @@ const Index = () => {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(async({ data: { session: s } }) => {
+    const init = async () => {
+      const { data, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error(error.message);
+        return;
+      }
+
+      const s = data.session;
       setSession(s);
 
-      if (s?.user) {
+      if (s?.user?.email) {
         const { id, email } = s.user;
+
         const { error } = await supabase
           .from("profiles")
           .upsert({ id, email }, { onConflict: "id" });
 
         if (error) console.error("Error guardando perfil:", error.message);
       }
-    });
+    };
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async(_event, nextSession) => {
-      setSession(nextSession);
-      
-      if (_event === "SIGNED_IN" && nextSession?.user) {
-        const { id, email } = nextSession.user;
-        const { error } = await supabase
-          .from("profiles")
-          .upsert({ id, email }, { onConflict: "id" });
-        
-      if (error) console.error("Error guardando perfil:", error.message);
-          
-      }
-    });
-
-    return () => subscription.unsubscribe();
+    init();
   }, []);
 
   const signIn = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}${window.location.pathname}`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) console.error(error.message);
     setSession(null);
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 py-34">
       {session ? (
         <div className="flex items-center gap-4">
           <p className="text-gray-700">
