@@ -12,7 +12,9 @@ import Reels from "./pages/Reels";
 import Home from "./pages/Home";
 import Tienda from "./pages/Tienda";
 import Callback from "./auth/Callback";
-
+import Dashboard from "./pages/Dashboard";
+import DashboardLayout from "./features/dashboard/layouts/DashboardLayout";
+import ReelsAdminPage from "./features/dashboard/components/ReelsAdminPage";
 
 function App() {
   return (
@@ -31,6 +33,10 @@ function App() {
         <Route path="/reels/:id" element={<Reels />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/auth/callback" element={<Callback />} />
+      </Route>
+      <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route element={<ReelsAdminPage/>}/>
       </Route>
     </Routes>
   );
