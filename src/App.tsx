@@ -14,7 +14,7 @@ import Tienda from "./pages/Tienda";
 import Callback from "./auth/Callback";
 import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./features/dashboard/layouts/DashboardLayout";
-import ReelsAdminPage from "./features/dashboard/components/ReelsAdminPage";
+import ReelsAdminPage from "./features/dashboard/pages/ReelsAdminPage";
 
 function App() {
   return (
@@ -36,7 +36,7 @@ function App() {
       </Route>
       <Route path="/dashboard" element={<DashboardLayout />}>
         <Route index element={<Dashboard />} />
-        <Route element={<ReelsAdminPage/>}/>
+        <Route path="reels" element={<ReelsAdminPage/>}/>
       </Route>
     </Routes>
   );
