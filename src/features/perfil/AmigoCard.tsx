@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 type AmigoCardProps = {
   id: string;
   nombre_usuario: string;
@@ -6,12 +8,20 @@ type AmigoCardProps = {
 };
 
 export default function AmigoCard({
+  id,
   nombre_usuario,
   url_avatar,
   logro,
 }: AmigoCardProps) {
+  const navigate = useNavigate();
+
+  const irPerfil = () => {
+    console.log("ID amigo ", id)
+    navigate("/amigo",{state:{idAmigo : id}})
+  }
   return (
-    <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm transition-all hover:scale-102">
+    <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm transition-all hover:scale-102"
+    onClick={irPerfil}>
       <div className="flex items-center gap-3">
         <img
           src={url_avatar}

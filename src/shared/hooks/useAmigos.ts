@@ -17,8 +17,7 @@ export function useFetchAmigos(id: string) {
         setError("");
         const data = await fetchAmigos(id);
         if (active) {
-          //console.log("successful use, but length ",data.length)
-          setAmigos(data.length > 0 ? data : null);
+          setAmigos(data.length > 0 ? data : []);
         }
       } catch (loadError) {
         console.log("Error fetching amigos: ", loadError);

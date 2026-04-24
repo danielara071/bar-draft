@@ -7,6 +7,7 @@ import WatchParty from "./pages/WatchParty";
 import WatchPartyHUB from "./pages/WatchPartyHUB/pages/WatchPartyPage";
 import Wordle from "./pages/Wordle";
 import Perfil from "./pages/Perfil";
+import Amigo from "./pages/Amigo";
 import Ra from "./pages/ra"
 import Reels from "./pages/Reels"
 import Home from "./pages/Home";
@@ -28,6 +29,7 @@ function App() {
         <Route path="/tienda" element={<Tienda />} />
         <Route path="/reels/:id" element={<Reels />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/amigo" element={<Amigo />} />
       </Route>
     </Routes>
   );

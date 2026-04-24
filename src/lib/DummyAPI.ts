@@ -63,7 +63,7 @@ export async function fetchAmigos(user_id: string): Promise<Amigo[]> {
         "Content-Type": "application/json",
         apikey: supabaseAPIKey,
       },
-      body: JSON.stringify({ "user_id": user_id })
+      body: JSON.stringify({ "p_user_id": user_id })
     }
   );
 

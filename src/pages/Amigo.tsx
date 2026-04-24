@@ -7,17 +7,19 @@ import { useUsuarioById } from "../shared/hooks/useUsuario";
 import { useUsuarioLogros } from "../shared/hooks/useLogros";
 import { useFetchAmigos } from "../shared/hooks/useAmigos";
 
+import { useLocation } from "react-router-dom";
 
 
 
 
-
-function Perfil() {
+function Amigo() {
   const session = useSession();
-  const user_id = session?.user?.id || "";
+  const location = useLocation();
+  const user_id = location.state?.idAmigo || "";
   const { usuario : Usuario } = useUsuarioById(user_id);
   const { logros : Logro } = useUsuarioLogros(Usuario?.id ?? "");
   const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "");
+
   if (user_id == ""){
     return (
     <div className="min-h-screen">
@@ -62,4 +64,4 @@ function Perfil() {
   );
 }
 
-export default Perfil
+export default Amigo
