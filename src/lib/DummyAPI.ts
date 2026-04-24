@@ -26,7 +26,7 @@ export type Amigo = {
 };
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAPIKey =import.meta.env.VITE_SUPABASE_APIKEY
+const supabaseAPIKey =import.meta.env.VITE_SUPABASE_API_KEY
 
 
 async function handleResponse<T>(response: Response, defaultMessage: string): Promise<T> {
