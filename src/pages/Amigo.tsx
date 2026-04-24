@@ -1,7 +1,6 @@
 import PerfilUsuario from "../features/perfil/PerfilUsuario";
 import AmigosContainer from "../features/perfil/AmigosContainer";
 import LogrosContainer from "../features/perfil/LogrosContainer";
-import useSession  from "../shared/hooks/useSession"
 
 import { useUsuarioById } from "../shared/hooks/useUsuario";
 import { useUsuarioLogros } from "../shared/hooks/useLogros";
@@ -13,7 +12,6 @@ import { useLocation } from "react-router-dom";
 
 
 function Amigo() {
-  const session = useSession();
   const location = useLocation();
   const user_id = location.state?.idAmigo || "";
   const { usuario : Usuario } = useUsuarioById(user_id);
