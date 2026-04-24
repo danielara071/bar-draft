@@ -5,7 +5,7 @@ import AdminNavbar from "../components/AdminNavbar";
 
 const Layout = () => {
   return (
-    <div className="min-h-screen flex flex-row bg-brand-white relative overflow-hidden">
+    <div className="min-h-screen flex flex-row bg-slate-50 relative overflow-hidden">
       
       <AdminNavbar />
       
