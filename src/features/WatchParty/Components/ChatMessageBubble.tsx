@@ -27,14 +27,27 @@ const ChatMessageBubble = ({
         <p className="text-brand-gray-mid">{formatTime(message.timestamp)}</p>
       </div>
 
-      <div
-        className={`mt-1 inline-block rounded-lg px-2 py-1 text-sm ${
-          isCurrentUser
-            ? "bg-brand-gray-light/50 text-brand-black"
-            : "text-brand-black"
-        }`}
-      >
-        <p>{message.message}</p>
+      <div>
+        {message.type === "text" ? (
+          <div
+            className={`mt-1 inline-block rounded-lg text-sm ${
+              isCurrentUser
+                ? "bg-brand-gray-light/50 text-brand-black"
+                : "text-brand-black"
+            }`}
+          >
+            <p className="px-2 py-1">{message.message}</p>
+          </div>
+        ) : (
+          <div className={"mt-1 inline-block rounded-lg text-sm "}>
+            <img
+              src={message.stickerUrl}
+              alt={message.stickerId}
+              className="w-32 h-32 object-contain"
+              loading="lazy"
+            />
+          </div>
+        )}
       </div>
     </div>
   );

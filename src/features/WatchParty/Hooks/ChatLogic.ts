@@ -3,6 +3,14 @@ import { supabase } from "../../../shared/services/supabaseClient";
 import type { RealtimeChannel, Session } from "@supabase/supabase-js";
 import type { ChatMessage } from "../Types/chatType";
 
+const stickers = [
+  { id: "saludo", label: "Saludo", url: "/stickers/waveEmoji.png" },
+  { id: "celebracion", label: "Celebracion", url: "/stickers/celebrationEmoji.png" },
+  { id: "tristeza", label: "Tristeza", url: "/stickers/sadEmoji.png" },
+  { id: "amor", label: "Amor", url: "/stickers/loveEmoji.png" },
+  { id: "enojo", label: "Enojo", url: "/stickers/rageEmoji.png" },
+];
+
 const useWatchPartyChat = (session: Session | null, roomCode: string) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
@@ -60,6 +68,7 @@ const useWatchPartyChat = (session: Session | null, roomCode: string) => {
       type: "broadcast",
       event: "message",
       payload: {
+        type: "text",
         message: newMessage,
         user_name: session?.user?.user_metadata?.full_name,
         avatar: session?.user?.user_metadata?.avatar,
@@ -70,7 +79,25 @@ const useWatchPartyChat = (session: Session | null, roomCode: string) => {
     setNewMessage("");
   };
 
-  return { messages, newMessage, setNewMessage, usersOnline, sendMessage, chatContainerRef };
+  const sendSticker = async (sticker: { id: string; url: string }) => {
+  if (!roomRef.current) return;
+  if (!sticker.url.startsWith("/stickers/")) return; // simple safety check
+
+  await roomRef.current.send({
+    type: "broadcast",
+    event: "message",
+    payload: {
+      type: "sticker",
+      stickerId: sticker.id,
+      stickerUrl: sticker.url,
+      user_name: session?.user?.user_metadata?.full_name,
+      avatar: session?.user?.user_metadata?.avatar,
+      timestamp: new Date().toISOString(),
+    },
+  });
+};
+
+  return { messages, newMessage, setNewMessage, usersOnline, sendMessage, chatContainerRef, stickers, sendSticker };
 };
 
 export default useWatchPartyChat;

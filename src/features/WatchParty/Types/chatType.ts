@@ -11,8 +11,8 @@ type ChatMessage =
   user_name?: string;
   avatar?: string;
   timestamp: string;
-  sticker_id: string;
-  sticker_url: string;
+  stickerId: string;
+  stickerUrl: string;
 };
 
 export type { ChatMessage };
