@@ -8,35 +8,8 @@ import { useUsuarioLogros } from "../shared/hooks/useLogros";
 import { useFetchAmigos } from "../shared/hooks/useAmigos";
 
 
-const amigosHardcoded = [
-  {
-    username: "marckiecrack",
-    avatarUrl: "https://i.pravatar.cc/100?img=14",
-  },
-  {
-    username: "sofiGonz",
-    avatarUrl: "https://i.pravatar.cc/100?img=14",
-  },
-];
 
-const logrosHardcoded = [
-  {
-    logro_id: 1,
-    nombre: "Racha de 10 días",
-    descripcion: "",
-    desbloqueado: true,
-    url_image: "Nivel_1",
-    user_id: "NA"
-  },
-  {
-    logro_id: 2,
-    nombre: "5 Predicciones",
-    descripcion: "4/5 Correctas",
-    desbloqueado: false,
-    url_image: "Nivel_1",
-    user_id: "NA"
-  },
-];
+
 
 
 function Perfil() {
@@ -59,9 +32,8 @@ function Perfil() {
   return (
     
     <div className="min-h-screen">
-      <div className="p-8 bg-[#002244]"></div>
       <div className="bg-[#002244] px-6 py-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto mt-13">
           <PerfilUsuario
             username= {Usuario?.nombre_usuario || "Usuario"}
             ranking={14}
@@ -79,19 +51,15 @@ function Perfil() {
         </div>
 
       </div>
+      <div className="bg-gray-100" >
+        <div className="bg-gray-100 mx-auto py-8 max-w-5xl">
+            <AmigosContainer 
+              amigos={(Amigo || [])}
+            />
 
-      <div className="bg-gray-100 px-6 py-8">
-        <div className="max-w-5xl mx-auto flex flex-col gap-8">
-          
-          <AmigosContainer
-            amigos={(Amigo || [])}
-          />
-
-          <LogrosContainer logros={Logro || logrosHardcoded} />
-
+            <LogrosContainer logros={Logro || []} />
         </div>
       </div>
-
     </div>
   );
 }

@@ -27,7 +27,7 @@ export default function BuscarAmigosContainer() {
         onClick={() => setShowModal(true)}
         className="bg-pink-600 hover:bg-pink-700 text-white text-xs px-4 py-2 rounded-full"
       >
-        <span className="text-md">+ Añadir Amigos</span> 
+        <span className="text-md">Buscar Amigos</span> 
       </button>
 
       {/* pop up */}
@@ -75,8 +75,9 @@ export default function BuscarAmigosContainer() {
               )}
 
               {amigos && amigos.map((amigo) => (
-                <div key={amigo.nombre_usuario} className="border border-gray-100 rounded-2xl shadow-sm transition-transform hover:scale-[1.02]">
-                  <AmigoCard 
+                <div key={amigo.nombre_usuario} >
+                  <AmigoCard
+                    id={amigo.id}
                     nombre_usuario={amigo.nombre_usuario}
                     url_avatar={amigo.url_avatar}
                     logro={amigo.logro}

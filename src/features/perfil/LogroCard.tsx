@@ -38,7 +38,7 @@ export default function LogroCard({
     <>
       <div
         onClick={() => desbloqueado && setShowConfirm(true)}
-        className={`relative cursor-pointer rounded-xl p-4 text-center transition-all hover:scale-105 ${
+        className={`relative cursor-pointer rounded-xl p-4 text-center transition-all hover:scale-102 ${
           desbloqueado ? "bg-[#1a3857] text-white" : "bg-[#9d9d9d] text-gray-600"
         }`}
       >

@@ -2,6 +2,7 @@ import AmigoCard from "./AmigoCard";
 import BuscarAmigosContainer from "./BuscarAmigosContainer";
 
 type Amigo = {
+  id: string;
   nombre_usuario: string;
   url_avatar: string;
   logro?: string;

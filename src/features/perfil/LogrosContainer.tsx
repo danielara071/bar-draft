@@ -17,8 +17,7 @@ export default function LogrosContainer({
   logros,
 }: LogrosContainerProps) {
   return (
-    <div className="w-full mt-8">
-      
+    <div >
       <h2 className="text-xs font-semibold text-gray-500 tracking-wider mb-4">
         MIS LOGROS
       </h2>

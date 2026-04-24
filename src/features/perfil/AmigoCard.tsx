@@ -1,4 +1,5 @@
 type AmigoCardProps = {
+  id: string;
   nombre_usuario: string;
   url_avatar: string;
   logro?: string;
@@ -10,7 +11,7 @@ export default function AmigoCard({
   logro,
 }: AmigoCardProps) {
   return (
-    <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm">
+    <div className="flex items-center justify-between bg-white rounded-xl px-4 py-3 shadow-sm transition-all hover:scale-102">
       <div className="flex items-center gap-3">
         <img
           src={url_avatar}

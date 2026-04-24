@@ -34,8 +34,7 @@ export default function PerfilUsuario({
   logro
 }: PerfilUsuarioProps) {
   return (
-    <div className="bg-[#002244] text-white p-6 rounded-2xl ">
-      
+    <div className="p-6"> 
       <div className="space-y-5">
         <div className="flex items-center justify-between gap-4">
           <img
@@ -50,17 +49,23 @@ export default function PerfilUsuario({
           />
         </div>
         <div className="py-4 flex gap-14">
-            <h2 className="text-4xl font-semibold">@{username}</h2>
+            <h2 className="text-white text-4xl font-semibold">@{username}</h2>
             <button
                 onClick={onLogout}
-                className="bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-sm"
+                className="text-white bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-sm"
             >
                 Cerrar sesión
             </button>
         </div>
+
+        <div className="flex flex-row gap-1">
           <p className="text-sm text-yellow-400">
-            #{ranking} en {pais}
+            #{ranking} 
           </p>
+          <p className="text-sm text-white">
+            en {pais}
+          </p>
+        </div>
       </div>
       <NivelFan
         nivel={nivel}
