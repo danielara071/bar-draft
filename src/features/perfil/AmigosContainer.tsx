@@ -10,29 +10,33 @@ type Amigo = {
 
 type AmigosContainerProps = {
   amigos: Amigo[];
+  clickable?: boolean;
+  text: string;
 
 };
 
 export default function AmigosContainer({
-  amigos
+  amigos,
+  clickable = true,
+  text,
 }: AmigosContainerProps) {
   return (
     <div className="w-full">
       
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xs font-semibold text-gray-500 tracking-wider">
-          MIS AMIGOS
+        <h2 className="text-xl font-semibold tracking-wider text-[#002244]"> 
+          {text}
         </h2>
-
-        <BuscarAmigosContainer/>
+        {text === "MIS AMIGOS" && <BuscarAmigosContainer/>}
+        
 
       </div>
 
       {/* Grid */}
       <div className="grid grid-cols-2 gap-4">
         {amigos.map((amigo, index) => (
-          <AmigoCard key={index} {...amigo} />
+          <AmigoCard key={index} {...amigo} clickAble={clickable} />
         ))}
       </div>
 

@@ -34,10 +34,9 @@ function Perfil() {
         <div className="max-w-5xl mx-auto mt-13">
           <PerfilUsuario
             username= {Usuario?.nombre_usuario || "Usuario"}
-            ranking={14}
+            ranking={Usuario?.ranking || 0}
             pais={Usuario?.pais || ""}
             avatarUrl={Usuario?.url_avatar || "https://i.pravatar.cc/150?img=3"}
-            onLogout={() => alert("Funcionalidad de cerrar sesion")}
             puntos={Usuario?.experiencia || 0}
             logros={Usuario?.logros || 0}
             predicciones={Usuario?.predicciones || 0}
@@ -45,6 +44,9 @@ function Perfil() {
             xpActual={Usuario?.experiencia || 0}
             xpMax={4000}
             logro={Usuario?.logro || ""}
+
+            onLogoutFunc={() => alert("Funcionalidad de cerrar sesion")}
+            onLogoutText="Cerrar sesión"
           />
         </div>
 
@@ -53,9 +55,10 @@ function Perfil() {
         <div className="bg-gray-100 mx-auto py-8 max-w-5xl">
             <AmigosContainer 
               amigos={(Amigo || [])}
+              text="MIS AMIGOS"
             />
 
-            <LogrosContainer logros={Logro || []} />
+            <LogrosContainer logros={Logro || []} text="MIS LOGROS"/>
         </div>
       </div>
     </div>

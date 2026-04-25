@@ -5,6 +5,7 @@ type AmigoCardProps = {
   nombre_usuario: string;
   url_avatar: string;
   logro?: string;
+  clickAble?: boolean;
 };
 
 export default function AmigoCard({
@@ -12,10 +13,12 @@ export default function AmigoCard({
   nombre_usuario,
   url_avatar,
   logro,
+  clickAble = true
 }: AmigoCardProps) {
   const navigate = useNavigate();
 
   const irPerfil = () => {
+    if (!clickAble) return;
     console.log("ID amigo ", id)
     navigate("/amigo",{state:{idAmigo : id}})
   }

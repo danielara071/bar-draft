@@ -8,6 +8,7 @@ type LogroCardProps = {
   url_image: string;
   desbloqueado: boolean;
   user_id: string;
+  clickable?: boolean;
 };
 
 export default function LogroCard({
@@ -17,6 +18,7 @@ export default function LogroCard({
   url_image,
   desbloqueado = true,
   user_id,
+  clickable = true
 }: LogroCardProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
@@ -37,7 +39,7 @@ export default function LogroCard({
   return (
     <>
       <div
-        onClick={() => desbloqueado && setShowConfirm(true)}
+        onClick={() => desbloqueado && clickable && setShowConfirm(true)}
         className={`relative cursor-pointer rounded-xl p-4 text-center transition-all hover:scale-102 ${
           desbloqueado ? "bg-[#1a3857] text-white" : "bg-[#9d9d9d] text-gray-600"
         }`}
