@@ -25,7 +25,7 @@ export default function BuscarAmigosContainer() {
       {/* boton buscar */}
       <button
         onClick={() => setShowModal(true)}
-        className="bg-pink-600 hover:bg-pink-700 text-white text-xs px-4 py-2 rounded-full"
+        className="bg-[#A50044] hover:bg-pink-700 text-white text-xm px-4 py-2 rounded-full"
       >
         <span className="text-md">Buscar Amigos</span> 
       </button>

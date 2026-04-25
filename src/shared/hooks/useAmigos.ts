@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchAmigos, type Amigo } from "../../lib/DummyAPI";
 
-export function useFetchAmigos(id: string) { 
+export function useFetchAmigos(id: string, f_status : string) { 
   const [amigos, setAmigos] = useState<Amigo[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,7 +15,7 @@ export function useFetchAmigos(id: string) {
       try {
         setLoading(true);
         setError("");
-        const data = await fetchAmigos(id);
+        const data = await fetchAmigos(id, f_status);
         if (active) {
           setAmigos(data.length > 0 ? data : []);
         }

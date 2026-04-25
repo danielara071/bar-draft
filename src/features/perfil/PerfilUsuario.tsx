@@ -56,7 +56,7 @@ export default function PerfilUsuario({
             <h2 className="text-white text-4xl font-semibold">@{username}</h2>
             <button
                 onClick={onLogoutFunc}
-                className="text-white bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-sm"
+                className="text-white bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-xm"
             >
                 {onLogoutText}
             </button>

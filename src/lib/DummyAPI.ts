@@ -24,6 +24,7 @@ export type Amigo = {
   nombre_usuario: string;
   url_avatar: string;
   logro : string;
+  status : string;
 };
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
@@ -55,7 +56,7 @@ export async function fetchUsuarioById(user_id: string): Promise<Usuario[]> {
 
   return handleResponse<Usuario[]>(response, "No se pudo cargar el usuario");
 }
-export async function fetchAmigos(user_id: string): Promise<Amigo[]> {
+export async function fetchAmigos(user_id: string, f_status: string): Promise<Amigo[]> {
   const response = await fetch(
     `${supabaseUrl}/rest/v1/rpc/get_friends`,
     {
@@ -64,7 +65,7 @@ export async function fetchAmigos(user_id: string): Promise<Amigo[]> {
         "Content-Type": "application/json",
         apikey: supabaseAPIKey,
       },
-      body: JSON.stringify({ "p_user_id": user_id })
+      body: JSON.stringify({ "p_user_id": user_id, "f_status": f_status})
     }
   );
 

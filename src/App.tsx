@@ -12,6 +12,7 @@ import Ra from "./pages/ra"
 import Reels from "./pages/Reels"
 import Home from "./pages/Home";
 import Tienda from "./pages/Tienda"
+import GestionarAmigos from "./pages/GestionarAmigos"
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/reels/:id" element={<Reels />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/amigo" element={<Amigo />} />
+        <Route path="/gestionarAmigos" element={<GestionarAmigos />} />
       </Route>
     </Routes>
   );

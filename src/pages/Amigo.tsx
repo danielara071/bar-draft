@@ -16,11 +16,11 @@ function Amigo() {
   const user_id = location.state?.idAmigo || "";
   const { usuario : Usuario } = useUsuarioById(user_id);
   const { logros : Logro } = useUsuarioLogros(Usuario?.id ?? "");
-  const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "");
+  const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "", "accepted");
 
   if (user_id == ""){
     return (
-    <div className="min-h-screen">
+    <div>
       <div className="bg-[#002244] px-6 py-6">
         <text>Inicie sesion para ver su perfil</text>
       </div>
@@ -29,7 +29,7 @@ function Amigo() {
   }
   return (
     
-    <div className="min-h-screen">
+    <div>
       <div className="bg-[#002244] px-6 py-6">
         <div className="max-w-5xl mx-auto mt-13">
           <PerfilUsuario

@@ -1,5 +1,4 @@
-import AmigoCard from "./AmigoCard";
-import BuscarAmigosContainer from "./BuscarAmigosContainer";
+import GestorCard from "./GestorCard";
 import { useNavigate } from "react-router-dom";
 
 type Amigo = {
@@ -7,20 +6,19 @@ type Amigo = {
   nombre_usuario: string;
   url_avatar: string;
   logro?: string;
+  status: string;
 };
 
-type AmigosContainerProps = {
+type GestorContainerProps = {
   amigos: Amigo[];
-  clickable?: boolean;
   text: string;
 
 };
 
-export default function AmigosContainer({
+export default function GestorContainer({
   amigos,
-  clickable = true,
   text,
-}: AmigosContainerProps) {
+}: GestorContainerProps) {
   const navigate = useNavigate();
   const irGestionarAmigos = () => {
     navigate("/gestionarAmigos")
@@ -33,25 +31,13 @@ export default function AmigosContainer({
         <h2 className="text-xl font-semibold tracking-wider text-[#002244]"> 
           {text}
         </h2>
-        {text === "MIS AMIGOS" && <BuscarAmigosContainer/>}
-        
-  
       </div>
 
       {/* Grid */}
       <div className="grid grid-cols-2 gap-4">
         {amigos.map((amigo, index) => (
-          <AmigoCard key={index} {...amigo} clickAble={clickable} />
+          <GestorCard key={index} {...amigo} />
         ))}
-      </div>
-
-      {/* Ver más */}
-      <div className="text-right mt-2">
-        <button className="text-pink-600 text-xl hover:underline "
-        onClick={irGestionarAmigos}>
-          Ver más
-          
-        </button>
       </div>
     </div>
   );
