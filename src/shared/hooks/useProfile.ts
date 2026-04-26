@@ -30,7 +30,8 @@ export function useProfile() {
     }
 
     fetchProfile()
-  }, [session])
+
+    }, [session])
 
   return profile
 }
