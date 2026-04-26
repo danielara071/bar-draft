@@ -5,6 +5,7 @@ import type {
   AssisterCardData,
   DashboardStats,
   KeeperCardData,
+  RankingItem,
   ScorerCardData,
   TeamType,
 } from "../features/estadisticas/types";
@@ -16,6 +17,11 @@ const EMPTY_STATS: DashboardStats = {
   scorers: { male: null, female: null },
   assisters: { male: null, female: null },
   keepers: { male: null, female: null },
+  rankings: {
+    scorers: { male: [], female: [] },
+    assisters: { male: [], female: [] },
+    keepers: { male: [], female: [] },
+  },
 };
 
 type CardProps = {
@@ -245,6 +251,90 @@ function KeeperCard({ teamType, data }: { teamType: TeamType; data: KeeperCardDa
   );
 }
 
+function RankingGlobalChart({
+  leftTitle,
+  rightTitle,
+  leftItems,
+  rightItems,
+  formatValue,
+}: {
+  leftTitle: string;
+  rightTitle: string;
+  leftItems: RankingItem[];
+  rightItems: RankingItem[];
+  formatValue?: (value: number) => string;
+}) {
+  const maxValue = Math.max(
+    1,
+    ...leftItems.map((i) => i.value),
+    ...rightItems.map((i) => i.value)
+  );
+
+  const left = leftItems.slice(0, 5);
+  const right = rightItems.slice(0, 5);
+
+  return (
+    <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
+      <h4 className="text-lg font-bold text-slate-900 mb-4">Cuadro de Honor</h4>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <p className="font-semibold text-slate-800 mb-3">{leftTitle}</p>
+          <div className="space-y-3">
+            {left.map((item, idx) => (
+              <div key={item.id}>
+                <div className="flex justify-between text-ls text-slate-700 mb-1">
+                  <span className="truncate pr-2">
+                    {idx + 1}. {item.nombre}
+                  </span>
+                  <span className="font-semibold">
+                    {formatValue ? formatValue(item.value) : item.value}
+                  </span>
+                </div>
+                <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${Math.max(8, Math.round((item.value / maxValue) * 100))}%`,
+                      backgroundColor: MALE_BG,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p className="font-semibold text-slate-800 mb-3">{rightTitle}</p>
+          <div className="space-y-3">
+            {right.map((item, idx) => (
+              <div key={item.id}>
+                <div className="flex justify-between text-ls text-slate-700 mb-1">
+                  <span className="truncate pr-2">
+                    {idx + 1}. {item.nombre}
+                  </span>
+                  <span className="font-semibold">
+                    {formatValue ? formatValue(item.value) : item.value}
+                  </span>
+                </div>
+                <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                  <div
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${Math.max(8, Math.round((item.value / maxValue) * 100))}%`,
+                      backgroundColor: FEMALE_BG,
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Estadisticas() {
   const [stats, setStats] = useState<DashboardStats>(EMPTY_STATS);
   const [loading, setLoading] = useState(true);
@@ -295,11 +385,13 @@ export default function Estadisticas() {
       />
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-24 md:py-28 relative z-10">
         <header className="mb-12 md:mb-16">
-          <h1 className="text-4xl md:text-5xl text-center font-extrabold text-black">Mas Que Numeros</h1>
-          <p className="mx-10 mt-4 text-sm md:text-base text-gray-700">
-            El pulso del equipo en datos. Sigue de cerca la evolucion de tus referentes y descubre
-            quien domina las estadisticas clave en el primer equipo masculino y femenino.
+          <h1 className="text-4xl md:text-5xl text-center font-extrabold text-black">Mas Que NÚmeros</h1>
+        <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-8 mx-auto max-w-7xl mt-6">
+          <p className="text-[#555555] text-[1.15rem] leading-relaxed font-normal tracking-tight">
+            El pulso del equipo en datos. Sigue de cerca la evolucion de tus jugadores favoritos y descubre
+            quien domina las estadisticas clave en el primer equipo masculino y femenino del FC Barcelona.
           </p>
+        </div>
         </header>
 
         {pageState === "loading" && (
@@ -325,6 +417,12 @@ export default function Estadisticas() {
                 <ScorerCard teamType="male" data={stats.scorers.male} />
                 <ScorerCard teamType="female" data={stats.scorers.female} />
               </div>
+              <RankingGlobalChart
+                leftTitle="Top 5 Varonil"
+                rightTitle="Top 5 Femenil"
+                leftItems={stats.rankings.scorers.male}
+                rightItems={stats.rankings.scorers.female}
+              />
             </section>
 
             <section>
@@ -333,6 +431,12 @@ export default function Estadisticas() {
                 <AssisterCard teamType="male" data={stats.assisters.male} />
                 <AssisterCard teamType="female" data={stats.assisters.female} />
               </div>
+              <RankingGlobalChart
+                leftTitle="Top 5 Varonil"
+                rightTitle="Top 5 Femenil"
+                leftItems={stats.rankings.assisters.male}
+                rightItems={stats.rankings.assisters.female}
+              />
             </section>
 
             <section>
@@ -341,6 +445,13 @@ export default function Estadisticas() {
                 <KeeperCard teamType="male" data={stats.keepers.male} />
                 <KeeperCard teamType="female" data={stats.keepers.female} />
               </div>
+              <RankingGlobalChart
+                leftTitle="Top 5 Varonil"
+                rightTitle="Top 5 Femenil"
+                leftItems={stats.rankings.keepers.male}
+                rightItems={stats.rankings.keepers.female}
+                formatValue={(value) => `${value}%`}
+              />
             </section>
           </div>
         )}

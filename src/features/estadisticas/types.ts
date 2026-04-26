@@ -22,9 +22,22 @@ export type KeeperCardData = {
   efectividadPct: number; // 0-100
 };
 
+export type RankingItem = {
+  id: string;
+  nombre: string;
+  value: number;
+};
+
+export type CategoryRanking = Record<TeamType, RankingItem[]>;
+
 export type DashboardStats = {
   scorers: Record<TeamType, ScorerCardData | null>;
   assisters: Record<TeamType, AssisterCardData | null>;
   keepers: Record<TeamType, KeeperCardData | null>;
+  rankings: {
+    scorers: CategoryRanking;
+    assisters: CategoryRanking;
+    keepers: CategoryRanking;
+  };
 };
 

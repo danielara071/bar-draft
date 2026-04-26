@@ -3,6 +3,7 @@ import type {
   AssisterCardData,
   DashboardStats,
   KeeperCardData,
+  RankingItem,
   ScorerCardData,
   TeamType,
 } from "../types";
@@ -169,21 +170,100 @@ async function fetchTopKeeper(team: TeamType): Promise<KeeperCardData | null> {
   };
 }
 
+async function fetchTopFiveByMetric(
+  team: TeamType,
+  metric: "goles" | "asistencias"
+): Promise<RankingItem[]> {
+  const table =
+    team === "male" ? "barcelona_varonil_jugadores" : "barcelona_femenil_jugadores";
+
+  const { data, error } = await supabase
+    .from(table)
+    .select(`id,nombre,${metric},minutos_jugados`)
+    .order(metric, { ascending: false })
+    .order("minutos_jugados", { ascending: false })
+    .limit(5);
+
+  if (error) throw error;
+  return (data ?? []).map((row) => {
+    const value =
+      metric === "goles"
+        ? ((row as { goles?: number | null }).goles ?? 0)
+        : ((row as { asistencias?: number | null }).asistencias ?? 0);
+
+    return {
+    id: row.id,
+    nombre: row.nombre,
+    value,
+  };
+  });
+}
+
+async function fetchTopFiveKeepersByEffectiveness(
+  team: TeamType
+): Promise<RankingItem[]> {
+  const table =
+    team === "male" ? "barcelona_varonil_jugadores" : "barcelona_femenil_jugadores";
+
+  const { data, error } = await supabase
+    .from(table)
+    .select("id,nombre,atajadas,goles_recibidos,posicion,minutos_jugados")
+    .or("posicion.ilike.%porter%,posicion.ilike.%goalkeeper%");
+
+  if (error) throw error;
+
+  const ranked = (data ?? [])
+    .map((row) => ({
+      id: row.id,
+      nombre: row.nombre,
+      value: efectividadPct(row.atajadas ?? 0, row.goles_recibidos ?? 0),
+      minutes: row.minutos_jugados ?? 0,
+    }))
+    .sort((a, b) => (b.value !== a.value ? b.value - a.value : b.minutes - a.minutes))
+    .slice(0, 5)
+    .map(({ id, nombre, value }) => ({ id, nombre, value }));
+
+  return ranked;
+}
+
 export async function fetchDashboardStats(): Promise<DashboardStats> {
-  const [maleScorer, femaleScorer, maleAssists, femaleAssists, maleKeeper, femaleKeeper] =
-    await Promise.all([
-      fetchTopScorer("male"),
-      fetchTopScorer("female"),
-      fetchTopAssister("male"),
-      fetchTopAssister("female"),
-      fetchTopKeeper("male"),
-      fetchTopKeeper("female"),
-    ]);
+  const [
+    maleScorer,
+    femaleScorer,
+    maleAssists,
+    femaleAssists,
+    maleKeeper,
+    femaleKeeper,
+    maleScorerTop5,
+    femaleScorerTop5,
+    maleAssisterTop5,
+    femaleAssisterTop5,
+    maleKeeperTop5,
+    femaleKeeperTop5,
+  ] = await Promise.all([
+    fetchTopScorer("male"),
+    fetchTopScorer("female"),
+    fetchTopAssister("male"),
+    fetchTopAssister("female"),
+    fetchTopKeeper("male"),
+    fetchTopKeeper("female"),
+    fetchTopFiveByMetric("male", "goles"),
+    fetchTopFiveByMetric("female", "goles"),
+    fetchTopFiveByMetric("male", "asistencias"),
+    fetchTopFiveByMetric("female", "asistencias"),
+    fetchTopFiveKeepersByEffectiveness("male"),
+    fetchTopFiveKeepersByEffectiveness("female"),
+  ]);
 
   return {
     scorers: { male: maleScorer, female: femaleScorer },
     assisters: { male: maleAssists, female: femaleAssists },
     keepers: { male: maleKeeper, female: femaleKeeper },
+    rankings: {
+      scorers: { male: maleScorerTop5, female: femaleScorerTop5 },
+      assisters: { male: maleAssisterTop5, female: femaleAssisterTop5 },
+      keepers: { male: maleKeeperTop5, female: femaleKeeperTop5 },
+    },
   };
 }
 
