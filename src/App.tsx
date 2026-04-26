@@ -12,6 +12,7 @@ import Reels from "./pages/Reels";
 import Home from "./pages/Home";
 import Tienda from "./pages/Tienda";
 import Callback from "./auth/Callback";
+import Estadisticas from "./pages/Estadisticas";
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
         <Route path="/reels/:id" element={<Reels />} />
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/auth/callback" element={<Callback />} />
+        <Route path="/estadisticas" element={<Estadisticas />} />
       </Route>
     </Routes>
   );
