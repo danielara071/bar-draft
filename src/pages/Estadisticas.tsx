@@ -59,8 +59,7 @@ function PlayerImage({ src, alt }: { src: string | null; alt: string }) {
   );
 }
 
-function WhiteBarChart({ data }: { data: { label: string; value: number }[] }) {
-  const max = Math.max(1, ...data.map((d) => d.value));
+function WhiteLineChart({ data }: { data: { label: string; value: number }[] }) {
   const safeData =
     data.length > 0
       ? data
@@ -71,28 +70,61 @@ function WhiteBarChart({ data }: { data: { label: string; value: number }[] }) {
           { label: "N/A", value: 0 },
         ];
 
+  const max = Math.max(1, ...safeData.map((d) => d.value));
+  const width = 320;
+  const height = 130;
+  const padX = 18;
+  const padY = 14;
+  const chartW = width - padX * 2;
+  const chartH = height - padY * 2;
+
+  const points = safeData.map((item, idx) => {
+    const x = padX + (idx * chartW) / Math.max(1, safeData.length - 1);
+    const y = height - padY - (item.value / max) * chartH;
+    return { x, y, value: item.value, label: item.label };
+  });
+
+  const polyline = points.map((p) => `${p.x},${p.y}`).join(" ");
+
   return (
     <div className="mt-4">
-      <div className="h-28 flex items-end gap-3">
-        {safeData.map((item) => {
-          const h = Math.max(8, Math.round((item.value / max) * 100));
-          return (
-            <div key={item.label} className="flex-1 flex flex-col items-center gap-2">
-              <div
-                className="w-full rounded-t-md bg-white/90"
-                style={{ height: `${h}%` }}
-                title={`${item.label}: ${item.value}`}
-              />
-            </div>
-          );
-        })}
-      </div>
-      <div className="mt-2 flex gap-3">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-32 overflow-visible">
+        <line
+          x1={padX}
+          y1={height - padY}
+          x2={width - padX}
+          y2={height - padY}
+          stroke="rgba(255,255,255,0.45)"
+          strokeWidth="1"
+        />
+        <line
+          x1={padX}
+          y1={padY}
+          x2={padX}
+          y2={height - padY}
+          stroke="rgba(255,255,255,0.45)"
+          strokeWidth="1"
+        />
+        <polyline fill="none" stroke="white" strokeWidth="3" points={polyline} />
+        {points.map((p) => (
+          <g key={`${p.label}-${p.x}`}>
+            <circle cx={p.x} cy={p.y} r="4.2" fill="white" />
+            <text
+              x={p.x}
+              y={p.y - 9}
+              fill="white"
+              fontSize="20"
+              textAnchor="middle"
+              className="font-semibold"
+            >
+              {p.value}
+            </text>
+          </g>
+        ))}
+      </svg>
+      <div className="mt-1 flex justify-center gap-18 px-1">
         {safeData.map((item) => (
-          <span
-            key={item.label}
-            className="flex-1 text-[10px] md:text-xs text-white/90 rotate-[-22deg] origin-top-left text-center"
-          >
+          <span key={item.label} className="text-[110px] md:text-xs text-white/90">
             {item.label}
           </span>
         ))}
@@ -157,10 +189,10 @@ function ScorerCard({ teamType, data }: { teamType: TeamType; data: ScorerCardDa
     <TeamCard teamType={teamType}>
       <h3 className="text-xl font-bold text-center mb-3">{data.player.nombre}</h3>
       <PlayerImage src={data.player.imagen_url} alt={data.player.nombre} />
-      <p className="mt-4 text-left text-base">
-        <span className="font-semibold">Goles:</span> {data.totalGoles}
+      <p className="mt-4 text-left text-base text-lg">
+        <span className="font-bold">Goles:</span> {data.totalGoles}
       </p>
-      <WhiteBarChart data={data.series} />
+      <WhiteLineChart data={data.series} />
     </TeamCard>
   );
 }
@@ -282,6 +314,11 @@ export default function Estadisticas() {
 
         {pageState === "ready" && (
           <div className="space-y-14">
+            {allEmpty && (
+              <div className="rounded-2xl bg-amber-50 border border-amber-200 p-4 text-amber-900 text-sm">
+                No llegaron filas desde Supabase para esta vista.
+              </div>
+            )}
             <section>
               <SectionTitle prefix="Conoce a nuestros mayores" highlight="Anotadores" />
               <div className="grid md:grid-cols-2 gap-6 mt-6">

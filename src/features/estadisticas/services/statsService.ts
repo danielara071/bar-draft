@@ -7,7 +7,7 @@ import type {
   TeamType,
 } from "../types";
 
-type MesRow = { mes: string; goles: number | null };
+type MesRow = { mes: string; año: number | null; goles: number | null };
 
 function last4<T>(arr: T[]) {
   return arr.slice(Math.max(0, arr.length - 4));
@@ -16,6 +16,39 @@ function last4<T>(arr: T[]) {
 function toLabel(mes: string) {
   const m = (mes ?? "").trim();
   return m.length > 3 ? m.slice(0, 3) : m;
+}
+
+function monthIndex(mes: string) {
+  const key = (mes ?? "").trim().toLowerCase();
+  const map: Record<string, number> = {
+    ene: 1,
+    enero: 1,
+    feb: 2,
+    febrero: 2,
+    mar: 3,
+    marzo: 3,
+    abr: 4,
+    abril: 4,
+    may: 5,
+    mayo: 5,
+    jun: 6,
+    junio: 6,
+    jul: 7,
+    julio: 7,
+    ago: 8,
+    agosto: 8,
+    sep: 9,
+    set: 9,
+    septiembre: 9,
+    setiembre: 9,
+    oct: 10,
+    octubre: 10,
+    nov: 11,
+    noviembre: 11,
+    dic: 12,
+    diciembre: 12,
+  };
+  return map[key] ?? 0;
 }
 
 function efectividadPct(atajadas: number, golesRecibidos: number) {
@@ -44,13 +77,19 @@ async function fetchTopScorer(team: TeamType): Promise<ScorerCardData | null> {
 
   const { data: rows, error: rowsErr } = await supabase
     .from(mesTable)
-    .select("mes,goles")
-    .eq(idCol, top.id)
-    .order("mes", { ascending: true });
+    .select("*")
+    .eq(idCol, top.id);
 
   if (rowsErr) throw rowsErr;
 
-  const series = last4((rows ?? []) as MesRow[]).map((r) => ({
+  const orderedRows = ((rows ?? []) as MesRow[]).sort((a, b) => {
+    const yearA = a.año ?? 0;
+    const yearB = b.año ?? 0;
+    if (yearA !== yearB) return yearA - yearB;
+    return monthIndex(a.mes) - monthIndex(b.mes);
+  });
+
+  const series = last4(orderedRows).map((r) => ({
     label: toLabel(r.mes),
     value: r.goles ?? 0,
   }));
