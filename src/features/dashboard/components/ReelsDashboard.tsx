@@ -4,10 +4,10 @@ import ReelAdminCard from "./ReelAdminCard";
 import { BarLoader } from "react-spinners";
 import type { AdminReel } from "../interfaces/AdminReel";
 import ReelInfoCard from "./ReelInfoCard";
+import AddNewReel from "./AddNewReel";
 
 const ReelsDashboard = () => {
-  const { videos, fetchVideos } = useReelsAdmin();
-  const [loading, setLoading] = useState(true);
+  const { videos, loading, fetchVideos } = useReelsAdmin();
   const [selected, setSelected] = useState<AdminReel | null>(null);
   const didMutate = useRef(false);
 
@@ -20,19 +20,19 @@ const ReelsDashboard = () => {
     if (didMutate.current) {
       didMutate.current = false;
       fetchVideos();
-      console.log("mykr");
     }
   };
 
   useEffect(() => {
     console.log(videos);
-    setLoading(false);
   }, [videos]);
 
   return (
     <div className="border border-slate-200 rounded-2xl bg-brand-white p-5 mt-4 min-h-52 flex items-center justify-center">
       {!loading ? (
         <div className="grid grid-cols-4 gap-4 w-full ">
+          <AddNewReel />
+
           {videos.map((item) => (
             <ReelAdminCard
               id={item.id}

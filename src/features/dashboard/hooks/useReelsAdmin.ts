@@ -6,7 +6,9 @@ import { supabase } from "../../../shared/services/supabaseClient";
 
 export function useReelsAdmin(){
     const [videos, setVideos] = useState<AdminReel[]>([]);
+    const [loading, setLoading] = useState(false);
     const fetchVideos = async () => {
+            setLoading(true);
             const {data, error} = await supabase.from('videos')
           .select(`
             id,
@@ -26,7 +28,8 @@ export function useReelsAdmin(){
             return;
           }
 
-          setVideos(data)
+          setVideos(data);
+          setLoading(false);
         }
 
 
@@ -36,6 +39,6 @@ export function useReelsAdmin(){
     }, [])
     
 
-    return {videos, fetchVideos}
+    return {videos, loading, fetchVideos}
 }
 
