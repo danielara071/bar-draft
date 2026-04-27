@@ -47,7 +47,7 @@ export default function GestorCard({
       <div className="flex items-center gap-4">
             {red=== "Rechazar"&&
             <button
-                className="w-30 text-white bg-[#0973cc] hover:bg-[#002244] px-4 py-2 transition-all hover:scale-102 rounded-full text-xm"
+                className="w-30 text-white bg-brand-navy hover:bg-[#0973cc] px-4 py-2 transition-all hover:scale-102 rounded-full text-xm"
                 onClick={() => accept && accept(id)}
             >
               Aceptar

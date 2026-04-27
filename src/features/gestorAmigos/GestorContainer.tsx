@@ -24,7 +24,7 @@ export default function GestorContainer({
   deny
 }: GestorContainerProps) {
   return (
-    <div className="w-full mt-8 mb-8">
+    <div className="w-full mt-8 mb-8 ">
       <h2 className="text-xl font-semibold text-[#002244]"> 
         {text}
       </h2>
