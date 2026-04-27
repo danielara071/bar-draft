@@ -7,18 +7,27 @@ import { useUsuarioLogros } from "../shared/hooks/useLogros";
 import { useFetchAmigos } from "../shared/hooks/useAmigos";
 
 import { useLocation } from "react-router-dom";
+import useSession  from "../shared/hooks/useSession"
 
-
+import { useSendFriendRequest } from "../shared/hooks/useFriendRequests"; 
 
 
 function Amigo() {
+  const session = useSession();
+  const user_id = session?.user?.id || "";
   const location = useLocation();
-  const user_id = location.state?.idAmigo || "";
-  const { usuario : Usuario } = useUsuarioById(user_id);
+  const friend_id = location.state?.idAmigo || "";
+  const { usuario : Usuario } = useUsuarioById(friend_id);
   const { logros : Logro } = useUsuarioLogros(Usuario?.id ?? "");
   const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "", "accepted");
+  const { sendRequest } = useSendFriendRequest();
 
-  if (user_id == ""){
+  const onRequest = () => {
+    console.log("Enviar solicitud a ", friend_id , " de ", user_id);
+    sendRequest(user_id, friend_id);
+  };
+
+  if (friend_id == ""){
     return (
     <div>
       <div className="bg-[#002244] px-6 py-6">
@@ -45,7 +54,7 @@ function Amigo() {
             xpMax={4000}
             logro={Usuario?.logro || ""}
 
-            onLogoutFunc={() => alert("Funcionalidad de cerrar sesion")}
+            onLogoutFunc={() => onRequest()}
             onLogoutText="Agregar Amigo"
 
           />

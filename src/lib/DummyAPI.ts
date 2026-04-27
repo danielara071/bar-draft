@@ -130,3 +130,61 @@ export async function updateUsuarioLogro(user_id: string, nuevo_logro: number): 
   console.log("Response from updateUsuarioLogro: ", response);
   return handleResponse<void>(response, "");
 }
+
+
+export async function friend_send_request(user_id: string, friend_id: string): Promise<void> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/send_request`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseAPIKey,
+      },
+      body: JSON.stringify(    {
+    sender_uuid: user_id,
+    receiver_uuid: friend_id
+    })
+    }
+  );
+  console.log("Response from updateUsuarioLogro: ", response);
+  return handleResponse<void>(response, "");
+}
+
+export async function friend_accept_request(user_id: string, friend_id: string): Promise<void> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/accept_request`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseAPIKey,
+      },
+      body: JSON.stringify(    {
+    sender_uuid: user_id,
+    receiver_uuid: friend_id
+    })
+    }
+  );
+  console.log("Response from updateUsuarioLogro: ", response);
+  return handleResponse<void>(response, "");
+}
+
+export async function friend_remove(user_id: string, friend_id: string): Promise<void> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/delete_friendship`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: supabaseAPIKey,
+      },
+      body: JSON.stringify(    {
+    sender_uuid: user_id,
+    receiver_uuid: friend_id
+    })
+    }
+  );
+  console.log("Response from updateUsuarioLogro: ", response);
+  return handleResponse<void>(response, "");
+}

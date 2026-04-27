@@ -1,5 +1,4 @@
 import GestorCard from "./GestorCard";
-import { useNavigate } from "react-router-dom";
 
 type Amigo = {
   id: string;
@@ -12,31 +11,26 @@ type Amigo = {
 type GestorContainerProps = {
   amigos: Amigo[];
   text: string;
-
+  red?: string; //El texto del boton rojo
+  accept?: (id: string) => void;
+  deny?: (id: string) => void;
 };
 
 export default function GestorContainer({
   amigos,
   text,
+  red="",
+  accept,
+  deny
 }: GestorContainerProps) {
-  const navigate = useNavigate();
-  const irGestionarAmigos = () => {
-    navigate("/gestionarAmigos")
-  }
   return (
-    <div className="w-full">
-      
-      {/* Header */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold tracking-wider text-[#002244]"> 
-          {text}
-        </h2>
-      </div>
-
-      {/* Grid */}
-      <div className="grid grid-cols-2 gap-4">
+    <div className="w-full mt-8 mb-8">
+      <h2 className="text-xl font-semibold text-[#002244]"> 
+        {text}
+      </h2>
+      <div className="grid grid-cols-1 gap-4">
         {amigos.map((amigo, index) => (
-          <GestorCard key={index} {...amigo} />
+          <GestorCard key={index} {...amigo} red={red} accept={accept} deny={deny}/>
         ))}
       </div>
     </div>

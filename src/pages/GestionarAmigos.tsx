@@ -4,6 +4,8 @@ import useSession  from "../shared/hooks/useSession"
 import { useUsuarioById } from "../shared/hooks/useUsuario";
 import { useFetchAmigos } from "../shared/hooks/useAmigos";
 
+import { useAcceptFriendRequest } from "../shared/hooks/useFriendRequests";
+import { useRemoveFriend } from "../shared/hooks/useFriendRequests";
 
 
 
@@ -16,6 +18,24 @@ function GestionarAmigos() {
   const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "", "accepted");
   const { amigos : Pendiente } = useFetchAmigos(Usuario?.id ?? "", "pending");
   const { amigos : Solicitudes } = useFetchAmigos(Usuario?.id ?? "", "request");
+  
+  const { acceptRequest } = useAcceptFriendRequest();
+  const { removeFriend } = useRemoveFriend();
+
+
+  const onAccept = (idFriend: string) => {
+    console.log("Aceptar solicitud amigo>> ", idFriend);
+    acceptRequest(user_id, idFriend);
+  }
+  const onDeny = (idFriend: string) => {
+    console.log("Denegar solicitud", idFriend );
+    removeFriend(user_id, idFriend);
+  }  
+  const onDelete = (idFriend: string ) => {
+    console.log("Eliminar amigo", idFriend);
+    removeFriend(user_id, idFriend);
+  } 
+  
   if (user_id == ""){
     return (
     <div className="min-h-screen">
@@ -28,18 +48,25 @@ function GestionarAmigos() {
   return (
     <div>
       <div className="bg-[#002244] h-25 py "/>
-      <div >
+      <div className="max-w-5xl mx-auto">
           <GestorContainer
-          amigos={(Amigo || [])}
+          amigos={(Solicitudes || [])}
           text="Solicitudes"
+          accept={(idFriend: string) => onAccept(idFriend)}
+          red="Rechazar"
+          deny={(idFriend: string) => onDeny(idFriend)}
           />
           <GestorContainer
           amigos={(Pendiente || [])}
           text="Pendientes"
+          red="Cancelar"
+          deny={(idFriend: string) => onDeny(idFriend)}
           />
           <GestorContainer
-          amigos={(Solicitudes || [])}
+          amigos={(Amigo || [])}
           text="Amigos"
+          red="Eliminar"
+          deny={(idFriend: string) => onDelete(idFriend)}
           />
       </div>
     </div>

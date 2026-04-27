@@ -52,7 +52,7 @@ export default function LogroCard({
         <p className="text-sm font-semibold">{nombre}</p>
         <p className="text-xs mt-1 opacity-80">{descripcion}</p>
 
-        {/* Indicador de éxito pequeño */}
+        {/* Indicador de éxito*/}
         {status === 'success' && (
           <div className="absolute top-2 right-2 bg-green-500 text-white text-[10px] px-2 py-1 rounded-full">
             ¡Asignado!
@@ -61,7 +61,7 @@ export default function LogroCard({
       </div>
 
 
-      {showConfirm && (
+      {showConfirm && (// hacer esto como un prop y reutilizarlo para eliminar amigo
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-gray-800">
             <h3 className="text-xl font-bold mb-2">¿Confirmar Logro?</h3>
