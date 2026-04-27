@@ -46,13 +46,14 @@ export default function AmigosContainer({
       </div>
 
       {/* Ver más */}
+      {text === "MIS AMIGOS" && (
       <div className="text-right mt-2">
         <button className="text-pink-600 text-xl hover:underline "
         onClick={irGestionarAmigos}>
           Ver más
           
         </button>
-      </div>
+      </div>)}
     </div>
   );
 }
