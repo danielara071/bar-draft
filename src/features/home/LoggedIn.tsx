@@ -7,6 +7,7 @@ import useSession from "../../shared/hooks/useSession"
 import { useProfile } from "../../shared/hooks/useProfile"
 import catLocked from "../../data/img/catLocked.png"
 import catLevel1 from "../../data/img/catLevel1.png"
+import Socials from '../../shared/components/Socials'
 
 function LoggedIn() {
     const navigate = useNavigate()
@@ -103,6 +104,9 @@ function LoggedIn() {
                     <Noticias />
                 </div>
             </div>
+            
+            <Socials />
+            
             <section className="relative h-[500px] md:h-[800px] bg-cover bg-center flex items-center mt-15 items-start justify-start text-center bg-[url('https://www.fcbarcelona.com/photo-resources/2025/05/24/7f4cd67e-658f-431a-bbc0-63ad6f52610b/_GP13348.jpg?width=2400&height=1500')]">
                 <div className="relative text-white pt-24 pl-24 md:pt-32 md:pl-80 max-w-xl">
                     <h2 className="text-2xl sm:text-4xl md:text-4xl font-bold mb-4 font-sans tracking-tight text-left">Som Un Equip!</h2>
