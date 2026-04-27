@@ -1,7 +1,6 @@
 import { Button } from "../../../shared/components/ui/shadcn/ui/button";
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
 } from "../../../shared/components/ui/shadcn/ui/field";
@@ -77,9 +76,9 @@ export function InputFieldgroup({
 
         <Field orientation="horizontal">
           <Button type="reset" variant="outline">
-            Reset
+            Cancelar
           </Button>
-          <Button type="submit" className="bg-brand-navy">Submit</Button>
+          <Button type="submit" className="bg-brand-navy">Editar</Button>
         </Field>
       </FieldGroup>
     </form>
