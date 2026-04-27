@@ -36,6 +36,7 @@ const ReelInfoCard = ({
   const [isSuccessful, setIsSuccessful] = useState(false);
 
   const handleSubmit = async (data: any) => {
+    console.log(data);
     const { error } = await supabase
       .from("videos")
       .update({
@@ -93,7 +94,7 @@ const ReelInfoCard = ({
               category={category}
               order_index={order_index}
               is_active={is_active}
-              updateVideo={() => handleSubmit(id)}
+              updateVideo={handleSubmit}
             />
           </div>
         </div>
