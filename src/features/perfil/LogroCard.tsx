@@ -45,7 +45,7 @@ export default function LogroCard({
         }`}
       >
         <img
-          src={`src/assets/Logros/${desbloqueado ? url_image : 'Locked'}.png`}
+          src={desbloqueado ? url_image : 'https://vsywrimuzdnfyztreolz.supabase.co/storage/v1/object/sign/logros/Locked.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85YjVhN2I1MC1iNThkLTRkMzEtOTJiZS1jMWRjNjdmZjY5MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb2dyb3MvTG9ja2VkLnBuZyIsImlhdCI6MTc3NzMwOTU5MywiZXhwIjoxODA4ODQ1NTkzfQ.z0oLl8yHtzMy4HVWmNyKT5fwlcHDQg05KWAX2fKhHTQ'}
           alt={nombre}
           className="w-24 h-24 mx-auto mb-2 rounded-lg"
         />

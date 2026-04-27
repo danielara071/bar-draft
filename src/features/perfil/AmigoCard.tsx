@@ -38,7 +38,7 @@ export default function AmigoCard({
       </div>
 
       {logro && (
-        <img src={`src/assets/Logros/${logro}.png`} alt="badge" className="w-20 h-20 object-cover rounded-lg" />
+        <img src={logro} alt="badge" className="w-20 h-20 object-cover rounded-lg" />
       )}
     </div>
   );

@@ -39,8 +39,8 @@ export default function GestorCard({
           </span>
         </div>
 
-        {logro && (
-          <img src={`src/assets/Logros/${logro}.png`} alt="badge" className="w-20 h-20 object-cover rounded-lg" />
+        {logro && ( 
+          <img src={logro} alt="badge" className="w-20 h-20 object-cover rounded-lg" />
         )}
       </div>
       {/* botones de gestion*/}
