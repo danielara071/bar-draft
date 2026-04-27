@@ -1,7 +1,6 @@
 import {} from "lucide-react";
 import { motion, type Transition } from "motion/react";
-import { useState } from "react";
-import ReelInfoCard from "./ReelInfoCard";
+
 
 
 const spring: Transition = {
@@ -26,11 +25,8 @@ interface ReelAdminCardProps {
 
 const ReelAdminCard = ({
   id,
-  video_url,
   thumbnail_url,
   caption,
-  duration,
-  category,
   order_index,
   is_active,
   created_at,
@@ -40,7 +36,7 @@ const ReelAdminCard = ({
     <motion.div
       key={id}
       transition={spring}
-      className="overflow-hidden rounded-2xl shadow-2xl cursor-pointer max-w-60 "
+      className="overflow-hidden rounded-2xl shadow-2xl cursor-pointer max-w-60 max-h-98"
     >
       <div className="flex flex-col ">
         <div
