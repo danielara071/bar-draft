@@ -1,5 +1,5 @@
 // src/hooks/useProfile.ts
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '../services/supabaseClient'
 import  useSession  from './useSession'
 
@@ -29,9 +29,32 @@ export function useProfile() {
       if (!error) setProfile(data)
     }
 
-    fetchProfile()
+    void fetchProfile()
 
     }, [session])
 
   return profile
+}
+
+export function useProfileWithRefetch() {
+  const session = useSession()
+  const [profile, setProfile] = useState<Profile | null>(null)
+
+  const fetchProfile = useCallback(async () => {
+    if (!session?.user) return
+
+    const { data, error } = await supabase
+      .from('profiles')     
+      .select('monedas, puntos, nivel, nombre, logros, predicciones')
+      .eq('id', session.user.id)
+      .single()
+
+    if (!error) setProfile(data)
+  }, [session?.user])
+
+  useEffect(() => {
+    void fetchProfile()
+  }, [fetchProfile])
+
+  return { profile, refetch: fetchProfile }
 }

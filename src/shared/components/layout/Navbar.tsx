@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import  useSession  from "../../hooks/useSession";
-import { useProfile } from "../../hooks/useProfile";
+import { useProfileWithRefetch } from "../../hooks/useProfile";
 import { LoginButton } from "../Buttons";
 
 const navItems = [
@@ -18,12 +18,22 @@ const navItems = [
 
 const Navbar = () => {
   const session = useSession();
-  const profile = useProfile();
+  const { profile, refetch } = useProfileWithRefetch();
   const isLoggedIn = session !== null;
   const navigate = useNavigate();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+
+  // Escucha evento de compra exitosa
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      void refetch();
+    };
+
+    window.addEventListener("profileUpdated", handleProfileUpdate);
+    return () => window.removeEventListener("profileUpdated", handleProfileUpdate);
+  }, [refetch]);
 
   // mostrar y esconder navbar
   useEffect(() => {
