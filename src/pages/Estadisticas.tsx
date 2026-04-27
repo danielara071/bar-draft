@@ -34,13 +34,13 @@ function PalmaresBanner({ count, label }: { count: number; label: string }) {
     <article
       className="rounded-2xl px-4 py-5 md:px-6 md:py-6 text-center shadow-md"
       style={{
-        background: "linear-gradient(180deg, #8E1937 0%, #0A1D3A 100%)",
+        background: "linear-gradient(180deg, #0A1D3A 0%, #9B2743 100%)",
       }}
     >
-      <p className="text-xl md:text-2xl font-extrabold tracking-tight" style={{ color: "#D4A017" }}>
+      <p className="text-3xl md:text-4xl font-extrabold tracking-tight" style={{ color: "#D4A017" }}>
         {count}
       </p>
-      <p className="mt-1 text-sm md:text-base font-medium text-white">{label}</p>
+      <p className="mt-1 text-xl md:text-base font-medium text-white">{label}</p>
     </article>
   );
 }
@@ -435,23 +435,6 @@ export default function Estadisticas() {
               </div>
             )}
             <section>
-              <SectionTitle prefix="Todos los títulos," highlight="una sola historia" />
-                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <PalmaresBanner
-                  count={stats.palmaresByAmbito.internacional}
-                  label="Campeonatos Internacionales"
-                />
-                <PalmaresBanner
-                  count={stats.palmaresByAmbito.nacional}
-                  label="Campeonatos Nacionales"
-                />
-                <PalmaresBanner
-                  count={stats.palmaresByAmbito.regional}
-                  label="Campeonatos Regionales"
-                />
-              </div>
-            </section>
-            <section>
               <SectionTitle prefix="Conoce a nuestros mayores" highlight="Anotadores" />
               <div className="grid md:grid-cols-2 gap-6 mt-6">
                 <ScorerCard teamType="male" data={stats.scorers.male} />
@@ -491,6 +474,23 @@ export default function Estadisticas() {
                 leftItems={stats.rankings.keepers.male}
                 rightItems={stats.rankings.keepers.female}
               />
+            </section>
+            <section>
+              <SectionTitle prefix="Todos los títulos," highlight="una sola historia" />
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <PalmaresBanner
+                  count={stats.palmaresByAmbito.internacional}
+                  label="Campeonatos Internacionales"
+                />
+                <PalmaresBanner
+                  count={stats.palmaresByAmbito.nacional}
+                  label="Campeonatos Nacionales"
+                />
+                <PalmaresBanner
+                  count={stats.palmaresByAmbito.regional}
+                  label="Campeonatos Regionales"
+                />
+              </div>
             </section>
           </div>
         )}
