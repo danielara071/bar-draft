@@ -4,13 +4,23 @@ import { useNavigate } from "react-router-dom";
 
 const Callback = () => {
   const navigate = useNavigate();
+
   useEffect(() => {
     const checkSession = async () => {
-      const { data } = await supabase.auth.getSession();
+      const { data, error } = await supabase.auth.getSession();
+
+      if (error) {
+        console.error("Error obteniendo sesion en callback:", error.message);
+        navigate("/login", { replace: true });
+        return;
+      }
 
       if (data.session) {
-        navigate("/");
+        navigate("/", { replace: true });
+        return;
       }
+
+      navigate("/login", { replace: true });
     };
 
     checkSession();
