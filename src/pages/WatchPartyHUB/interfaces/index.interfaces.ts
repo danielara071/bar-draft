@@ -9,7 +9,7 @@ export type FriendshipStatus = "pending" | "accepted" | "rejected";
 
 export interface Fixture {
   fixture_id:  string;          // "varonil-1776193200000"
-  date:        string;          
+  date:        string;
   homeTeam:    string;
   awayTeam:    string;
   venue?:      string;
@@ -111,6 +111,7 @@ export interface WatchPartyModalProps {
 }
 
 export interface JoinModalProps {
-  match:   WatchPartyMatch | null;
-  onClose: () => void;
+  match:          WatchPartyMatch | null;
+  onClose:        () => void;
+  onConfirmJoin:  (match: WatchPartyMatch) => void; // abre PrediccionesModal en vez de navegar directo
 }
