@@ -13,6 +13,7 @@ interface InputFieldGroupProps {
   category?: string;
   order_index?: number;
   is_active?: boolean;
+  updateVideo: (data: any) => void;
 }
 
 export function InputFieldgroup({  
@@ -21,6 +22,7 @@ export function InputFieldgroup({
   category,
   order_index,
   is_active,
+  updateVideo
 }: InputFieldGroupProps) {
 
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
@@ -29,13 +31,14 @@ export function InputFieldgroup({
     const data = new FormData(e.currentTarget);
 
     const result = {
+      id: id,  
       caption: data.get("caption"),
       category: data.get("category"),
       order_index: Number(data.get("order_index")),
       is_active: data.get("is_active") === "yes",
     };
 
-    console.log(result);
+    updateVideo(result);
   };
 
   return (
