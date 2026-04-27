@@ -79,7 +79,8 @@ const Index = () => {
                 label="Continuar con Google"
                 logoSrc="/web_neutral_sq_na.svg"
                 logoAlt="Google"
-                className="flex w-full items-center justify-center gap-3 rounded-full border border-[#d6d6d6] bg-white px-6 py-3.5 text-lg font-semibold text-[#1f1f1f] transition hover:bg-[#f8f8f8]"
+                className="flex w-full items-center justify-center gap-3 rounded-full border border-[#d6d6d6] bg-white px-6 py-2 text-lg font-semibold text-[#1f1f1f] transition hover:bg-[#f8f8f8]"
+                logoClassName="h-10 w-auto"
               />
 
               <SignInButton
@@ -87,8 +88,8 @@ const Index = () => {
                 label="Continuar con Spotify"
                 logoSrc="/Primary_Logo_White_RGB.svg"
                 logoAlt="Spotify"
-                className="flex w-full cursor-default items-center justify-center gap-3 rounded-full bg-[#1DB954] px-6 py-3.5 text-lg font-semibold text-white"
-                logoClassName="h-5 w-auto"
+                className="flex w-full cursor-default items-center justify-center gap-3 rounded-full bg-[#1ED760] px-6 py-4 text-lg font-semibold text-white transition hover:bg-[#1bc457]"
+                logoClassName="h-6 w-auto"
               />
             </div>
 
