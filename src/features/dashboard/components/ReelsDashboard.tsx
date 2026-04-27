@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { useReelsAdmin } from "../hooks/useReelsAdmin";
 import ReelAdminCard from "./ReelAdminCard";
 import { BarLoader } from "react-spinners";
+import type { AdminReel } from "../interfaces/AdminReel";
+import ReelInfoCard from "./ReelInfoCard";
 
 const ReelsDashboard = () => {
   const { videos } = useReelsAdmin();
   const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<AdminReel | null>(null);
   useEffect(() => {
     console.log(videos);
     setLoading(false);
@@ -25,8 +28,23 @@ const ReelsDashboard = () => {
               order_index={item.order_index}
               is_active={item.is_active}
               created_at={item.created_at}
+              onClick={() => setSelected(item)}
             />
           ))}
+          {selected && (
+            <ReelInfoCard
+              id={selected.id}
+              video_url={selected.video_url}
+              thumbnail_url={selected.thumbnail_url}
+              caption={selected.caption}
+              duration={selected.duration}
+              category={selected.category}
+              order_index={selected.order_index}
+              is_active={selected.is_active}
+              created_at={selected.created_at}
+              toggleCard={() => setSelected(null)}
+            />
+          )}
         </div>
       ) : (
         <div className="">

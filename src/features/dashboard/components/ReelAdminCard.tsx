@@ -21,6 +21,7 @@ interface ReelAdminCardProps {
   order_index: number;
   is_active: boolean;
   created_at: string;
+  onClick: () => void;
 }
 
 const ReelAdminCard = ({
@@ -33,8 +34,8 @@ const ReelAdminCard = ({
   order_index,
   is_active,
   created_at,
+  onClick
 }: ReelAdminCardProps) => {
-  const [isOpen, setIsOpen] = useState(false);
   return (
     <motion.div
       key={id}
@@ -44,7 +45,7 @@ const ReelAdminCard = ({
       <div className="flex flex-col ">
         <div
           className="relative hover:brightness-75 group"
-          onClick={() => setIsOpen(true)}
+          onClick={() => onClick()}
         >
           <img
             src={thumbnail_url}
@@ -77,20 +78,6 @@ const ReelAdminCard = ({
           </div>
         </div>
       </div>
-      {isOpen && (
-        <ReelInfoCard
-          id={id}
-          video_url={video_url}
-          thumbnail_url={thumbnail_url}
-          caption={caption}
-          duration={duration}
-          category={category}
-          order_index={order_index}
-          is_active={is_active}
-          created_at={created_at}
-          toggleCard={() => setIsOpen((prev) => !prev)}
-        />
-      )}
     </motion.div>
   );
 };
