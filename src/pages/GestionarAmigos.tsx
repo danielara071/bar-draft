@@ -10,32 +10,36 @@ import { useRemoveFriend } from "../shared/hooks/useFriendRequests";
 
 
 
-
 function GestionarAmigos() {
   const session = useSession();
   const user_id = session?.user?.id || "";
   const { usuario : Usuario } = useUsuarioById(user_id);
-  const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "", "accepted");
-  const { amigos : Pendiente } = useFetchAmigos(Usuario?.id ?? "", "pending");
-  const { amigos : Solicitudes } = useFetchAmigos(Usuario?.id ?? "", "request");
+  const {amigos: Amigo, reload: reloadAmigos} = useFetchAmigos(user_id, "accepted");
+
+  const { amigos : Pendiente, reload: reloadPendientes} = useFetchAmigos(Usuario?.id ?? "", "pending");
+  const { amigos : Solicitudes, reload: reloadSolicitudes } = useFetchAmigos(Usuario?.id ?? "", "request");
   
   const { acceptRequest } = useAcceptFriendRequest();
   const { removeFriend } = useRemoveFriend();
 
 
-  const onAccept = (idFriend: string) => {
+  const onAccept = async(idFriend: string) => {
     console.log("Aceptar solicitud amigo>> ", idFriend);
-    acceptRequest(user_id, idFriend);
+    await acceptRequest(user_id, idFriend);
+    await reloadAmigos();
+    await reloadSolicitudes();
   }
-  const onDeny = (idFriend: string) => {
+  const onDeny = async(idFriend: string) => {
     console.log("Denegar solicitud", idFriend );
-    removeFriend(user_id, idFriend);
+    await removeFriend(user_id, idFriend);
+    await reloadPendientes();
   }  
-  const onDelete = (idFriend: string ) => {
+  const onDelete = async(idFriend: string ) => {
     console.log("Eliminar amigo", idFriend);
-    removeFriend(user_id, idFriend);
-  } 
-  
+    await removeFriend(user_id, idFriend);
+    await reloadAmigos();
+    await reloadPendientes(); //incluyes pendientes, porque usas la misma funcion de delete para cancelar solicitud y para eliminar amigo
+  }
   if (user_id == ""){
     return (
     <div className="min-h-screen">

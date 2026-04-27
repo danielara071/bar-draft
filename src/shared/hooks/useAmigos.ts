@@ -1,48 +1,39 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { fetchAmigos, type Amigo } from "../../lib/DummyAPI";
 
-export function useFetchAmigos(id: string, f_status : string) { 
+export function useFetchAmigos(id: string, f_status: string) {
   const [amigos, setAmigos] = useState<Amigo[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  //console.log("useUsuarioByName: ", nombre)
-  useEffect(() => {
 
+  const loadAmigos = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
 
-    let active = true;
+      const data = await fetchAmigos(id, f_status);
+      setAmigos(data.length > 0 ? data : []);
+    } catch (loadError) {
+      console.log("Error fetching amigos:", loadError);
 
-    async function loadAmigos() {
-      try {
-        setLoading(true);
-        setError("");
-        const data = await fetchAmigos(id, f_status);
-        if (active) {
-          setAmigos(data.length > 0 ? data : []);
-        }
-      } catch (loadError) {
-        console.log("Error fetching amigos: ", loadError);
-        if (active) {
-          setError(
-            loadError instanceof Error
-              ? loadError.message
-              : "Error al cargar usuario"
-          );
-        }
-      } finally {
-        if (active) setLoading(false);
-      }
+      setError(
+        loadError instanceof Error
+          ? loadError.message
+          : "Error al cargar amigos"
+      );
+    } finally {
+      setLoading(false);
     }
+  }, [id, f_status]);
 
-    void loadAmigos();
-
-    return () => {
-      active = false;
-    };
-  }, [id]);
+  useEffect(() => {
+    if (id) loadAmigos();
+  }, [loadAmigos]);
 
   return {
     amigos,
     loading,
     error,
+    reload: loadAmigos,
   };
 }
