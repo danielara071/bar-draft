@@ -10,7 +10,7 @@ import { useLocation } from "react-router-dom";
 import useSession  from "../shared/hooks/useSession"
 
 import { useSendFriendRequest } from "../shared/hooks/useFriendRequests"; 
-
+ import { useFriendStatus } from "../shared/hooks/useFriendStatus";
 
 function Amigo() {
   const session = useSession();
@@ -22,9 +22,17 @@ function Amigo() {
   const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "", "accepted");
   const { sendRequest } = useSendFriendRequest();
 
-  const onRequest = () => {
-    console.log("Enviar solicitud a ", friend_id , " de ", user_id);
-    sendRequest(user_id, friend_id);
+  const {
+    friend_status: friend_status,
+    loading,
+    refetch,
+    } = useFriendStatus(user_id, friend_id);  
+  const onRequest = async () => {
+    if (friend_status === "none") {
+      console.log("Enviar solicitud a ", friend_id , " de ", user_id);
+      await sendRequest(user_id, friend_id);
+      await refetch();
+    }
   };
 
   if (friend_id == ""){
@@ -55,7 +63,11 @@ function Amigo() {
             logro={Usuario?.logro || ""}
 
             onLogoutFunc={() => onRequest()}
-            onLogoutText="Agregar Amigo"
+            onLogoutText={loading ? "Cargando..." : 
+              friend_status === "accepted" ? "Amigos" :
+              friend_status === "pending" ? "Solicitud Enviada" :
+              "Agregar Amigo"
+            }
 
           />
         </div>
