@@ -28,7 +28,7 @@ export type Amigo = {
 };
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAPIKey =import.meta.env.VITE_SUPABASE_API_KEY
+const supabaseAPIKey =import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 
 
 async function handleResponse<T>(response: Response, defaultMessage: string): Promise<T> {
@@ -47,8 +47,9 @@ export async function fetchUsuarioById(user_id: string): Promise<Usuario[]> {
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ "user_id": user_id })
     }
@@ -62,8 +63,9 @@ export async function fetchAmigos(user_id: string, f_status: string): Promise<Am
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ "p_user_id": user_id, "f_status": f_status})
     }
@@ -78,8 +80,9 @@ export async function fetchAmigosByName(friend_name: string): Promise<Amigo[]> {
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ "texto_busqueda": friend_name })
     }
@@ -96,8 +99,9 @@ export async function fetchUsuarioLogros(id: string): Promise<Logro[]> {
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ "p_id": id }),
     }
@@ -118,8 +122,9 @@ export async function updateUsuarioLogro(user_id: string, nuevo_logro: number): 
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(    {
     user_id: user_id,
@@ -138,8 +143,9 @@ export async function friend_send_request(user_id: string, friend_id: string): P
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(    {
     sender_uuid: user_id,
@@ -157,8 +163,9 @@ export async function friend_accept_request(user_id: string, friend_id: string):
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(    {
     sender_uuid: user_id,
@@ -176,8 +183,9 @@ export async function friend_remove(user_id: string, friend_id: string): Promise
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(    {
     sender_uuid: user_id,
