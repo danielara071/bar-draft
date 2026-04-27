@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useReelsAdmin } from "../hooks/useReelsAdmin";
 import ReelAdminCard from "./ReelAdminCard";
 import { BarLoader } from "react-spinners";
@@ -6,13 +6,29 @@ import type { AdminReel } from "../interfaces/AdminReel";
 import ReelInfoCard from "./ReelInfoCard";
 
 const ReelsDashboard = () => {
-  const { videos } = useReelsAdmin();
+  const { videos, fetchVideos } = useReelsAdmin();
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<AdminReel | null>(null);
+  const didMutate = useRef(false);
+
+  const handleMutate = () => {
+    didMutate.current = true;
+  };
+
+  const handleClose = () => {
+    setSelected(null);
+    if (didMutate.current) {
+      didMutate.current = false;
+      fetchVideos();
+      console.log("mykr");
+    }
+  };
+
   useEffect(() => {
     console.log(videos);
     setLoading(false);
   }, [videos]);
+
   return (
     <div className="border border-slate-200 rounded-2xl bg-brand-white p-5 mt-4 min-h-52 flex items-center justify-center">
       {!loading ? (
@@ -42,7 +58,8 @@ const ReelsDashboard = () => {
               order_index={selected.order_index}
               is_active={selected.is_active}
               created_at={selected.created_at}
-              toggleCard={() => setSelected(null)}
+              toggleCard={() => handleClose()}
+              updated={handleMutate}
             />
           )}
         </div>

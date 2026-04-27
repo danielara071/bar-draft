@@ -15,6 +15,7 @@ interface ReelInfoCardProps {
   is_active: boolean;
   created_at: string;
   toggleCard: () => void;
+  updated: () => void;
 }
 
 const ReelInfoCard = ({
@@ -28,6 +29,7 @@ const ReelInfoCard = ({
   is_active,
   created_at,
   toggleCard,
+  updated,
 }: ReelInfoCardProps) => {
   const [isMuted, setIsMuted] = useState(true);
   const [message, setMessage] = useState<boolean | null>(null);
@@ -51,6 +53,7 @@ const ReelInfoCard = ({
     } else {
       setIsSuccessful(true);
       console.log("asdfasdf");
+      updated();
     }
     setMessage(true);
   };

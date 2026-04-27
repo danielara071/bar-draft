@@ -6,9 +6,7 @@ import { supabase } from "../../../shared/services/supabaseClient";
 
 export function useReelsAdmin(){
     const [videos, setVideos] = useState<AdminReel[]>([]);
-
-    useEffect(() => {
-        const fetchVideos = async () => {
+    const fetchVideos = async () => {
             const {data, error} = await supabase.from('videos')
           .select(`
             id,
@@ -30,9 +28,14 @@ export function useReelsAdmin(){
 
           setVideos(data)
         }
+
+
+    useEffect(() => {
+        
         fetchVideos();
     }, [])
+    
 
-    return {videos}
+    return {videos, fetchVideos}
 }
 
