@@ -1,6 +1,8 @@
-import { VolumeX, Volume2, Play, Pause } from "lucide-react";
+import {} from "lucide-react";
 import { motion, type Transition } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
+import ReelInfoCard from "./ReelInfoCard";
+
 
 const spring: Transition = {
   type: "spring",
@@ -32,6 +34,7 @@ const ReelAdminCard = ({
   is_active,
   created_at,
 }: ReelAdminCardProps) => {
+  const [isOpen, setIsOpen] = useState(false);
   return (
     <motion.div
       key={id}
@@ -39,7 +42,10 @@ const ReelAdminCard = ({
       className="overflow-hidden rounded-2xl shadow-2xl cursor-pointer max-w-60 "
     >
       <div className="flex flex-col ">
-        <div className="relative hover:brightness-75 group">
+        <div
+          className="relative hover:brightness-75 group"
+          onClick={() => setIsOpen(true)}
+        >
           <img
             src={thumbnail_url}
             alt={caption}
@@ -48,7 +54,9 @@ const ReelAdminCard = ({
           <p className="text-brand-white text-sm font-bold absolute bottom-0 left-0 right-0 p-2">
             {caption}
           </p>
-          <p className="group-hover:opacity-100 opacity-0  text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">Más info</p>
+          <p className="group-hover:opacity-100 opacity-0  text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            Más info
+          </p>
         </div>
         <div className="bg-brand-white p-2">
           <div className="flex flex-row gap-x-2">
@@ -69,6 +77,20 @@ const ReelAdminCard = ({
           </div>
         </div>
       </div>
+      {isOpen && (
+        <ReelInfoCard
+          id={id}
+          video_url={video_url}
+          thumbnail_url={thumbnail_url}
+          caption={caption}
+          duration={duration}
+          category={category}
+          order_index={order_index}
+          is_active={is_active}
+          created_at={created_at}
+          toggleCard={() => setIsOpen((prev) => !prev)}
+        />
+      )}
     </motion.div>
   );
 };
