@@ -8,8 +8,9 @@ import HelpPopUp from '../shared/components/HelpPopUp';
 import { useWordle } from '../features/wordle/hooks/useWordle';
 
 function Wordle() {
-  const {guesses, dailyWord, status, loading, submitGuess } = useWordle();
-  const [guesses_, setGuesses_] = useState<string[]>([]);
+  //const {guesses, dailyWord, status, loading, submitGuess } = useWordle();
+  const {guesses, dailyWord, submitGuess } = useWordle();
+  //const [guesses_, setGuesses_] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState('');
   const [openWin, setOpenWin] = useState<boolean>(false);
   const [openLose, setOpenLose] = useState<boolean>(false);
