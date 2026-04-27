@@ -4,7 +4,7 @@ export const useMatchClock = (
   elapsedMinutes: number | null | undefined,
   fetchedAt: number | null
 ) => {
-  const [nowMs, setNowMs] = useState(0);
+  const [nowMs, setNowMs] = useState(() => Date.now());
 
   useEffect(() => {
     const timerId = setInterval(() => {
