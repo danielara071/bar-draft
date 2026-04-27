@@ -13,12 +13,11 @@ import Home from "./pages/Home";
 import Tienda from "./pages/Tienda";
 import Callback from "./auth/Callback";
 
-
 function App() {
   return (
     <Routes>
+      <Route path="/login" element={<Index />} />
       <Route element={<Layout />}>
-        <Route path="/login" element={<Index />} />
         <Route path="/" element={<Home />} />
         <Route path="/sportsapi" element={<SportsApi />} />
         <Route path="/chat" element={<Chat />} />
