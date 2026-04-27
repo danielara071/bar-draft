@@ -1,26 +1,35 @@
 import PerfilUsuario from "../features/perfil/PerfilUsuario";
 import AmigosContainer from "../features/perfil/AmigosContainer";
 import LogrosContainer from "../features/perfil/LogrosContainer";
-import useSession  from "../shared/hooks/useSession"
 
 import { useUsuarioById } from "../shared/hooks/useUsuario";
 import { useUsuarioLogros } from "../shared/hooks/useLogros";
 import { useFetchAmigos } from "../shared/hooks/useAmigos";
 
+import { useLocation } from "react-router-dom";
+import useSession  from "../shared/hooks/useSession"
+
+import { useSendFriendRequest } from "../shared/hooks/useFriendRequests"; 
 
 
-
-
-
-function Perfil() {
+function Amigo() {
   const session = useSession();
   const user_id = session?.user?.id || "";
-  const { usuario : Usuario } = useUsuarioById(user_id);
+  const location = useLocation();
+  const friend_id = location.state?.idAmigo || "";
+  const { usuario : Usuario } = useUsuarioById(friend_id);
   const { logros : Logro } = useUsuarioLogros(Usuario?.id ?? "");
   const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "", "accepted");
-  if (user_id == ""){
+  const { sendRequest } = useSendFriendRequest();
+
+  const onRequest = () => {
+    console.log("Enviar solicitud a ", friend_id , " de ", user_id);
+    sendRequest(user_id, friend_id);
+  };
+
+  if (friend_id == ""){
     return (
-    <div className="min-h-screen">
+    <div>
       <div className="bg-[#002244] px-6 py-6">
         <text>Inicie sesion para ver su perfil</text>
       </div>
@@ -29,7 +38,7 @@ function Perfil() {
   }
   return (
     
-    <div >
+    <div>
       <div className="bg-[#002244] px-6 py-6">
         <div className="max-w-5xl mx-auto mt-13">
           <PerfilUsuario
@@ -45,8 +54,9 @@ function Perfil() {
             xpMax={4000}
             logro={Usuario?.logro || ""}
 
-            onLogoutFunc={() => alert("Funcionalidad de cerrar sesion")}
-            onLogoutText="Cerrar sesión"
+            onLogoutFunc={() => onRequest()}
+            onLogoutText="Agregar Amigo"
+
           />
         </div>
 
@@ -55,14 +65,17 @@ function Perfil() {
         <div className="bg-gray-100 mx-auto py-8 max-w-5xl">
             <AmigosContainer 
               amigos={(Amigo || [])}
-              text="MIS AMIGOS"
+              text={`AMIGOS DE @${Usuario?.nombre_usuario || "Usuario"}`}
             />
 
-            <LogrosContainer logros={Logro || []} text="MIS LOGROS"/>
+            <LogrosContainer logros={Logro || []}
+            clickable={false}
+            text={`LOGROS DE @${Usuario?.nombre_usuario || "Usuario"}`}
+            />
         </div>
-      </div>
+      </div> 
     </div>
   );
 }
 
-export default Perfil
+export default Amigo

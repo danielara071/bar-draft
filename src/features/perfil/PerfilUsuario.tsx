@@ -5,7 +5,6 @@ type PerfilUsuarioProps = {
   ranking: number;
   pais: string;
   avatarUrl: string;
-  onLogout: () => void;
   puntos: number;
   logros: number;
   predicciones: number;
@@ -15,6 +14,9 @@ type PerfilUsuarioProps = {
   xpMax: number;
 
   logro:string;
+
+  onLogoutFunc: () => void;
+  onLogoutText: string;
   
 };
 
@@ -23,7 +25,6 @@ export default function PerfilUsuario({
   ranking,
   pais,
   avatarUrl,
-  onLogout,
   puntos,
   logros,
   predicciones,
@@ -31,11 +32,13 @@ export default function PerfilUsuario({
   nivel,
   xpActual,
   xpMax,
-  logro
+  logro,
+
+  onLogoutFunc,
+  onLogoutText,
 }: PerfilUsuarioProps) {
   return (
-    <div className="bg-[#002244] text-white p-6 rounded-2xl ">
-      
+    <div className="p-6"> 
       <div className="space-y-5">
         <div className="flex items-center justify-between gap-4">
           <img
@@ -50,17 +53,23 @@ export default function PerfilUsuario({
           />
         </div>
         <div className="py-4 flex gap-14">
-            <h2 className="text-4xl font-semibold">@{username}</h2>
+            <h2 className="text-white text-4xl font-semibold">@{username}</h2>
             <button
-                onClick={onLogout}
-                className="bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-sm"
+                onClick={onLogoutFunc}
+                className="text-white bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-xm"
             >
-                Cerrar sesión
+                {onLogoutText}
             </button>
         </div>
-          <p className="text-sm text-yellow-400">
-            #{ranking} en {pais}
+
+        <div className="flex flex-row gap-1 mb-5">
+          <p className="text-2xl text-yellow-400">
+            #{ranking} 
           </p>
+          <p className="text-2xl text-white">
+            en {pais}
+          </p>
+        </div>
       </div>
       <NivelFan
         nivel={nivel}
@@ -68,20 +77,20 @@ export default function PerfilUsuario({
         xpMax={xpMax}
       />
       {/* Stats */}
-      <div className="grid grid-cols-3 text-center mt-6">
+      <div className="grid grid-cols-3 text-center mt-6 text-4xl font-bold">
         <div>
-          <p className="text-yellow-400 text-2xl font-bold">{puntos}</p>
-          <p className="text-sm text-gray-300">Puntos Totales</p>
+          <p className="text-yellow-400">{puntos}</p>
+          <p className="text-xl text-gray-300">Puntos Totales</p>
         </div>
 
         <div>
-          <p className="text-yellow-400 text-2xl font-bold">{logros}</p>
-          <p className="text-sm text-gray-300">Logros</p>
+          <p className="text-yellow-400">{logros}</p>
+          <p className="text-xl text-gray-300 ">Logros</p>
         </div>
 
         <div>
-          <p className="text-yellow-400 text-2xl font-bold">{predicciones}</p>
-          <p className="text-sm text-gray-300">Predicciones Acertadas</p>
+          <p className="text-yellow-400">{predicciones}</p>
+          <p className="text-xl text-gray-300">Predicciones Acertadas</p>
         </div>
       </div>
     </div>

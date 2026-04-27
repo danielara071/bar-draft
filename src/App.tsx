@@ -7,11 +7,14 @@ import WatchParty from "./pages/WatchParty";
 import WatchPartyHUB from "./pages/WatchPartyHUB/pages/WatchPartyPage";
 import Wordle from "./pages/Wordle";
 import Perfil from "./pages/Perfil";
-import Ra from "./pages/ra";
-import Reels from "./pages/Reels";
+import Amigo from "./pages/Amigo";
+import Reels from "./pages/Reels"
 import Home from "./pages/Home";
-import Tienda from "./pages/Tienda";
+import Tienda from "./pages/Tienda"
+import GestionarAmigos from "./pages/GestionarAmigos"
+import Ra from "./pages/ra";
 import Callback from "./auth/Callback";
+import Estadisticas from "./pages/Estadisticas";
 
 
 function App() {
@@ -30,7 +33,10 @@ function App() {
         <Route path="/tienda" element={<Tienda />} />
         <Route path="/reels/:id" element={<Reels />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/amigo" element={<Amigo />} />
+        <Route path="/gestionarAmigos" element={<GestionarAmigos />} />
         <Route path="/auth/callback" element={<Callback />} />
+        <Route path="/estadisticas" element={<Estadisticas />} />
       </Route>
     </Routes>
   );

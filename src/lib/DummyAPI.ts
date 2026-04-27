@@ -9,6 +9,7 @@ export type Usuario = {
   logros : number;
   predicciones : number;
   pais : string;
+  ranking: number;
 };
 export type Logro = {
   logro_id: number;
@@ -18,10 +19,16 @@ export type Logro = {
   desbloqueado: boolean;
   user_id: string;
 };
-
+export type Amigo = {
+  id: string;
+  nombre_usuario: string;
+  url_avatar: string;
+  logro : string;
+  status : string;
+};
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAPIKey =import.meta.env.VITE_SUPABASE_APIKEY
+const supabaseAPIKey =import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 
 
 async function handleResponse<T>(response: Response, defaultMessage: string): Promise<T> {
@@ -33,15 +40,16 @@ async function handleResponse<T>(response: Response, defaultMessage: string): Pr
   return response.json() as Promise<T>;
 }
 
-export async function fetchUsuarioByName(user_id: string): Promise<Usuario[]> {
+export async function fetchUsuarioById(user_id: string): Promise<Usuario[]> {
   console.log(user_id, "   NOMBRE DEL USUARIO")
   const response = await fetch(
     `${supabaseUrl}/rest/v1/rpc/get_user_with_logro`,
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ "user_id": user_id })
     }
@@ -49,7 +57,39 @@ export async function fetchUsuarioByName(user_id: string): Promise<Usuario[]> {
 
   return handleResponse<Usuario[]>(response, "No se pudo cargar el usuario");
 }
+export async function fetchAmigos(user_id: string, f_status: string): Promise<Amigo[]> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/get_friends`,
+    {
+      method: "POST",
+      headers: {
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ "p_user_id": user_id, "f_status": f_status})
+    }
+  );
 
+  return handleResponse<Amigo[]>(response, "No se pudo cargar el usuario");
+}
+
+export async function fetchAmigosByName(friend_name: string): Promise<Amigo[]> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/buscar_amigos`,
+    {
+      method: "POST",
+      headers: {
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ "texto_busqueda": friend_name })
+    }
+  );
+
+  return handleResponse<Amigo[]>(response, "No se pudo cargar el usuario");
+}
 
 export async function fetchUsuarioLogros(id: string): Promise<Logro[]> {
   console.log(supabaseUrl, "FROm fetchUsuarioByName but apikey ", supabaseAPIKey);
@@ -59,8 +99,9 @@ export async function fetchUsuarioLogros(id: string): Promise<Logro[]> {
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify({ "p_id": id }),
     }
@@ -81,12 +122,74 @@ export async function updateUsuarioLogro(user_id: string, nuevo_logro: number): 
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
-        apikey: supabaseAPIKey,
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(    {
     user_id: user_id,
     nuevo_logro: nuevo_logro
+    })
+    }
+  );
+  console.log("Response from updateUsuarioLogro: ", response);
+  return handleResponse<void>(response, "");
+}
+
+
+export async function friend_send_request(user_id: string, friend_id: string): Promise<void> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/send_request`,
+    {
+      method: "POST",
+      headers: {
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(    {
+    sender_uuid: user_id,
+    receiver_uuid: friend_id
+    })
+    }
+  );
+  console.log("Response from updateUsuarioLogro: ", response);
+  return handleResponse<void>(response, "");
+}
+
+export async function friend_accept_request(user_id: string, friend_id: string): Promise<void> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/accept_request`,
+    {
+      method: "POST",
+      headers: {
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(    {
+    sender_uuid: user_id,
+    receiver_uuid: friend_id
+    })
+    }
+  );
+  console.log("Response from updateUsuarioLogro: ", response);
+  return handleResponse<void>(response, "");
+}
+
+export async function friend_remove(user_id: string, friend_id: string): Promise<void> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/delete_friendship`,
+    {
+      method: "POST",
+      headers: {
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(    {
+    sender_uuid: user_id,
+    receiver_uuid: friend_id
     })
     }
   );
