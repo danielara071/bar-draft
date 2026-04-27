@@ -64,16 +64,16 @@ const Index = () => {
               FC Barcelona
             </p>
 
-            <div className="mt-14 space-y-2">
+            <div className="mt-16 space-y-3">
               <h1 className="text-5xl font-semibold tracking-tight text-[#121212]">
                 Benvingut
               </h1>
               <p className="text-lg text-[#7a7a7a]">
-                Inicia sesion para acceder a tu cuenta
+                Inicia sesión para acceder a tu cuenta
               </p>
             </div>
 
-            <div className="mt-10 space-y-4">
+            <div className="mt-12 space-y-5">
               <SignInButton
                 onClick={signInGoogle}
                 label="Continuar con Google"
@@ -93,9 +93,9 @@ const Index = () => {
               />
             </div>
 
-            <div className="mt-12 space-y-8 text-center text-[#7a7a7a]">
+            <div className="mt-14 space-y-8 text-center text-[#7a7a7a]">
               <p className="text-sm">
-                Al continuar, aceptas nuestros terminos de servicio y politica
+                Al continuar, aceptas nuestros términos de servicio y política
                 de privacidad
               </p>
             </div>
