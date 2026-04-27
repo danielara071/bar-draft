@@ -1,5 +1,49 @@
 import { useEffect, useState } from "react";
 import type { LiveMatch } from "../Types/MatchTypes";
+import { supabase } from "../../../shared/services/supabaseClient";
+
+type LiveMatchCacheRow = {
+  fixture_date: string;
+  status_elapsed: number | null;
+  venue_name: string | null;
+  venue_city: string | null;
+  league_name: string | null;
+  league_round: string | null;
+  home_team_name: string | null;
+  away_team_name: string | null;
+  goals_home: number | null;
+  goals_away: number | null;
+  fetched_at: string;
+};
+
+const mapRowToLiveMatch = (row: LiveMatchCacheRow): LiveMatch => ({
+  fixture: {
+    date: row.fixture_date,
+    status: {
+      elapsed: row.status_elapsed,
+    },
+    venue: {
+      name: row.venue_name,
+      city: row.venue_city,
+    },
+  },
+  league: {
+    name: row.league_name ?? "No disponible",
+    round: row.league_round ?? "No disponible",
+  },
+  teams: {
+    home: {
+      name: row.home_team_name ?? "Local",
+    },
+    away: {
+      name: row.away_team_name ?? "Visitante",
+    },
+  },
+  goals: {
+    home: row.goals_home,
+    away: row.goals_away,
+  },
+});
 
 export const useMatch = () => {
   const [match, setMatch] = useState<LiveMatch | null>(null);
@@ -9,29 +53,31 @@ export const useMatch = () => {
 
   const getMatch = async () => {
     try {
-      const response = await fetch("/api/watchparty/live-match");
-      const data = await response.json();
+      const { data, error: queryError } = await supabase
+        .from("live_match_cache")
+        .select(
+          "fixture_date,status_elapsed,venue_name,venue_city,league_name,league_round,home_team_name,away_team_name,goals_home,goals_away,fetched_at"
+        )
+        .order("fetched_at", { ascending: false })
+        .limit(1);
 
-      if (!response.ok) {
-        const message = typeof data?.error === "string" ? data.error : "Error fetching live match";
-        throw new Error(message);
+      if (queryError) {
+        throw new Error(queryError.message || "Error fetching live match from Supabase");
       }
 
-      if (data && typeof data === "object" && "fixture" in data) {
-        setMatch(data as LiveMatch);
+      const row = data?.[0] as LiveMatchCacheRow | undefined;
+
+      if (row) {
+        setMatch(mapRowToLiveMatch(row));
         setError(null);
-        setFetchedAt(Date.now());
+        const parsedFetchedAt = Date.parse(row.fetched_at);
+        setFetchedAt(Number.isNaN(parsedFetchedAt) ? Date.now() : parsedFetchedAt);
         return;
       }
 
-      if (data === null) {
-        setMatch(null);
-        setError(null);
-        setFetchedAt(Date.now());
-        return;
-      }
-
-      throw new Error("Unexpected live match response");
+      setMatch(null);
+      setError(null);
+      setFetchedAt(Date.now());
     } catch (error) {
       console.error(error);
       setMatch(null);
