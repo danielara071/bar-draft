@@ -48,7 +48,7 @@ const Index = () => {
 
   return (
     <div className="h-dvh overflow-hidden bg-[#f3f3f3]">
-      <div className="mx-auto grid h-full max-w-350 grid-cols-1 lg:grid-cols-2">
+      <div className="grid h-full w-full grid-cols-1 lg:grid-cols-2">
         <div className="relative hidden overflow-hidden lg:block">
           <img
             src="/loginStadium.png"
@@ -60,7 +60,7 @@ const Index = () => {
 
         <div className="flex items-center justify-center px-6 py-8 sm:px-10">
           <div className="w-full max-w-105">
-            <p className="text-5xl font-extrabold tracking-tight text-[#a50050]">
+            <p className="text-center text-5xl font-extrabold tracking-tight text-[#a50050]">
               FC Barcelona
             </p>
 
