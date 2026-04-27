@@ -47,7 +47,7 @@ export default function PerfilUsuario({
             className="w-40 h-40 rounded-full object-cover"
           />
           <img
-            src={`src/assets/Logros/${logro}.png`}
+            src={logro}
             alt="avatar"
             className="w-40 h-40 object-cover rounded-lg"
           />

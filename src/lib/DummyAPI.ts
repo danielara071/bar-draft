@@ -196,3 +196,24 @@ export async function friend_remove(user_id: string, friend_id: string): Promise
   console.log("Response from updateUsuarioLogro: ", response);
   return handleResponse<void>(response, "");
 }
+
+
+export async function get_friend_status(user_id: string, friend_id: string): Promise<string> {
+  const response = await fetch(
+    `${supabaseUrl}/rest/v1/rpc/get_friend_status`,
+    {
+      method: "POST",
+      headers: {
+         apikey: supabaseAPIKey,
+         Authorization: `Bearer ${supabaseAPIKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(    {
+    sender_uuid: user_id,
+    receiver_uuid: friend_id
+    })
+    }
+  );
+  console.log("Response from updateUsuarioLogro: ", response);
+  return handleResponse<string>(response, "");
+}
