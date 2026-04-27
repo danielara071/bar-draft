@@ -34,6 +34,11 @@ export type DashboardStats = {
   scorers: Record<TeamType, ScorerCardData | null>;
   assisters: Record<TeamType, AssisterCardData | null>;
   keepers: Record<TeamType, KeeperCardData | null>;
+  palmaresByAmbito: {
+    internacional: number;
+    nacional: number;
+    regional: number;
+  };
   rankings: {
     scorers: CategoryRanking;
     assisters: CategoryRanking;

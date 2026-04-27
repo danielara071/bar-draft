@@ -17,12 +17,33 @@ const EMPTY_STATS: DashboardStats = {
   scorers: { male: null, female: null },
   assisters: { male: null, female: null },
   keepers: { male: null, female: null },
+  palmaresByAmbito: {
+    internacional: 0,
+    nacional: 0,
+    regional: 0,
+  },
   rankings: {
     scorers: { male: [], female: [] },
     assisters: { male: [], female: [] },
     keepers: { male: [], female: [] },
   },
 };
+
+function PalmaresBanner({ count, label }: { count: number; label: string }) {
+  return (
+    <article
+      className="rounded-2xl px-4 py-5 md:px-6 md:py-6 text-center shadow-md"
+      style={{
+        background: "linear-gradient(180deg, #8E1937 0%, #0A1D3A 100%)",
+      }}
+    >
+      <p className="text-xl md:text-2xl font-extrabold tracking-tight" style={{ color: "#D4A017" }}>
+        {count}
+      </p>
+      <p className="mt-1 text-sm md:text-base font-medium text-white">{label}</p>
+    </article>
+  );
+}
 
 type CardProps = {
   teamType: TeamType;
@@ -387,7 +408,7 @@ export default function Estadisticas() {
       />
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-24 md:py-28 relative z-10">
         <header className="mb-12 md:mb-16">
-          <h1 className="text-4xl md:text-5xl text-center font-extrabold text-black">Mas Que NÚmeros</h1>
+          <h1 className="text-4xl md:text-5xl text-center font-extrabold text-black">Mas Que Números</h1>
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-8 mx-auto max-w-7xl mt-6">
           <p className="text-[#555555] text-[1.15rem] leading-relaxed font-normal tracking-tight">
             El pulso del equipo en datos. Sigue de cerca la evolucion de tus jugadores favoritos y descubre
@@ -414,14 +435,31 @@ export default function Estadisticas() {
               </div>
             )}
             <section>
+              <SectionTitle prefix="Todos los títulos," highlight="una sola historia" />
+                <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <PalmaresBanner
+                  count={stats.palmaresByAmbito.internacional}
+                  label="Campeonatos Internacionales"
+                />
+                <PalmaresBanner
+                  count={stats.palmaresByAmbito.nacional}
+                  label="Campeonatos Nacionales"
+                />
+                <PalmaresBanner
+                  count={stats.palmaresByAmbito.regional}
+                  label="Campeonatos Regionales"
+                />
+              </div>
+            </section>
+            <section>
               <SectionTitle prefix="Conoce a nuestros mayores" highlight="Anotadores" />
               <div className="grid md:grid-cols-2 gap-6 mt-6">
                 <ScorerCard teamType="male" data={stats.scorers.male} />
                 <ScorerCard teamType="female" data={stats.scorers.female} />
               </div>
               <RankingGlobalChart
-                leftTitle=""
-                rightTitle=""
+                leftTitle="Número de Goles"
+                rightTitle="Número de Goles"
                 leftItems={stats.rankings.scorers.male}
                 rightItems={stats.rankings.scorers.female}
               />
@@ -434,8 +472,8 @@ export default function Estadisticas() {
                 <AssisterCard teamType="female" data={stats.assisters.female} />
               </div>
               <RankingGlobalChart
-                leftTitle=""
-                rightTitle=""
+                leftTitle="Número de Asistencias"
+                rightTitle="Número de Asistencias"
                 leftItems={stats.rankings.assisters.male}
                 rightItems={stats.rankings.assisters.female}
               />
@@ -448,8 +486,8 @@ export default function Estadisticas() {
                 <KeeperCard teamType="female" data={stats.keepers.female} />
               </div>
               <RankingGlobalChart
-                leftTitle=""
-                rightTitle=""
+                leftTitle="Número de Atajadas"
+                rightTitle="Número de Atajadas"
                 leftItems={stats.rankings.keepers.male}
                 rightItems={stats.rankings.keepers.female}
               />

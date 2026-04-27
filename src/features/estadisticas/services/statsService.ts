@@ -9,6 +9,8 @@ import type {
 } from "../types";
 
 type MesRow = { mes: string; año: number | null; goles: number | null };
+type PalmaresAmbito = "Internacional" | "Nacional" | "Regional";
+type PalmaresRow = { ambito: PalmaresAmbito | null; cantidad: number | null };
 
 function last4<T>(arr: T[]) {
   return arr.slice(Math.max(0, arr.length - 4));
@@ -224,6 +226,29 @@ async function fetchTopFiveKeepersBySaves(team: TeamType): Promise<RankingItem[]
   return ranked;
 }
 
+async function fetchPalmaresByAmbito() {
+  const { data, error } = await supabase
+    .from("palmares_barcelona_unificado")
+    .select("ambito,cantidad");
+
+  if (error) throw error;
+
+  const totals = {
+    internacional: 0,
+    nacional: 0,
+    regional: 0,
+  };
+
+  for (const row of (data ?? []) as PalmaresRow[]) {
+    const amount = Math.max(0, row.cantidad ?? 0);
+    if (row.ambito === "Internacional") totals.internacional += amount;
+    if (row.ambito === "Nacional") totals.nacional += amount;
+    if (row.ambito === "Regional") totals.regional += amount;
+  }
+
+  return totals;
+}
+
 export async function fetchDashboardStats(): Promise<DashboardStats> {
   const [
     maleScorer,
@@ -238,6 +263,7 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     femaleAssisterTop5,
     maleKeeperTop5,
     femaleKeeperTop5,
+    palmaresByAmbito,
   ] = await Promise.all([
     fetchTopScorer("male"),
     fetchTopScorer("female"),
@@ -251,12 +277,14 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     fetchTopFiveByMetric("female", "asistencias"),
     fetchTopFiveKeepersBySaves("male"),
     fetchTopFiveKeepersBySaves("female"),
+    fetchPalmaresByAmbito(),
   ]);
 
   return {
     scorers: { male: maleScorer, female: femaleScorer },
     assisters: { male: maleAssists, female: femaleAssists },
     keepers: { male: maleKeeper, female: femaleKeeper },
+    palmaresByAmbito,
     rankings: {
       scorers: { male: maleScorerTop5, female: femaleScorerTop5 },
       assisters: { male: maleAssisterTop5, female: femaleAssisterTop5 },
