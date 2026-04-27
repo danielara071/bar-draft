@@ -17,9 +17,14 @@ export default defineConfig({
     exclude: ["aframe", "ar.js"],
   },
   server: {
+    // Evita reinicios del cliente cuando `tsx watch` o ediciones tocan `server/` (p. ej. tsconfig).
+    watch: {
+      ignored: ["**/server/**"],
+    },
     proxy: {
       "/api/checkout": {
-        target: "http://localhost:5174",
+        target: "http://localhost:3000",
+        changeOrigin: true,
       },
       "/api/watchparty": {
         target: "http://localhost:3001",

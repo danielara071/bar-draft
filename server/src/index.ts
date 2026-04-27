@@ -6,6 +6,7 @@ import { streamText } from 'ai'
 import { createOpenAI } from '@ai-sdk/openai'
 import { dbTools } from './tools'
 import { startWatchpartyExpressServer } from './routes/watchparty'
+import { registerCheckoutRoutes } from './routes/checkout'
 
 const ollama = createOpenAI({
   baseURL: process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434/v1',
@@ -15,6 +16,8 @@ const ollama = createOpenAI({
 const app = new Hono()
 
 app.use('*', cors())
+
+registerCheckoutRoutes(app)
 
 startWatchpartyExpressServer()
 
