@@ -199,9 +199,7 @@ async function fetchTopFiveByMetric(
   });
 }
 
-async function fetchTopFiveKeepersByEffectiveness(
-  team: TeamType
-): Promise<RankingItem[]> {
+async function fetchTopFiveKeepersBySaves(team: TeamType): Promise<RankingItem[]> {
   const table =
     team === "male" ? "barcelona_varonil_jugadores" : "barcelona_femenil_jugadores";
 
@@ -216,7 +214,7 @@ async function fetchTopFiveKeepersByEffectiveness(
     .map((row) => ({
       id: row.id,
       nombre: row.nombre,
-      value: efectividadPct(row.atajadas ?? 0, row.goles_recibidos ?? 0),
+      value: row.atajadas ?? 0,
       minutes: row.minutos_jugados ?? 0,
     }))
     .sort((a, b) => (b.value !== a.value ? b.value - a.value : b.minutes - a.minutes))
@@ -251,8 +249,8 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     fetchTopFiveByMetric("female", "goles"),
     fetchTopFiveByMetric("male", "asistencias"),
     fetchTopFiveByMetric("female", "asistencias"),
-    fetchTopFiveKeepersByEffectiveness("male"),
-    fetchTopFiveKeepersByEffectiveness("female"),
+    fetchTopFiveKeepersBySaves("male"),
+    fetchTopFiveKeepersBySaves("female"),
   ]);
 
   return {

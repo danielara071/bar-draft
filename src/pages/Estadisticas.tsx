@@ -264,14 +264,10 @@ function RankingGlobalChart({
   rightItems: RankingItem[];
   formatValue?: (value: number) => string;
 }) {
-  const maxValue = Math.max(
-    1,
-    ...leftItems.map((i) => i.value),
-    ...rightItems.map((i) => i.value)
-  );
-
   const left = leftItems.slice(0, 5);
   const right = rightItems.slice(0, 5);
+  const leftMaxValue = Math.max(1, ...left.map((i) => i.value));
+  const rightMaxValue = Math.max(1, ...right.map((i) => i.value));
 
   return (
     <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
@@ -294,7 +290,10 @@ function RankingGlobalChart({
                   <div
                     className="h-full rounded-full"
                     style={{
-                      width: `${Math.max(8, Math.round((item.value / maxValue) * 100))}%`,
+                      width: `${Math.max(
+                        8,
+                        Math.round((item.value / leftMaxValue) * 100)
+                      )}%`,
                       backgroundColor: MALE_BG,
                     }}
                   />
@@ -321,7 +320,10 @@ function RankingGlobalChart({
                   <div
                     className="h-full rounded-full"
                     style={{
-                      width: `${Math.max(8, Math.round((item.value / maxValue) * 100))}%`,
+                      width: `${Math.max(
+                        8,
+                        Math.round((item.value / rightMaxValue) * 100)
+                      )}%`,
                       backgroundColor: FEMALE_BG,
                     }}
                   />
@@ -418,8 +420,8 @@ export default function Estadisticas() {
                 <ScorerCard teamType="female" data={stats.scorers.female} />
               </div>
               <RankingGlobalChart
-                leftTitle="Top 5 Varonil"
-                rightTitle="Top 5 Femenil"
+                leftTitle=""
+                rightTitle=""
                 leftItems={stats.rankings.scorers.male}
                 rightItems={stats.rankings.scorers.female}
               />
@@ -432,8 +434,8 @@ export default function Estadisticas() {
                 <AssisterCard teamType="female" data={stats.assisters.female} />
               </div>
               <RankingGlobalChart
-                leftTitle="Top 5 Varonil"
-                rightTitle="Top 5 Femenil"
+                leftTitle=""
+                rightTitle=""
                 leftItems={stats.rankings.assisters.male}
                 rightItems={stats.rankings.assisters.female}
               />
@@ -446,11 +448,10 @@ export default function Estadisticas() {
                 <KeeperCard teamType="female" data={stats.keepers.female} />
               </div>
               <RankingGlobalChart
-                leftTitle="Top 5 Varonil"
-                rightTitle="Top 5 Femenil"
+                leftTitle=""
+                rightTitle=""
                 leftItems={stats.rankings.keepers.male}
                 rightItems={stats.rankings.keepers.female}
-                formatValue={(value) => `${value}%`}
               />
             </section>
           </div>
