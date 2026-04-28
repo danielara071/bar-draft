@@ -1,19 +1,19 @@
 function WhiteLineChart({ data }: { data: { label: string; value: number }[] }) {
   const safeData =
-    data.length > 0
+    data && data.length > 0
       ? data
       : [
-          { label: "N/A", value: 0 },
-          { label: "N/A", value: 0 },
-          { label: "N/A", value: 0 },
-          { label: "N/A", value: 0 },
+          { label: "Ene", value: 30 },
+          { label: "Feb", value: 45 },
+          { label: "Mar", value: 35 },
+          { label: "Abr", value: 60 },
         ];
 
   const max = Math.max(1, ...safeData.map((d) => d.value));
-  const width = 320;
-  const height = 130;
-  const padX = 18;
-  const padY = 14;
+  const width = 400;
+  const height = 180;
+  const padX = 13;
+  const padY = 35; 
   const chartW = width - padX * 2;
   const chartH = height - padY * 2;
 
@@ -23,47 +23,76 @@ function WhiteLineChart({ data }: { data: { label: string; value: number }[] }) 
     return { x, y, value: item.value, label: item.label };
   });
 
-  const polyline = points.map((p) => `${p.x},${p.y}`).join(" ");
+  const lineCommand = points.reduce((acc, point, i, a) => {
+    if (i === 0) return `M ${point.x},${point.y}`;
+    const prev = a[i - 1];
+    const cp1x = prev.x + (point.x - prev.x) / 2;
+    return `${acc} C ${cp1x},${prev.y} ${cp1x},${point.y} ${point.x},${point.y}`;
+  }, "");
+
+  const areaPath = `${lineCommand} L ${points[points.length - 1].x},${height - padY} L ${points[0].x},${height - padY} Z`;
 
   return (
-    <div className="mt-4">
-      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-32 overflow-visible">
-        <line
-          x1={padX}
-          y1={height - padY}
-          x2={width - padX}
-          y2={height - padY}
-          stroke="rgba(255,255,255,0.45)"
-          strokeWidth="1"
+    <div className="w-full max-w-md p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto overflow-visible">
+        <defs>
+          <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#0A1D3A" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#0A1D3A" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {/* Guías horizontales sutiles */}
+        {[0, 0.5, 1].map((v) => (
+          <line
+            key={v}
+            x1={padX}
+            y1={height - padY - v * chartH}
+            x2={width - padX}
+            y2={height - padY - v * chartH}
+            stroke="#f1f5f9"
+            strokeWidth="1"
+          />
+        ))}
+
+        {/* Área sombreada */}
+        <path d={areaPath} fill="url(#lineGradient)" />
+
+        {/* Línea principal*/}
+        <path
+          d={lineCommand}
+          fill="none"
+          stroke="#0A1D3A"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
-        <line
-          x1={padX}
-          y1={padY}
-          x2={padX}
-          y2={height - padY}
-          stroke="rgba(255,255,255,0.45)"
-          strokeWidth="1"
-        />
-        <polyline fill="none" stroke="white" strokeWidth="3" points={polyline} />
-        {points.map((p) => (
-          <g key={`${p.label}-${p.x}`}>
-            <circle cx={p.x} cy={p.y} r="4.2" fill="white" />
+
+        {/* Puntos de datos */}
+        {points.map((p, i) => (
+          <g key={i}>
+            {/* Círculo exterior*/}
+            <circle cx={p.x} cy={p.y} r="5" fill="white" stroke="#0A1D3A" strokeWidth="2" />
+            
+            {/* Valor numérico*/}
             <text
               x={p.x}
-              y={p.y - 9}
-              fill="white"
-              fontSize="20"
+              y={p.y - 14}
+              fill="#1e293b"
+              fontSize="11"
+              fontWeight="700"
               textAnchor="middle"
-              className="font-semibold"
             >
               {p.value}
             </text>
           </g>
         ))}
       </svg>
-      <div className="mt-1 flex justify-center gap-18 px-1">
-        {safeData.map((item) => (
-          <span key={item.label} className="text-[110px] md:text-xs text-white/90">
+
+      {/* Etiquetas del Eje X */}
+      <div className="mt-4 flex justify-between px-1">
+        {safeData.map((item, i) => (
+          <span key={i} className="text-[11px] font-bold uppercase tracking-tighter text-gray-500">
             {item.label}
           </span>
         ))}
