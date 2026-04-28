@@ -1,34 +1,7 @@
-import { useEffect, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
-import { supabase } from "../../../shared/services/supabaseClient";
-
-
+import { useSessionContext } from "../../../shared/context/useSessionContext";
 
 const useSession = () => {
-const [session, setSession] = useState<Session | null>(null);
-
-  useEffect(() => {
-    const verifySession = async () => {
-      const {
-        data: { session: currentSession },
-      } = await supabase.auth.getSession();
-      setSession(currentSession);
-    };
-
-    console.log(session);
-    verifySession();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession);
-    });
-
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
-  return session;
+  return useSessionContext().session;
 };
 
-  export default useSession;
+export default useSession;
