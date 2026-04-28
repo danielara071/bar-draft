@@ -22,7 +22,7 @@ export function useUsuarioLogros(userId: string) {
         setError("");
         const data = await fetchUsuarioLogros(userId);
         if (active) {
-          console.log("Logros obtenidos:", data);
+          //console.log("Logros obtenidos:", data);
           setLogros(data);
         }
       } catch (loadError) {

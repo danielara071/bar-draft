@@ -8,6 +8,7 @@ type LogroCardProps = {
   url_image: string;
   desbloqueado: boolean;
   user_id: string;
+  clickable?: boolean;
 };
 
 export default function LogroCard({
@@ -17,6 +18,7 @@ export default function LogroCard({
   url_image,
   desbloqueado = true,
   user_id,
+  clickable = true
 }: LogroCardProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
@@ -37,20 +39,20 @@ export default function LogroCard({
   return (
     <>
       <div
-        onClick={() => desbloqueado && setShowConfirm(true)}
-        className={`relative cursor-pointer rounded-xl p-4 text-center transition-all hover:scale-105 ${
+        onClick={() => desbloqueado && clickable && setShowConfirm(true)}
+        className={`relative cursor-pointer rounded-xl p-4 text-center transition-all hover:scale-102 ${
           desbloqueado ? "bg-[#1a3857] text-white" : "bg-[#9d9d9d] text-gray-600"
         }`}
       >
         <img
-          src={`src/assets/Logros/${desbloqueado ? url_image : 'Locked'}.png`}
+          src={desbloqueado ? url_image : 'https://vsywrimuzdnfyztreolz.supabase.co/storage/v1/object/sign/logros/Locked.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85YjVhN2I1MC1iNThkLTRkMzEtOTJiZS1jMWRjNjdmZjY5MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb2dyb3MvTG9ja2VkLnBuZyIsImlhdCI6MTc3NzMwOTU5MywiZXhwIjoxODA4ODQ1NTkzfQ.z0oLl8yHtzMy4HVWmNyKT5fwlcHDQg05KWAX2fKhHTQ'}
           alt={nombre}
           className="w-24 h-24 mx-auto mb-2 rounded-lg"
         />
         <p className="text-sm font-semibold">{nombre}</p>
         <p className="text-xs mt-1 opacity-80">{descripcion}</p>
 
-        {/* Indicador de éxito pequeño */}
+        {/* Indicador de éxito*/}
         {status === 'success' && (
           <div className="absolute top-2 right-2 bg-green-500 text-white text-[10px] px-2 py-1 rounded-full">
             ¡Asignado!
@@ -59,7 +61,7 @@ export default function LogroCard({
       </div>
 
 
-      {showConfirm && (
+      {showConfirm && (// hacer esto como un prop y reutilizarlo para eliminar amigo
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-gray-800">
             <h3 className="text-xl font-bold mb-2">¿Confirmar Logro?</h3>
