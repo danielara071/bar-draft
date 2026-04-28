@@ -11,12 +11,13 @@ import Ra from "./pages/ra";
 import Reels from "./pages/Reels";
 import Home from "./pages/Home";
 import Tienda from "./pages/Tienda";
-import Callback from "./auth/Callback";
+import NewUserWelcome from "./pages/NewUserWelcome";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Index />} />
+      <Route path="/bienvenida" element={<NewUserWelcome />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/sportsapi" element={<SportsApi />} />
@@ -29,7 +30,7 @@ function App() {
         <Route path="/tienda" element={<Tienda />} />
         <Route path="/reels/:id" element={<Reels />} />
         <Route path="/perfil" element={<Perfil />} />
-        <Route path="/auth/callback" element={<Callback />} />
+        
       </Route>
     </Routes>
   );

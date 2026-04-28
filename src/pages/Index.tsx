@@ -32,7 +32,7 @@ const Index = () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}`,
       },
     });
   };
@@ -41,7 +41,7 @@ const Index = () => {
     await supabase.auth.signInWithOAuth({
       provider: "spotify",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}`,
       },
     });
   };
