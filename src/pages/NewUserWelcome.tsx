@@ -64,7 +64,10 @@ const NewUserWelcome = () => {
                 </p>
               </div>
 
-              <form className="space-y-7" onSubmit={(event) => event.preventDefault()}>
+              <form
+                className="space-y-7"
+                onSubmit={(event) => event.preventDefault()}
+              >
                 <div className="grid gap-5 sm:grid-cols-2">
                   <label className="block space-y-2">
                     <span className="text-label font-semibold uppercase tracking-spaced text-brand-gray-mid">
@@ -151,7 +154,15 @@ const NewUserWelcome = () => {
 
                 <div className="flex flex-col gap-3 border-t border-brand-gray-light pt-6 sm:flex-row sm:items-center sm:justify-between">
                   <div className="text-sm text-brand-gray-mid">
-                    Guardarás el perfil como <span className="font-semibold text-brand-black">{username || "tu username"}</span> desde <span className="font-semibold text-brand-black">{country}</span>.
+                    Guardarás el perfil como{" "}
+                    <span className="font-semibold text-brand-black">
+                      {username || "tu username"}
+                    </span>{" "}
+                    desde{" "}
+                    <span className="font-semibold text-brand-black">
+                      {country}
+                    </span>
+                    .
                   </div>
                   <button
                     type="submit"
