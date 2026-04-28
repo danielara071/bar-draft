@@ -25,13 +25,19 @@ const NewUserWelcome = () => {
       <div className="relative z-10 w-full max-w-md rounded-3xl bg-brand-white p-6 shadow-[0_24px_60px_rgba(0,0,0,0.22)] sm:p-8">
         <div className="space-y-6">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-brand-crimson">Bienvenido</h1>
-            <p className="mt-2 text-sm text-brand-gray-mid">Cuéntanos un poco sobre ti para completar tu perfil</p>
+            <h1 className="text-2xl font-bold text-brand-crimson">
+              Bienvenido
+            </h1>
+            <p className="mt-2 text-sm text-brand-gray-mid">
+              Cuéntanos un poco sobre ti para completar tu perfil
+            </p>
           </div>
 
           <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
             <div>
-              <label className="mb-1 block text-sm font-semibold text-brand-black">Nombre de usuario</label>
+              <label className="mb-1 block text-sm font-semibold text-brand-black">
+                Nombre de usuario
+              </label>
               <input
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -41,7 +47,9 @@ const NewUserWelcome = () => {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-semibold text-brand-black">¿De dónde nos visitas?</label>
+              <label className="mb-1 block text-sm font-semibold text-brand-black">
+                ¿De dónde nos visitas?
+              </label>
               <select
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
@@ -56,7 +64,9 @@ const NewUserWelcome = () => {
             </div>
 
             <div>
-              <p className="mb-2 text-sm font-semibold text-brand-black">Elige tu avatar</p>
+              <p className="mb-2 text-sm font-semibold text-brand-black">
+                Elige tu avatar
+              </p>
               <div className="grid grid-cols-4 gap-3">
                 {avatars.map((a, i) => (
                   <button
@@ -64,7 +74,9 @@ const NewUserWelcome = () => {
                     type="button"
                     onClick={() => setAvatar(a)}
                     className={`flex h-14 w-full items-center justify-center rounded-xl text-sm font-bold transition ${
-                      avatar === a ? "ring-2 ring-brand-crimson bg-brand-crimson/5" : "bg-brand-gray-light/70"
+                      avatar === a
+                        ? "ring-2 ring-brand-crimson bg-brand-crimson/5"
+                        : "bg-brand-gray-light/70"
                     }`}
                   >
                     <span className="text-brand-black">{i + 1}</span>
