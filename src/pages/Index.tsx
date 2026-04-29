@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
+import { useEffect } from "react";
 import { supabase } from "../shared/services/supabaseClient";
+import SignInButton from "../features/login/components/SignInButton";
 
 const Index = () => {
-  const [session, setSession] = useState<Session | null>(null);
-
   useEffect(() => {
     const init = async () => {
       const { data, error } = await supabase.auth.getSession();
@@ -15,7 +13,6 @@ const Index = () => {
       }
 
       const s = data.session;
-      setSession(s);
 
       if (s?.user?.email) {
         const { id, email } = s.user;
@@ -31,43 +28,80 @@ const Index = () => {
     init();
   }, []);
 
-  const signIn = async () => {
+  const signInGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}`,
       },
     });
   };
 
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) console.error(error.message);
-    setSession(null);
+  const signInSpotify = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "spotify",
+      options: {
+        redirectTo: `${window.location.origin}`,
+      },
+    });
   };
 
   return (
-    <div className="p-6 py-34">
-      {session ? (
-        <div className="flex items-center gap-4">
-          <p className="text-gray-700">
-            Sesión iniciada como {session.user.user_metadata?.full_name}
-          </p>
-          <button
-            onClick={signOut}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-          >
-            Cerrar Sesión
-          </button>
+    <div className="h-dvh overflow-hidden bg-[#f3f3f3]">
+      <div className="grid h-full w-full grid-cols-1 lg:grid-cols-2">
+        <div className="relative hidden overflow-hidden lg:block">
+          <img
+            src="/loginStadium.png"
+            alt="Estadio"
+            className="h-full w-full object-cover"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#a3004f]/55 via-transparent to-[#002f87]/35" />
         </div>
-      ) : (
-        <button
-          onClick={signIn}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-        >
-          Inicia Sesión con Google
-        </button>
-      )}
+
+        <div className="flex items-center justify-center px-6 py-8 sm:px-10">
+          <div className="w-full max-w-105">
+            <p className="text-center text-5xl font-extrabold tracking-tight text-[#a50050]">
+              FC Barcelona
+            </p>
+
+            <div className="mt-16 space-y-3">
+              <h1 className="text-5xl font-semibold tracking-tight text-[#121212]">
+                Benvingut
+              </h1>
+              <p className="text-lg text-[#7a7a7a]">
+                Inicia sesión para acceder a tu cuenta
+              </p>
+            </div>
+
+            <div className="mt-12 space-y-5">
+              <SignInButton
+                onClick={signInGoogle}
+                label="Continuar con Google"
+                logoSrc="/web_neutral_sq_na.svg"
+                logoAlt="Google"
+                className="flex w-full items-center justify-center gap-3 rounded-full border border-[#d6d6d6] bg-white px-6 py-2 text-lg font-semibold text-[#1f1f1f] transition hover:bg-[#f8f8f8]"
+                logoClassName="h-10 w-auto"
+              />
+
+              <SignInButton
+                onClick={signInSpotify}
+                label="Continuar con Spotify"
+                logoSrc="/Primary_Logo_White_RGB.svg"
+                logoAlt="Spotify"
+                className="flex w-full cursor-default items-center justify-center gap-3 rounded-full bg-[#1ED760] px-6 py-4 text-lg font-semibold text-white transition hover:bg-[#1bc457]"
+                logoClassName="h-6 w-auto"
+              />
+            </div>
+
+            <div className="mt-14 space-y-8 text-center text-[#7a7a7a]">
+              <p className="text-sm">
+                Al continuar, aceptas nuestros términos de servicio y política
+                de privacidad
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

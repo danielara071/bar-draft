@@ -13,15 +13,14 @@ import Home from "./pages/Home";
 import Tienda from "./pages/Tienda"
 import GestionarAmigos from "./pages/GestionarAmigos"
 import Ra from "./pages/ra";
-import Callback from "./auth/Callback";
 import Estadisticas from "./pages/Estadisticas";
 
 
 function App() {
   return (
     <Routes>
+      <Route path="/login" element={<Index />} />
       <Route element={<Layout />}>
-        <Route path="/login" element={<Index />} />
         <Route path="/" element={<Home />} />
         <Route path="/sportsapi" element={<SportsApi />} />
         <Route path="/chat" element={<Chat />} />
@@ -35,7 +34,6 @@ function App() {
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/amigo" element={<Amigo />} />
         <Route path="/gestionarAmigos" element={<GestionarAmigos />} />
-        <Route path="/auth/callback" element={<Callback />} />
         <Route path="/estadisticas" element={<Estadisticas />} />
       </Route>
     </Routes>
