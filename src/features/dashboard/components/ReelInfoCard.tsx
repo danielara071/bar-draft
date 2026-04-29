@@ -3,6 +3,7 @@ import ViewReelCard from "./ViewReelCard";
 import { InputFieldgroup } from "./InputFieldGroup";
 import { X } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
+import { Button } from "@/shared/components/ui/shadcn/ui/button";
 
 interface ReelInfoCardProps {
   id: string;
@@ -34,9 +35,9 @@ const ReelInfoCard = ({
   const [isMuted, setIsMuted] = useState(true);
   const [message, setMessage] = useState<boolean | null>(null);
   const [isSuccessful, setIsSuccessful] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleSubmit = async (data: any) => {
-    console.log(data);
     const { error } = await supabase
       .from("videos")
       .update({
@@ -53,11 +54,64 @@ const ReelInfoCard = ({
       return;
     } else {
       setIsSuccessful(true);
-      console.log("asdfasdf");
       updated();
     }
     setMessage(true);
   };
+
+  const handleDelete = async (
+    videoId: string,
+    video_url: string,
+    thumbnail_url: string,
+  ) => {
+    const getPath = (url: string) => {
+      if (!url) return null;
+
+      const parts = url.split("/object/public/");
+      if (parts.length < 2) return null;
+
+      const pathWithBucket = parts[1];
+      const segments = pathWithBucket.split("/");
+
+      segments.shift();
+      return decodeURIComponent(segments.join("/"));
+    };
+
+    const videoPath = getPath(video_url);
+    const thumbnailPath = getPath(thumbnail_url);
+
+
+    const { error: errorTable } = await supabase
+      .from("videos")
+      .delete()
+      .eq("id", videoId);
+
+    if (errorTable) {
+      console.error("Error deleting video row:", errorTable);
+      return;
+    }
+
+    if (videoPath) {
+      const { error } = await supabase.storage
+        .from("videos")
+        .remove([videoPath]);
+
+      if (error) console.error("Error deleting video file:", error);
+    }
+
+    if (thumbnailPath) {
+      const { error } = await supabase.storage
+        .from("thumbnails")
+        .remove([thumbnailPath]);
+
+      if (error) console.error("Error deleting thumbnail:", error);
+    }
+
+    setIsDeleteModalOpen(false);
+    updated();
+    toggleCard();
+  };
+
   return (
     <div
       className=" fixed top-0 left-0 w-full h-full bg-black/50 flex justify-center items-center z-40 cursor-default"
@@ -67,7 +121,7 @@ const ReelInfoCard = ({
       }}
     >
       <div
-        className="bg-brand-white z-50 rounded-2xl p-8 min-h-8/12 min-w-8/12 relative"
+        className="bg-brand-white z-50 rounded-2xl p-8 min-h-7/12 min-w-7/12 relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -92,6 +146,13 @@ const ReelInfoCard = ({
               </p>
               <p className="text-gray-500 text-sm">{created_at.slice(0, 10)}</p>
             </div>
+            <Button
+              type="submit"
+              className="bg-brand-crimson mt-2"
+              onClick={() => setIsDeleteModalOpen(true)}
+            >
+              Eliminar
+            </Button>
           </div>
           <div className="w-56">
             <InputFieldgroup
@@ -118,6 +179,32 @@ const ReelInfoCard = ({
               </p>
             </div>
           ))}
+        {isDeleteModalOpen && (
+          <div className="fixed top-0 left-0 w-full h-full bg-black/50 flex justify-center items-center z-40 cursor-default">
+            <div
+              className="bg-brand-white z-50 rounded-2xl p-8 min-h-2/12 min-w-4/12 flex items-center justify-center flex-col gap-y-3"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="font-semibold">
+                ¿Estas seguro que quieres eliminar este reel?
+              </h2>
+              <div className="flex flex-row gap-x-10">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsDeleteModalOpen(false)}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  className="bg-brand-navy"
+                  onClick={() => handleDelete(id, video_url, thumbnail_url)}
+                >
+                  Confirmar
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
