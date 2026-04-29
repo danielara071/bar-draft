@@ -4,6 +4,7 @@ import PremiumWindow from "./PremiumWindow";
 import { supabase } from "../../../shared/services/supabaseClient";
 import StripeModal from "./StripeModal";
 import AlertModal from "./AlertModal";
+import AskPopUp from "../../../features/gestorAmigos/AskPopUp";
 import  {useUserInfo} from "./hooks/useUserInfo";
 
 function mapProducto(row: Record<string, unknown>) { // Mapea los datos de la fila a la estructura esperada por ProductoCard
@@ -27,6 +28,8 @@ const Productos = () => {
   const [monedas, setMonedas] = useState<number>(0);
   const [showStripe, setShowStripe] = useState(false);
   const [modal, setModal] = useState<{ title: string; message: React.ReactNode } | null>(null);
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+  const [productoSeleccionado, setProductoSeleccionado] = useState<ReturnType<typeof mapProducto> | null>(null);
   
 
   useEffect(() => {
@@ -50,14 +53,25 @@ const Productos = () => {
     void run();
   }, [session]);
 
-  const handleComprar = async (producto: ReturnType<typeof mapProducto>) => {
+  const handleComprar = (producto: ReturnType<typeof mapProducto>) => {
+    setProductoSeleccionado(producto);
+    setMostrarConfirmacion(true);
+  };
+
+  const confirmarCompra = async () => {
+    if (!productoSeleccionado) return;
+    
+    const producto = productoSeleccionado;
+
     if (!session?.user?.id) {
       setModal({ title: "Aviso", message: "Debes iniciar sesión para comprar." });
+      setMostrarConfirmacion(false);
       return;
     }
 
     if (monedas < producto.precio) {
       setModal({ title: "Aviso", message: `No tienes monedas suficientes. Tienes ${(monedas).toLocaleString('en-US')} monedas y el producto cuesta ${(producto.precio).toLocaleString('en-US')}.` });
+      setMostrarConfirmacion(false);
       return;
     }
 
@@ -69,6 +83,7 @@ const Productos = () => {
 
     if (updateError) {
       setModal({ title: "Error", message: "Hubo un error al procesar tu compra. Por favor, intenta de nuevo." });
+      setMostrarConfirmacion(false);
       return;
     }
 
@@ -85,6 +100,11 @@ const Productos = () => {
       title: "¡Compra exitosa!",
       message: <>Te quedan <span className="font-bold text-[#A50044]">{(monedas - producto.precio).toLocaleString('en-US')} monedas</span>.</>,
     });
+    setMostrarConfirmacion(false);
+    setProductoSeleccionado(null);
+    
+    // Notifica al Navbar que debe actualizar el perfil
+    window.dispatchEvent(new Event("profileUpdated"));
   };
 
   useEffect(() => {
@@ -185,6 +205,20 @@ const Productos = () => {
           title={modal.title}
           message={modal.message}
           onClose={() => setModal(null)}
+        />
+      )}
+
+      {mostrarConfirmacion && productoSeleccionado && (
+        <AskPopUp
+          pregunta="¿Deseas comprar este producto?"
+          texto={`${productoSeleccionado.nombre} cuesta ${(productoSeleccionado.precio).toLocaleString('en-US')} monedas.`}
+          textConf="Cancelar"
+          textDeny="Comprar"
+          onConfirm={() => {
+            setMostrarConfirmacion(false);
+            setProductoSeleccionado(null);
+          }}
+          onDeny={() => confirmarCompra()}
         />
       )}
     </div>

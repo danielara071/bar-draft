@@ -7,21 +7,25 @@ import WatchParty from "./pages/WatchParty";
 import WatchPartyHUB from "./pages/WatchPartyHUB/pages/WatchPartyPage";
 import Wordle from "./pages/Wordle";
 import Perfil from "./pages/Perfil";
-import Ra from "./pages/ra";
-import Reels from "./pages/Reels";
+import Amigo from "./pages/Amigo";
+import Reels from "./pages/Reels"
 import Home from "./pages/Home";
-import Tienda from "./pages/Tienda";
 import Callback from "./auth/Callback";
 import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./features/dashboard/layouts/DashboardLayout";
 import ReelsAdminPage from "./features/dashboard/pages/ReelsAdminPage";
 import { AdminRoute } from "./auth/AdminRoute";
+import Tienda from "./pages/Tienda"
+import GestionarAmigos from "./pages/GestionarAmigos"
+import Ra from "./pages/ra";
+import Estadisticas from "./pages/Estadisticas";
+
 
 function App() {
   return (
     <Routes>
+      <Route path="/login" element={<Index />} />
       <Route element={<Layout />}>
-        <Route path="/login" element={<Index />} />
         <Route path="/" element={<Home />} />
         <Route path="/sportsapi" element={<SportsApi />} />
         <Route path="/chat" element={<Chat />} />
@@ -33,7 +37,9 @@ function App() {
         <Route path="/tienda" element={<Tienda />} />
         <Route path="/reels/:id" element={<Reels />} />
         <Route path="/perfil" element={<Perfil />} />
-        <Route path="/auth/callback" element={<Callback />} />
+        <Route path="/amigo" element={<Amigo />} />
+        <Route path="/gestionarAmigos" element={<GestionarAmigos />} />
+        <Route path="/estadisticas" element={<Estadisticas />} />
       </Route>
       <Route
         path="/dashboard"

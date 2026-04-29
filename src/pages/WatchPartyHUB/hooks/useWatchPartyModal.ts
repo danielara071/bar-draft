@@ -50,7 +50,7 @@ export function useWatchPartyModal(
   fixtures: Fixture[],
   onClose?: () => void
 ): UseWatchPartyModalReturn { 
-  const navigate = useNavigate(); // Hook de React Router para redirigir a la sala después de crearla
+  const navigate = useNavigate(); //redirigir a la sala después de crearla
   const [step, setStep] = useState<ModalStep>(1);
   const [form, setForm] = useState<CreatePartyForm>(INITIAL_FORM);
   const [roomCode, setRoomCode] = useState<string>("");
@@ -92,7 +92,7 @@ export function useWatchPartyModal(
       code = generateLocalCode();
     }
 
-    // 3. Insertar en Supabase con select() para confirmar persistencia
+    // Insertar en Supabase con select() para confirmar persistencia
     const { data, error: sbError } = await supabase
       .from("watch_parties")
       .insert({

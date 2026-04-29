@@ -39,6 +39,8 @@ const WatchParty = () => {
     usersOnline,
     sendMessage,
     chatContainerRef,
+    stickers,
+    sendSticker,
   } = useWatchPartyChat(session, code ?? "");
 
   if (!code) return <Navigate to="/watchPartyHUB" replace />;
@@ -120,6 +122,8 @@ const WatchParty = () => {
           value={newMessage}
           onChange={setNewMessage}
           onSubmit={sendMessage}
+          stickers={stickers}
+          onSendSticker={sendSticker}
         />
       </div>
     </div>

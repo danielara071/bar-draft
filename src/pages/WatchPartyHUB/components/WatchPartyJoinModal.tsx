@@ -1,14 +1,11 @@
-import { useNavigate } from "react-router-dom";
 import type { JoinModalProps } from "../interfaces/index.interfaces";
 
-export default function WatchPartyJoinModal({ match, onClose }: JoinModalProps) {
-  const navigate = useNavigate();
-
+// Se agrega onConfirmJoin — en vez de navegar directo, abre PrediccionesModal
+export default function WatchPartyJoinModal({ match, onClose, onConfirmJoin }: JoinModalProps) {
   if (!match) return null;
 
   const handleJoin = () => {
-    onClose();
-    navigate(`/watchParty/${match.code}`);
+    onConfirmJoin(match); // WatchPartyPage cierra este modal y abre PrediccionesModal
   };
 
   return (
