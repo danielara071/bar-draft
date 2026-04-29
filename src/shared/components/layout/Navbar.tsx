@@ -11,7 +11,7 @@ const navItems = [
   { name: "Reels",       path: "/reels" },
   { name: "Watch Party", path: "/watchPartyHUB" },
   // { name: "Watch PartyHUB", path: "/watchPartyHUB" }, //eliminar solo es para pruebas
-  { name: "Estadisticas", path: "/estadisticas" },
+  { name: "Estadísticas", path: "/estadisticas" },
   { name: "Tienda",      path: "/tienda" },
   { name: "Perfil",      path: "/perfil" },
 ];
