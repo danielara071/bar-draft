@@ -32,7 +32,7 @@ const ViewReelCard = ({ video_url, muted, changeMute }: ReelCardProps) => {
 
   return (
     <motion.div
-      className="relative overflow-hidden rounded-2xl shadow-2xl shadow-black group cursor-pointer h-96 w-64"
+      className="relative overflow-hidden rounded-2xl shadow-md shadow-black group cursor-pointer h-96 w-64"
       onClick={() => {
         togglePlay();
       }}

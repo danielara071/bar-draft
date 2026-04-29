@@ -80,12 +80,18 @@ const ReelInfoCard = ({
           <X color="gray" />
         </button>
         <div className="flex flex-row gap-x-10">
-          <div>
+          <div className="flex flex-col items-center">
             <ViewReelCard
               muted={isMuted}
               changeMute={() => setIsMuted((prev) => !prev)}
               video_url={video_url}
             />
+            <div className="flex flex-row gap-x-2 mt-4">
+              <p className="font-semibold text-gray-500 text-sm">
+                Fecha de creación:
+              </p>
+              <p className="text-gray-500 text-sm">{created_at.slice(0, 10)}</p>
+            </div>
           </div>
           <div className="w-56">
             <InputFieldgroup
