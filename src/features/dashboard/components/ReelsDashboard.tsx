@@ -17,13 +17,22 @@ const ReelsDashboard = () => {
     didMutate.current = true;
   };
 
-  const handleClose = () => {
+  const handleCloseReel = () => {
     setSelected(null);
     if (didMutate.current) {
       didMutate.current = false;
       fetchVideos();
     }
   };
+
+  const handleCloseModal = () => {
+    setIsAddModalOpen((prev) => !prev)
+    if (didMutate.current) {
+      didMutate.current = false;
+      fetchVideos();
+    }
+  };
+
 
   useEffect(() => {
     console.log(videos);
@@ -36,7 +45,7 @@ const ReelsDashboard = () => {
           <AddNewReelCard onClick={() => setIsAddModalOpen((prev) => !prev)} />
           {isAddModalOpen && (
             <AddNewReelModal
-              toggleCard={() => setIsAddModalOpen((prev) => !prev)}
+              toggleCard={handleCloseModal}
               updated={handleMutate}
             />
           )}
@@ -65,7 +74,7 @@ const ReelsDashboard = () => {
               order_index={selected.order_index}
               is_active={selected.is_active}
               created_at={selected.created_at}
-              toggleCard={() => handleClose()}
+              toggleCard={() => handleCloseReel()}
               updated={handleMutate}
             />
           )}
