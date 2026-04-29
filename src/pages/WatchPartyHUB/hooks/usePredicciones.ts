@@ -15,17 +15,38 @@ interface UsePrediccionesReturn {
   isLoading: boolean;
   error: string | null;
   guardar: (payload: PrediccionPayload) => Promise<boolean>;
+  verificar: (partido_id: string) => Promise<boolean>;
 }
 
 export function usePredicciones(): UsePrediccionesReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Verifica si el usuario ya tiene una predicción para el partido dado.
+   * Retorna `true` si ya existe, `false` si no.
+   */
+  const verificar = useCallback(async (partido_id: string): Promise<boolean> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const userId = session?.user?.id;
+
+    if (!userId) return false;
+
+    const { data, error: sbError } = await supabase
+      .from("predicciones")
+      .select("id")
+      .eq("partido_id", partido_id)
+      .eq("user_id", userId)
+      .maybeSingle();
+
+    if (sbError) return false;
+    return data !== null;
+  }, []);
+
   const guardar = useCallback(async (payload: PrediccionPayload): Promise<boolean> => {
     setIsLoading(true);
     setError(null);
 
-    // Obtener user_id de la sesión activa — sin esto RLS rechaza el insert
     const { data: { session } } = await supabase.auth.getSession();
     const userId = session?.user?.id;
 
@@ -36,7 +57,7 @@ export function usePredicciones(): UsePrediccionesReturn {
     }
 
     const { error: sbError } = await supabase.from("predicciones").insert({
-      user_id: userId,                                    // requerido por RLS
+      user_id: userId,
       partido_id: payload.partido_id,
       ganador: payload.ganador,
       goles_local: payload.goles_local,
@@ -62,5 +83,5 @@ export function usePredicciones(): UsePrediccionesReturn {
     return true;
   }, []);
 
-  return { isLoading, error, guardar };
+  return { isLoading, error, guardar, verificar };
 }
