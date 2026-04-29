@@ -15,6 +15,7 @@ import Callback from "./auth/Callback";
 import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./features/dashboard/layouts/DashboardLayout";
 import ReelsAdminPage from "./features/dashboard/pages/ReelsAdminPage";
+import { AdminRoute } from "./auth/AdminRoute";
 
 function App() {
   return (
@@ -34,9 +35,16 @@ function App() {
         <Route path="/perfil" element={<Perfil />} />
         <Route path="/auth/callback" element={<Callback />} />
       </Route>
-      <Route path="/dashboard" element={<DashboardLayout />}>
+      <Route
+        path="/dashboard"
+        element={
+          <AdminRoute>
+            <DashboardLayout />
+          </AdminRoute>
+        }
+      >
         <Route index element={<Dashboard />} />
-        <Route path="reels" element={<ReelsAdminPage/>}/>
+        <Route path="reels" element={<ReelsAdminPage />} />
       </Route>
     </Routes>
   );
