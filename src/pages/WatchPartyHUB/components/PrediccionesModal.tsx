@@ -172,7 +172,7 @@ export function PrediccionesModal({ match, onClose }: PrediccionesModalProps) {
     verificar(match.id).then((existe) => {
       setYaPredicho(existe);
     });
-  }, [match?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [match?.id]); 
 
   if (!match) return null;
 
@@ -240,7 +240,7 @@ export function PrediccionesModal({ match, onClose }: PrediccionesModalProps) {
             </p>
 
             {/* ¿Quién ganará? */}
-            <Section icon="🏆" label="¿Quién ganará?">
+            <Section  label="¿Quién ganará?">
               <ToggleGroup
                 options={[match.home_team || "", "Empate", match.away_team || ""]}
                 selected={ganador}
@@ -249,7 +249,7 @@ export function PrediccionesModal({ match, onClose }: PrediccionesModalProps) {
             </Section>
 
             {/* Marcador final */}
-            <Section icon="🎯" label="Marcador final">
+            <Section  label="Marcador final">
               <div className="flex items-center gap-3">
                 <ScoreInput
                   value={golesLocal}
@@ -266,7 +266,7 @@ export function PrediccionesModal({ match, onClose }: PrediccionesModalProps) {
             </Section>
 
             {/* Primer gol de... */}
-            <Section icon="⭐" label="Primer gol de...">
+            <Section label="Primer gol de...">
               <input
                 type="text"
                 value={primerGol}
