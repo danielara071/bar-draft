@@ -6,6 +6,8 @@ import {
   FieldLabel,
 } from "../../../shared/components/ui/shadcn/ui/field";
 import { Input } from "../../../shared/components/ui/shadcn/ui/input";
+import { useState } from "react";
+import { MoonLoader } from "react-spinners";
 
 interface NewReelFormProps {
   uploadVideo: (data: any) => void;
@@ -42,9 +44,10 @@ export function NewReelForm({ uploadVideo }: NewReelFormProps) {
     return { videoUrl, thumbnailUrl };
   };
 
-
   const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsUploading(true);
+
     const data = new FormData(e.currentTarget);
 
     const video = data.get("video");
@@ -55,20 +58,22 @@ export function NewReelForm({ uploadVideo }: NewReelFormProps) {
       return;
     }
 
-    const {videoUrl, thumbnailUrl} = await addToBuckets(thumbnail, video);
+    const { videoUrl, thumbnailUrl } = await addToBuckets(thumbnail, video);
 
     const result = {
       video_url: videoUrl,
       thumbnail_url: thumbnailUrl,
-      caption: data.get("caption"),
-      category: data.get("category"),
+      caption: data.get("caption") || "",
+      category: data.get("category") || "",
       order_index: Number(data.get("order_index")),
       is_active: data.get("is_active") === "yes",
     };
 
-
     uploadVideo(result);
+    setIsUploading(false);
   };
+
+  const [isUploading, setIsUploading] = useState(false);
 
   return (
     <form onSubmit={handleSubmit}>
@@ -76,12 +81,12 @@ export function NewReelForm({ uploadVideo }: NewReelFormProps) {
         <Field>
           <FieldLabel>Agregar Video</FieldLabel>
 
-          <Input type="file" accept="video/*" name="video" />
+          <Input type="file" accept="video/*" name="video" required />
         </Field>
         <Field>
           <FieldLabel>Agregar Miniatura</FieldLabel>
 
-          <Input type="file" accept="image/*" name="thumbnail" />
+          <Input type="file" accept="image/*" name="thumbnail" required />
         </Field>
         <Field>
           <FieldLabel>Leyenda</FieldLabel>
@@ -95,7 +100,7 @@ export function NewReelForm({ uploadVideo }: NewReelFormProps) {
 
         <Field>
           <FieldLabel>Índice de orden</FieldLabel>
-          <Input name="order_index" type="number" defaultValue={0} />
+          <Input name="order_index" type="number" defaultValue={0} required />
         </Field>
 
         <Field>
@@ -111,12 +116,28 @@ export function NewReelForm({ uploadVideo }: NewReelFormProps) {
         </Field>
 
         <Field orientation="horizontal">
-          <Button type="reset" variant="outline">
-            Cancelar
-          </Button>
-          <Button type="submit" className="bg-brand-navy">
-            Subir
-          </Button>
+          {!isUploading ? (
+            <div className="flex flex-row items-center gap-x-2">
+              <Button type="reset" variant="outline">
+                Cancelar
+              </Button>
+              <Button type="submit" className="bg-brand-navy">
+                Subir
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-row items-center gap-x-2">
+              <Button
+                variant="outline"
+                className="cursor-not-allowed"
+              >
+                Cancelar
+              </Button>
+              <Button className="bg-brand-navy">
+                <MoonLoader size={15} color="white" />
+              </Button>
+            </div>
+          )}
         </Field>
       </FieldGroup>
     </form>
