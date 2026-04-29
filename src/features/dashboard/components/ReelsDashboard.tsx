@@ -4,11 +4,13 @@ import ReelAdminCard from "./ReelAdminCard";
 import { BarLoader } from "react-spinners";
 import type { AdminReel } from "../interfaces/AdminReel";
 import ReelInfoCard from "./ReelInfoCard";
-import AddNewReel from "./AddNewReel";
+import AddNewReelCard from "./AddNewReelCard";
+import AddNewReelModal from "./AddNewReelModal";
 
 const ReelsDashboard = () => {
   const { videos, loading, fetchVideos } = useReelsAdmin();
   const [selected, setSelected] = useState<AdminReel | null>(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const didMutate = useRef(false);
 
   const handleMutate = () => {
@@ -31,8 +33,13 @@ const ReelsDashboard = () => {
     <div className="border border-slate-200 rounded-2xl bg-brand-white p-5 mt-4 min-h-52 flex items-center justify-center">
       {!loading ? (
         <div className="grid grid-cols-4 gap-4 w-full ">
-          <AddNewReel />
-
+          <AddNewReelCard onClick={() => setIsAddModalOpen((prev) => !prev)} />
+          {isAddModalOpen && (
+            <AddNewReelModal
+              toggleCard={() => setIsAddModalOpen((prev) => !prev)}
+              updated={handleMutate}
+            />
+          )}
           {videos.map((item) => (
             <ReelAdminCard
               id={item.id}

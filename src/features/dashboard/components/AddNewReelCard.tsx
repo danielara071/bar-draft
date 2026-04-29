@@ -4,7 +4,7 @@ interface AddNewReelProps {
     onClick: () => void;
 }
 
-const AddNewReel = ({onClick} : AddNewReelProps) => {
+const AddNewReelCard = ({onClick} : AddNewReelProps) => {
   return (
     <div className="h-96 max-w-60 w-full rounded-2xl border border-brand-navy border-dashed relative cursor-pointer" onClick={onClick}>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -17,4 +17,4 @@ const AddNewReel = ({onClick} : AddNewReelProps) => {
   );
 };
 
-export default AddNewReel;
+export default AddNewReelCard;
