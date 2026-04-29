@@ -68,13 +68,24 @@ export function registerCheckoutRoutes(app: Hono) {
       })
     } catch (error: unknown) {
       console.error('Stripe checkout:', error)
+      const stripeLikeError =
+        typeof error === 'object' && error !== null
+          ? (error as { message?: unknown; type?: unknown })
+          : null
+
       const msg =
-        error instanceof Stripe.errors.StripeError
-          ? error.message
-          : error instanceof Error
+        typeof stripeLikeError?.message === 'string' && stripeLikeError.message.trim()
+          ? stripeLikeError.message
+          : error instanceof Error && error.message
             ? error.message
             : 'Error al crear la suscripción en Stripe'
-      return c.json({ message: msg }, 400)
+
+      // Si Stripe reporta errores esperados (tarjeta, validación, etc.), responde 400.
+      const isStripeExpectedError =
+        typeof stripeLikeError?.type === 'string' &&
+        (stripeLikeError.type.startsWith('Stripe') || stripeLikeError.type.endsWith('Error'))
+
+      return c.json({ message: msg }, isStripeExpectedError ? 400 : 500)
     }
   })
 }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import  useSession  from "../../hooks/useSession";
-import { useProfile } from "../../hooks/useProfile";
+import { useProfileWithRefetch } from "../../hooks/useProfile";
 import { LoginButton } from "../Buttons";
 
 const navItems = [
@@ -11,18 +11,29 @@ const navItems = [
   { name: "Reels",       path: "/reels" },
   { name: "Watch Party", path: "/watchPartyHUB" },
   // { name: "Watch PartyHUB", path: "/watchPartyHUB" }, //eliminar solo es para pruebas
+  { name: "Estadisticas", path: "/estadisticas" },
   { name: "Tienda",      path: "/tienda" },
   { name: "Perfil",      path: "/perfil" },
 ];
 
 const Navbar = () => {
   const session = useSession();
-  const profile = useProfile();
+  const { profile, refetch } = useProfileWithRefetch();
   const isLoggedIn = session !== null;
   const navigate = useNavigate();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+
+  // Escucha evento de compra exitosa
+  useEffect(() => {
+    const handleProfileUpdate = () => {
+      void refetch();
+    };
+
+    window.addEventListener("profileUpdated", handleProfileUpdate);
+    return () => window.removeEventListener("profileUpdated", handleProfileUpdate);
+  }, [refetch]);
 
   // mostrar y esconder navbar
   useEffect(() => {
@@ -37,7 +48,6 @@ const Navbar = () => {
       }
         lastScrollY = currentScrollY;
     }
-
     window.addEventListener("scroll", controlNavbar)
     return () => window.removeEventListener("scroll", controlNavbar)
   }
