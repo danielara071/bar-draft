@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ViewReelCard from "./ViewReelCard";
+// import ViewReelCard from "./ViewReelCard";
 import { X } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
 import { NewReelForm } from "./NewReelForm";
@@ -10,7 +10,7 @@ interface AddNewReelModalProps {
 }
 
 const AddNewReelModal = ({ toggleCard, updated }: AddNewReelModalProps) => {
-  const [isMuted, setIsMuted] = useState(true);
+  // const [isMuted, setIsMuted] = useState(true);
   const [message, setMessage] = useState<boolean | null>(null);
   const [isSuccessful, setIsSuccessful] = useState(false);
 

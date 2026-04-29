@@ -10,7 +10,7 @@ interface ReelInfoCardProps {
   video_url: string;
   thumbnail_url: string;
   caption: string;
-  duration: number;
+  duration?: number;
   category: string;
   order_index: number;
   is_active: boolean;
@@ -24,7 +24,6 @@ const ReelInfoCard = ({
   video_url,
   thumbnail_url,
   caption,
-  duration,
   category,
   order_index,
   is_active,
