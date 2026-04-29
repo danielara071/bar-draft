@@ -10,7 +10,7 @@ const AuthErrorCard = ({ message, onClose }: AuthErrorCardProps) => {
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-semibold text-brand-crimson">
-              Hubo un problema al iniciar sesion
+              Hubo un problema al iniciar sesión
             </p>
             <p className="mt-1 text-sm text-brand-gray-mid">{message}</p>
           </div>
