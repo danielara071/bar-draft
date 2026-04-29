@@ -1,6 +1,5 @@
 import { useState } from "react";
 import ViewReelCard from "./ViewReelCard";
-import { InputFieldgroup } from "./InputFieldGroup";
 import { X } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
 import { NewReelForm } from "./NewReelForm";
