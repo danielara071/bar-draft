@@ -23,26 +23,14 @@ const AuthCallback = () => {
         }
 
         if (session?.user) {
-          // Sesión válida: guardar perfil y navegar al home
-          const { id, email } = session.user;
-          const { error: upsertError } = await supabase
-            .from("profiles")
-            .upsert({ id, email }, { onConflict: "id" });
-
-          if (upsertError) {
-            console.error("Error guardando perfil:", upsertError.message);
-          }
-
-          // Navegar al home
+          // Sesión válida: navegar al home
           navigate("/", { replace: true });
         } else {
           // No hay sesión válida: ir a login
           navigate("/login", { replace: true });
         }
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Error desconocido"
-        );
+        setError(err instanceof Error ? err.message : "Error desconocido");
         setLoading(false);
       }
     };

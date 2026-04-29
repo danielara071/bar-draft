@@ -5,23 +5,11 @@ import SignInButton from "../features/login/components/SignInButton";
 const Index = () => {
   useEffect(() => {
     const init = async () => {
-      const { data, error } = await supabase.auth.getSession();
+      const { error } = await supabase.auth.getSession();
 
       if (error) {
         console.error(error.message);
         return;
-      }
-
-      const s = data.session;
-
-      if (s?.user?.email) {
-        const { id, email } = s.user;
-
-        const { error } = await supabase
-          .from("profiles")
-          .upsert({ id, email }, { onConflict: "id" });
-
-        if (error) console.error("Error guardando perfil:", error.message);
       }
     };
 
