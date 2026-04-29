@@ -10,6 +10,11 @@ import Perfil from "./pages/Perfil";
 import Amigo from "./pages/Amigo";
 import Reels from "./pages/Reels"
 import Home from "./pages/Home";
+import Callback from "./auth/Callback";
+import Dashboard from "./pages/Dashboard";
+import DashboardLayout from "./features/dashboard/layouts/DashboardLayout";
+import ReelsAdminPage from "./features/dashboard/pages/ReelsAdminPage";
+import { AdminRoute } from "./auth/AdminRoute";
 import Tienda from "./pages/Tienda"
 import GestionarAmigos from "./pages/GestionarAmigos"
 import Ra from "./pages/ra";
@@ -35,6 +40,17 @@ function App() {
         <Route path="/amigo" element={<Amigo />} />
         <Route path="/gestionarAmigos" element={<GestionarAmigos />} />
         <Route path="/estadisticas" element={<Estadisticas />} />
+      </Route>
+      <Route
+        path="/dashboard"
+        element={
+          <AdminRoute>
+            <DashboardLayout />
+          </AdminRoute>
+        }
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="reels" element={<ReelsAdminPage />} />
       </Route>
     </Routes>
   );
