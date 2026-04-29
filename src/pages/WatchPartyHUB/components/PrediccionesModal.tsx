@@ -289,7 +289,7 @@ export function PrediccionesModal({ match, onClose }: PrediccionesModalProps) {
             {/* Resultado al medio tiempo */}
             <Section label="Resultado al medio tiempo">
               <ToggleGroup
-                options={["Barça gana", "Empate", `${match.away_team || ""} gana`]}
+                options={[`${match.home_team || ""} gana`, "Empate", `${match.away_team || ""} gana`]}
                 values={["1", "0", "-1"]}
                 selected={medioTiempo !== null ? String(medioTiempo) : null}
                 onSelect={(v) => setMedioTiempo(parseInt(v) as MedioTiempo)}
