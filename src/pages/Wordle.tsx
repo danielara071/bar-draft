@@ -20,6 +20,8 @@ function Wordle() {
   const lost = !won && guesses.length === 6;
   const gameOver = won || lost;
 
+  const [letterStates, setLetterStates] = useState<Record<string, string>>({});
+
   useEffect(() => {
   if (won) {
     setOpenWin(true);
@@ -38,6 +40,20 @@ function Wordle() {
   if (key === 'ENTER') {
     if (currentGuess.length === 5) {
       submitGuess(currentGuess);
+      const guess = currentGuess.toUpperCase();
+      setLetterStates(prev => {
+        const next = { ...prev };
+        guess.split('').forEach((letter, i) => {
+          if (dailyWord.toUpperCase()[i] === letter) {
+            next[letter] = 'bg-brand-yellow';        
+          } else if (dailyWord.toUpperCase().includes(letter) && next[letter] !== 'bg-brand-yellow') {
+            next[letter] = 'bg-brand-crimson';     
+          } else if (!next[letter]) {
+            next[letter] = 'bg-gray-700';        
+          }
+        });
+        return next;
+      });
       setCurrentGuess('');
     }
   } else if (key === 'BACKSPACE') {
@@ -61,7 +77,7 @@ function Wordle() {
         </div>
       </div>
       <Grid guesses={guesses} currentGuess={currentGuess} dailyWord={dailyWord} />
-      <Keyboard onKeyPress={handleKeyPress}/>
+      <Keyboard onKeyPress={handleKeyPress} letterStates={letterStates} />
       <PopUp open={openWin} onClose={() => setOpenWin(false)}>
         <WinPopUp guesses={guesses.length} onClose={() => setOpenWin(false)} />
       </PopUp>

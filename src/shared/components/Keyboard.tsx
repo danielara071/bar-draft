@@ -8,9 +8,10 @@ const KEYBOARD_ROWS = [
 
 interface KeyboardProps {
   onKeyPress: (key: string) => void;
+  letterStates: Record<string, string>;
 }
 
-const Keyboard = ({ onKeyPress }: KeyboardProps) => {
+const Keyboard = ({ onKeyPress, letterStates }: KeyboardProps) => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const key = event.key;
@@ -29,11 +30,12 @@ const Keyboard = ({ onKeyPress }: KeyboardProps) => {
         <div key={rowIndex} className="flex justify-center gap-[6px] w-full">
           {row.map((key) => {
             const label = key === "Backspace" ? "⌫" : key;
+            const bgClass = letterStates[key] ?? 'bg-gray-500 hover:bg-gray-700';
             return (
               <button
                 key={key}
                 onClick={() => onKeyPress(key.toUpperCase())}
-                className="font-bold border-0 h-[58px] w-[58px] px-3 cursor-pointer bg-gray-500 hover:bg-gray-700 rounded text-white text-xs uppercase"
+                className={`font-bold border-0 h-[58px] w-[58px] px-3 cursor-pointer ${bgClass} rounded text-white text-xs uppercase`}
               >
                 {label}
               </button>
