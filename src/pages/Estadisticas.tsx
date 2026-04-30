@@ -76,17 +76,17 @@ export default function Estadisticas() {
       />
       <div className="max-w-6xl mx-auto px-6 md:px-10 py-24 md:py-28 relative z-10">
         <header className="mb-12 md:mb-16">
-          <h1 className="text-4xl md:text-5xl text-center font-extrabold text-black">Mas Que Números</h1>
+          <h1 className="text-4xl md:text-5xl text-center font-extrabold text-black">Más Que Números</h1>
         <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-8 mx-auto max-w-7xl mt-6">
           <p className="text-[#555555] text-[1.15rem] leading-relaxed font-normal tracking-tight">
-            El pulso del equipo en datos. Sigue de cerca la evolucion de tus jugadores favoritos y descubre
-            quien domina las estadisticas clave en el primer equipo masculino y femenino del FC Barcelona.
+            El pulso del equipo en datos. Sigue de cerca la evolución de tus jugadores favoritos y descubre
+            quien domina las estadísticas clave en el primer equipo masculino y femenino del FC Barcelona.
           </p>
         </div>
         </header>
 
         {pageState === "loading" && (
-          <div className="text-center py-20 text-gray-700 font-medium">Cargando estadisticas...</div>
+          <div className="text-center py-20 text-gray-700 font-medium">Cargando estadísticas...</div>
         )}
 
         {pageState === "error" && (
