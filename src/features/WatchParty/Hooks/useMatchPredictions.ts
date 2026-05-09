@@ -49,7 +49,7 @@ export const useMatchPredictions = () => {
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, []); // [] que el efecto se ejecute solo una vez al montar el componente
 
   return { predictions };
 };
