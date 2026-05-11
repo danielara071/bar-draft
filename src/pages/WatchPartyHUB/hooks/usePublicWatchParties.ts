@@ -1,24 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "../../../shared/services/supabaseClient";
 import type { WatchParty, WatchPartyMatch } from "../interfaces/index.interfaces";
-
-function mapToWatchPartyMatch(wp: WatchParty): WatchPartyMatch {
-  return {
-    id: wp.fixture_id,
-    type: wp.fixture_id.startsWith("femenil") ? "femenil" : "varonil",
-    title: `${wp.home_team} vs ${wp.away_team}`,
-    competition: wp.name,
-    time: new Date(wp.match_date).toLocaleString("es-MX", {
-      weekday: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-    code: wp.code,
-    home_team: wp.home_team,
-    away_team: wp.away_team,
-    match_date: wp.match_date,
-  };
-}
+import { mapToWatchPartyMatch } from "../utils/mapToWatchPartyMatch";
 
 interface UsePublicWatchPartiesReturn {
   parties: WatchPartyMatch[];
@@ -64,7 +47,6 @@ export function usePublicWatchParties(): UsePublicWatchPartiesReturn {
       }
 
       const fixtureIds = [...new Set(allParties.map((wp) => wp.fixture_id))];
-
       const { data: fixturesData } = await supabase
         .from("fixtures")
         .select("fixture_id, status")
@@ -72,10 +54,9 @@ export function usePublicWatchParties(): UsePublicWatchPartiesReturn {
 
       if (!mountedRef.current) return;
 
-   
       const doneIds = new Set(
         (fixturesData ?? [])
-          .filter((f) => f.status === "finished")
+          .filter((f) => f.status === "done" || f.status === "finished")
           .map((f) => f.fixture_id)
       );
 
@@ -89,7 +70,6 @@ export function usePublicWatchParties(): UsePublicWatchPartiesReturn {
 
     fetchPublic();
 
-    // Realtime: nueva sala pública insertada
     const channel = supabase
       .channel("public-watch-parties-realtime")
       .on<WatchParty>(
@@ -106,17 +86,14 @@ export function usePublicWatchParties(): UsePublicWatchPartiesReturn {
           });
         }
       )
-      // Realtime: fixture actualizado a done → eliminar sus salas del listado
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "fixtures" },
         (payload) => {
           if (!mountedRef.current) return;
           const updated = payload.new as { fixture_id: string; status: string };
-          if (updated.status === "finished") {
-            setParties((prev) =>
-              prev.filter((p) => p.id !== updated.fixture_id)
-            );
+          if (updated.status === "done" || updated.status === "finished") {
+            setParties((prev) => prev.filter((p) => p.id !== updated.fixture_id));
           }
         }
       )

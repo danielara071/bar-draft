@@ -1,24 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "../../../shared/services/supabaseClient";
 import type { WatchParty, WatchPartyMatch } from "../interfaces/index.interfaces";
-
-function mapToWatchPartyMatch(wp: WatchParty): WatchPartyMatch {
-  return {
-    id: wp.fixture_id,
-    type: wp.fixture_id.startsWith("femenil") ? "femenil" : "varonil",
-    title: `${wp.home_team} vs ${wp.away_team}`,
-    competition: wp.name,
-    time: new Date(wp.match_date).toLocaleString("es-MX", {
-      weekday: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-    code: wp.code,
-    home_team: wp.home_team,
-    away_team: wp.away_team,
-    match_date: wp.match_date,
-  };
-}
+import { mapToWatchPartyMatch } from "../utils/mapToWatchPartyMatch";
 
 interface UseFriendWatchPartiesReturn {
   parties: WatchPartyMatch[];
@@ -31,7 +14,6 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const mountedRef = useRef(true);
-  // Guardamos los IDs de amigos para usarlos en el listener de realtime
   const creatorIdsRef = useRef<string[]>([]);
 
   useEffect(() => {
@@ -47,7 +29,6 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
       setIsLoading(true);
       setError(null);
 
-      // 1. IDs de amigos aceptados
       const { data: friendIds, error: friendError } = await supabase
         .rpc("get_friend_ids", { p_user_id: userId });
 
@@ -59,11 +40,9 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
         return;
       }
 
-      
       const creatorIds: string[] = [userId, ...(friendIds ?? [])];
       creatorIdsRef.current = creatorIds;
 
-      // 2. Traer salas del usuario y sus amigos
       const { data: watchPartiesData, error: wpError } = await supabase
         .from("watch_parties")
         .select("*")
@@ -88,7 +67,6 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
         return;
       }
 
-      // 3. Traer status de fixtures para excluir partidos terminados
       const fixtureIds = [...new Set(allParties.map((wp) => wp.fixture_id))];
       const { data: fixturesData } = await supabase
         .from("fixtures")
@@ -115,14 +93,12 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
 
     const channel = supabase
       .channel(`friend-watch-parties-${userId}`)
-      // Escucha salas nuevas creadas por el usuario o sus amigos → agregar al listado
       .on<WatchParty>(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "watch_parties" },
         (payload) => {
           if (!mountedRef.current) return;
           const newWp = payload.new;
-          // Solo agregar si fue creada por el usuario o un amigo
           if (!creatorIdsRef.current.includes(newWp.created_by)) return;
           const newParty = mapToWatchPartyMatch(newWp);
           setParties((prev) => {
@@ -135,7 +111,6 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
           });
         }
       )
-      // Escucha fixture terminado → eliminar sus salas del listado
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "fixtures" },
@@ -143,9 +118,7 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
           if (!mountedRef.current) return;
           const updated = payload.new as { fixture_id: string; status: string };
           if (updated.status === "done" || updated.status === "finished") {
-            setParties((prev) =>
-              prev.filter((p) => p.id !== updated.fixture_id)
-            );
+            setParties((prev) => prev.filter((p) => p.id !== updated.fixture_id));
           }
         }
       )
