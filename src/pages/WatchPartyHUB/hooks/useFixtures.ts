@@ -1,40 +1,31 @@
 import { useEffect, useState, useCallback } from "react";
+import { supabase } from "../../../shared/services/supabaseClient"; 
 import type { Fixture } from "../interfaces/index.interfaces";
 
-const SCRAPER_URL = "https://barca-scraper-7tag.onrender.com";
-const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 1500;
-
-interface ScraperMatch {
+interface DbFixture {
   fixture_id: string;
   category: "varonil" | "femenil";
-  datetime: string;
+  match_date: string;
   home_team: string;
   away_team: string;
-  competition: string;
-  venue?: string;
+  competition: string | null;
+  venue: string | null;
+  status: "scheduled" | "live" | "finished";
 }
 
-interface ScraperResponse {
-  varonil: ScraperMatch[];
-  femenil: ScraperMatch[];
-  total: number;
-}
-
-function mapToFixture(match: ScraperMatch): Fixture {
+function mapDbToFixture(row: DbFixture): Fixture {
   return {
-    fixture_id: match.fixture_id,
-    date: match.datetime,
-    homeTeam: match.home_team,
-    awayTeam: match.away_team,
-    venue: match.venue,
-    status: "NS",
-    competition: match.competition || "Por confirmar",
-    category: match.category,
+    fixture_id: row.fixture_id,
+    date: row.match_date,
+    homeTeam: row.home_team,
+    awayTeam: row.away_team,
+    venue: row.venue || undefined,
+    status: row.status === "scheduled" ? "NS" : row.status,
+    competition: row.competition || "Por confirmar",
+    category: row.category,
   };
 }
 
-// Fixtures de fallback si el scraper falla
 const FALLBACK_FIXTURES: Fixture[] = [
   {
     fixture_id: "fallback-var-1",
@@ -46,20 +37,6 @@ const FALLBACK_FIXTURES: Fixture[] = [
     category: "varonil",
   },
 ];
-
-async function fetchWithRetry(url: string, retries: number): Promise<Response> {
-  try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return res;
-  } catch (err) {
-    if (retries > 0) {
-      await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
-      return fetchWithRetry(url, retries - 1);
-    }
-    throw err;
-  }
-}
 
 interface UseFixturesReturn {
   fixtures: Fixture[];
@@ -78,18 +55,22 @@ export function useFixtures(): UseFixturesReturn {
     setError(null);
 
     try {
-      const res = await fetchWithRetry(`${SCRAPER_URL}/next-matches`, MAX_RETRIES);
-      const json: ScraperResponse = await res.json();
+      const { data, error: supabaseError } = await supabase
+        .from("fixtures")
+        .select("*")
+        .neq("status", "finished")   // excluir partidos terminados
+        .order("match_date", { ascending: true });
 
-      const all: Fixture[] = [
-        ...(json.varonil ?? []).map(mapToFixture),
-        ...(json.femenil ?? []).map(mapToFixture),
-      ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      if (supabaseError) throw new Error(supabaseError.message);
 
-      setFixtures(all.length > 0 ? all : FALLBACK_FIXTURES);
+      if (data && data.length > 0) {
+        setFixtures(data.map(mapDbToFixture));
+      } else {
+        setFixtures(FALLBACK_FIXTURES);
+      }
     } catch (err) {
-      // Scraper caído — usar fallback y mostrar aviso
-      setError("No se pudieron cargar los partidos en tiempo real.");
+      console.error("Error al obtener partidos de Supabase:", err);
+      setError("No se pudieron cargar los partidos en este momento.");
       setFixtures(FALLBACK_FIXTURES);
     } finally {
       setIsLoading(false);

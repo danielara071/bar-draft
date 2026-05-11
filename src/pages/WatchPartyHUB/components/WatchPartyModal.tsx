@@ -1,20 +1,23 @@
 import type { MouseEvent } from "react";
-import type { WatchPartyModalProps, Privacy } from "../interfaces/index.interfaces";
+import type { WatchPartyModalProps, Privacy, WatchPartyMatch } from "../interfaces/index.interfaces";
 import { useWatchPartyModal } from "../hooks/useWatchPartyModal";
 import { useFixtures } from "../hooks/useFixtures";
 import useSession from "../../../features/WatchParty/Hooks/SessionLogic";
 
+// Extendemos las props para recibir el callback onCreated
+interface WatchPartyModalExtendedProps extends WatchPartyModalProps {
+  onCreated?: (match: WatchPartyMatch) => void;
+}
 
-export default function WatchPartyModal({ open, onClose }: WatchPartyModalProps) {
+export default function WatchPartyModal({ open, onClose, onCreated }: WatchPartyModalExtendedProps) {
   const session = useSession();
-
   const { fixtures, isLoading: fixturesLoading } = useFixtures();
-  
+
   const {
     step, form, roomCode, canSubmit, isLoading, error,
     setName, setFixtureId, setPrivacy,
-    handleCreate, handleClose, handleGoToRoom,
-  } = useWatchPartyModal(session?.user?.id, fixtures, onClose);
+    handleCreate, handleClose, handleGoToPredicciones,
+  } = useWatchPartyModal(session?.user?.id, fixtures, onClose, onCreated);
 
   if (!open) return null;
 
@@ -96,7 +99,7 @@ export default function WatchPartyModal({ open, onClose }: WatchPartyModalProps)
               Comparte este código con tus amigos para que se unan.
             </p>
             <div className="wp-modal__code-display">{roomCode}</div>
-            <button className="wp-modal__submit" onClick={handleGoToRoom}>
+            <button className="wp-modal__submit" onClick={handleGoToPredicciones}>
               Ir a mi Watch Party →
             </button>
           </div>
