@@ -88,7 +88,7 @@ export default function WatchPartyPage() {
   };
 
   // Callback que recibe WatchPartyModal cuando la sala fue creada exitosamente.
-  // Cierra el modal de creación y abre PrediccionesModal — Bug 1 corregido.
+  // Cierra el modal de creación y abre PrediccionesModal 
   const handleWatchPartyCreated = (match: WatchPartyMatch): void => {
     setCreateModalOpen(false);
     setPrediccionMatch(match);

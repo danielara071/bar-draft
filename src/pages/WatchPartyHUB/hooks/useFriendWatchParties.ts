@@ -59,6 +59,7 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
         return;
       }
 
+      
       const creatorIds: string[] = [userId, ...(friendIds ?? [])];
       creatorIdsRef.current = creatorIds;
 
@@ -114,7 +115,7 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
 
     const channel = supabase
       .channel(`friend-watch-parties-${userId}`)
-      // Escucha salas nuevas creadas — cubre bugs 2 (pública) y 3 (privada)
+      // Escucha salas nuevas creadas por el usuario o sus amigos → agregar al listado
       .on<WatchParty>(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "watch_parties" },

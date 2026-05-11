@@ -38,7 +38,7 @@ export default function WatchPartyModal({ open, onClose, onCreated }: WatchParty
             <label className="wp-modal__label">Nombre de la sala</label>
             <input
               className="wp-modal__input"
-              placeholder="Ej: Culers de MTY 🔵🔴"
+              placeholder="Ej: Culers de MTY"
               value={form.name}
               onChange={(e) => setName(e.target.value)}
             />

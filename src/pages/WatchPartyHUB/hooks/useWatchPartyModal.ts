@@ -129,8 +129,8 @@ export function useWatchPartyModal(
     setStep(2);
   };
 
-  // Se llama desde el botón "Ir a mi Watch Party" en el step 2
-  // Cierra el modal de creación y dispara onCreated → WatchPartyPage abre PrediccionesModal
+  // Se llama desde el botón "Ir a mi Watch Party" 
+  // Cierra el modal de creación y dispara onCreated, WatchPartyPage abre PrediccionesModal
   const handleGoToPredicciones = (): void => {
     if (createdMatch && onCreated) {
       onCreated(createdMatch);
