@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import useSession from "../../../features/WatchParty/Hooks/SessionLogic";
 import type { WatchPartyMatch } from "../interfaces/index.interfaces";
 import { useFriendWatchParties } from "../hooks/useFriendWatchParties";
