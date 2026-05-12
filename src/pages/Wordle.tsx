@@ -8,9 +8,7 @@ import HelpPopUp from '../shared/components/HelpPopUp';
 import { useWordle } from '../features/wordle/hooks/useWordle';
 
 function Wordle() {
-  //const {guesses, dailyWord, status, loading, submitGuess } = useWordle();
   const {guesses, dailyWord, submitGuess } = useWordle();
-  //const [guesses_, setGuesses_] = useState<string[]>([]);
   const [currentGuess, setCurrentGuess] = useState('');
   const [openWin, setOpenWin] = useState<boolean>(false);
   const [openLose, setOpenLose] = useState<boolean>(false);
@@ -45,9 +43,9 @@ function Wordle() {
         const next = { ...prev };
         guess.split('').forEach((letter, i) => {
           if (dailyWord.toUpperCase()[i] === letter) {
-            next[letter] = 'bg-brand-yellow';        
-          } else if (dailyWord.toUpperCase().includes(letter) && next[letter] !== 'bg-brand-yellow') {
-            next[letter] = 'bg-brand-crimson';     
+            next[letter] = 'bg-[#538d4e]';        
+          } else if (dailyWord.toUpperCase().includes(letter) && next[letter] !== 'bg-[#538d4e] text-white') {
+            next[letter] = 'bg-brand-yellow';     
           } else if (!next[letter]) {
             next[letter] = 'bg-gray-700';        
           }

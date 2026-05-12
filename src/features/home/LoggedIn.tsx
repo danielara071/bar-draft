@@ -5,8 +5,6 @@ import { SecondaryButton } from '../../shared/components/Buttons';
 import Noticias from '../../shared/components/Noticias'
 import useSession from "../../shared/hooks/useSession"
 import { useProfile } from "../../shared/hooks/useProfile"
-import catLocked from "../../data/img/catLocked.png"
-import catLevel1 from "../../data/img/catLevel1.png"
 import Socials from '../../shared/components/Socials'
 
 function LoggedIn() {
@@ -39,7 +37,7 @@ function LoggedIn() {
                     </div>
 
                     <div className="flex items-center justify-between my-20 mx-5">
-                        <img src={catLevel1} className="w-32" />
+                        <img src= {`https://vsywrimuzdnfyztreolz.supabase.co/storage/v1/object/public/cat/cat${profile?.nivel}.png`} className="w-32" />
                         <div className="flex-1 mx-8">
                             <p className="text-end px-2 pb-1 text-sm md:text-base font-sans">{profile?.puntos} / {profile ? profile.nivel * levelXP : 0} XP </p>
                             <div className="w-full bg-brand-gray-light rounded-md h-5">
@@ -51,7 +49,7 @@ function LoggedIn() {
                                 <span>para llegar al Nivel {profile ? profile.nivel + 1 : 0}</span>
                             </p>
                         </div>
-                        <img src={catLocked} className="w-26" />
+                        <img src={'https://vsywrimuzdnfyztreolz.supabase.co/storage/v1/object/public/cat/catLocked.png'} className="w-26" />
                     </div>
 
                     <div className="flex items-center justify-start gap-20 my-15 mx-15">
