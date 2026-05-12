@@ -12,7 +12,7 @@ import WatchPartyModal from "../components/WatchPartyModal";
 import WatchPartyJoinModal from "../components/WatchPartyJoinModal";
 import { PrediccionesModal } from "../components/PrediccionesModal";
 
-// ── Contador regresivo ────────────────────────────────────────────────────────
+
 function useCountdown(targetDate: Date | null) {
   const [timeLeft, setTimeLeft] = useState<{ h: number; m: number; s: number } | null>(null);
 
