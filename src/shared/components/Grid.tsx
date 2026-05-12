@@ -13,7 +13,7 @@ function getColors(guess: string, solution: string): string[] {
 
   for (let i = 0; i < guess.length; i++) {
     if (guess[i] === solution[i]) {
-      colors[i] = 'bg-brand-yellow text-white';
+      colors[i] = 'bg-[#538d4e] text-white';
       solutionLetters[i] = ''; 
     }
   }
@@ -23,7 +23,7 @@ function getColors(guess: string, solution: string): string[] {
 
     const index = solutionLetters.indexOf(guess[i]);
     if (index !== -1) {
-      colors[i] = 'bg-brand-crimson text-white';
+      colors[i] = 'bg-brand-yellow text-white';
       solutionLetters[index] = ''; 
     }
   }

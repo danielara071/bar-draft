@@ -17,7 +17,7 @@ const HelpPopUp = ({ onClose }: HelpProps) => {
                 </ul>
                 <p className="text-md my-5">Ejemplos:</p>
                 <div className="flex flex-row gap-2 my-4">
-                <Letter letter="B" textColor="text-white" bgColor="bg-brand-yellow"/>
+                <Letter letter="B" textColor="text-white" bgColor="bg-[#538d4e]"/>
                 <Letter letter="A"/>
                 <Letter letter="R"/>
                 <Letter letter="C"/>
@@ -26,7 +26,7 @@ const HelpPopUp = ({ onClose }: HelpProps) => {
                 <p className="text-xs text-brand-gray-mid">La letra <span className="font-bold">B</span> está en la palabra y en el lugar correcto.</p>
                 <div className="flex flex-row gap-2 my-4">
                 <Letter letter="B"/>
-                <Letter letter="A" textColor="text-white" bgColor="bg-brand-crimson"/>
+                <Letter letter="A" textColor="text-white" bgColor="bg-brand-yellow"/>
                 <Letter letter="R"/>
                 <Letter letter="C"/>
                 <Letter letter="A"/>

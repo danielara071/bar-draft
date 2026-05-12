@@ -24,26 +24,6 @@ export default function Noticias() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-
-  // useEffect(() => {
-  //   Promise.all([
-  //     fetch("/rss/cat/masculino").then((r) => r.text()),
-  //     //fetch("/rss/last-posts").then((r) => r.text()),
-  //     fetch("/rss/cat/femenino").then((r) => r.text()),
-  //   ])
-  //     .then(([varXml, femXml]) => {
-  //       const varArticles   = parseRss(varXml,  "masculino").slice(0, 2);
-  //       const femArticles = parseRss(femXml, "femenino").slice(0, 2);
-
-  //       setArticles([...varArticles, ...femArticles]);
-  //       setLoading(false);
-  //     })
-  //     .catch((err: Error) => {
-  //       setError(err.message);
-  //       setLoading(false);
-  //     });
-  // }, []);
-
   useEffect(() => {
   const fetchNews = async () => {
     try {
@@ -86,7 +66,11 @@ function NewsCard({ article }: NewsCardProps) {
   const [imgBroken, setImgBroken] = useState(false);
 
   return (
-     <div className="flex flex-col">
+     <a href={article.link}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex flex-col no-underline text-inherit"
+    >
       <hr className="mb-10 border-brand-gray-light" />
 
       <div className="h-64 md:h-72 lg:h-80 overflow-hidden">
@@ -110,32 +94,9 @@ function NewsCard({ article }: NewsCardProps) {
         <h2 className="text-sm md:text-base font-normal m-0 leading-tight">
           {article.title}
         </h2>
-        <p className="text-xs md:text-sm text-gray-500 mt-1.5 mb-0">
-          {article.description}
-        </p>
       </div>
-    </div>
+    </a>
+  
   );
 }
 
-// function parseRss(xml: string, category: string): Article[] {
-//   const parser = new DOMParser();
-//   const doc = parser.parseFromString(xml, "application/xml");
-
-//   return Array.from(doc.querySelectorAll("item")).map((item): Article => {
-//     const rawDesc = item.querySelector("description")?.textContent ?? "";
-//     const imgMatch = rawDesc.match(/<img[^>]+src=["']([^"']+)["']/i);
-//     const image =
-//       item.querySelector("enclosure")?.getAttribute("url") ??
-//       item.querySelector("content")?.getAttribute("url")  ??
-//       imgMatch?.[1] ??
-//       "";
-
-//     return {
-//       category,
-//       title:       item.querySelector("title")?.textContent?.trim() ?? "",
-//       description: rawDesc.replace(/<[^>]*>/g, "").trim().slice(0, 200),
-//       image,
-//     };
-//   });
-// }

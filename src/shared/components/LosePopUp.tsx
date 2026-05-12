@@ -16,7 +16,8 @@ const LosePopUp = ({ solution, onClose }: LoseProps) => {
                 <p className="text-md font-medium tracking-[9px]">{solution.toUpperCase()}</p>
             </div>
             <p className="text-xs text-brand-gray-mid leading-none">era la palabra del día</p>
-            <PrimaryButton onClick={onClose} size="sm">Regresar</PrimaryButton>        </div>
+            <PrimaryButton onClick={onClose} size="sm">Regresar</PrimaryButton>        
+        </div>
     );
 };
 
