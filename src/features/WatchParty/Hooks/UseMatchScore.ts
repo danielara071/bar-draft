@@ -88,6 +88,7 @@ export const useMatch = () => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     getMatch();
 
     const intervalId = setInterval(() => {

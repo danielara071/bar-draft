@@ -21,6 +21,7 @@ function useWatchPartyFixtureId(code: string | undefined) {
 
   useEffect(() => {
     if (!code) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoading(false);
       return;
     }
@@ -88,7 +89,12 @@ const WatchParty = () => {
   //predicciones populares filtradas por fixture_id de la base de datos, actualizadas en tiempo real
   const { predictions, totalVotes } = useMatchPredictions(fixtureId);
 
-  const { match: liveMatch, loading: matchLoading, error, fetchedAt } = useMatch();
+  const {
+    match: liveMatch,
+    loading: matchLoading,
+    error,
+    fetchedAt,
+  } = useMatch();
 
   const matchDateLabel = liveMatch
     ? new Date(liveMatch.fixture.date).toLocaleDateString("es-ES", {
