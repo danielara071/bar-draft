@@ -6,7 +6,7 @@ type AuthErrorCardProps = {
 const AuthErrorCard = ({ message, onClose }: AuthErrorCardProps) => {
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/45 px-4 pt-16">
-      <div className="w-full max-w-md rounded-3xl border border-brand-gray-light bg-brand-white p-5 shadow-[0_24px_60px_rgba(0,0,0,0.22)]">
+      <div className="w-full max-w-md rounded-3xl border border-brand-gray-light bg-brand-white p-5 shadow-2xl shadow-black/20">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-semibold text-brand-crimson">
