@@ -4,7 +4,7 @@ import type { WatchParty, WatchPartyMatch } from "../interfaces/index.interfaces
 
 function mapToWatchPartyMatch(wp: WatchParty): WatchPartyMatch {
   return {
-    id: wp.fixture_id,           // string — corregido
+    id: wp.fixture_id,
     type: wp.fixture_id.startsWith("femenil") ? "femenil" : "varonil",
     title: `${wp.home_team} vs ${wp.away_team}`,
     competition: wp.name,
@@ -30,8 +30,6 @@ export function usePublicWatchParties(): UsePublicWatchPartiesReturn {
   const [parties, setParties] = useState<WatchPartyMatch[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Ref para evitar setState en componente desmontado
   const mountedRef = useRef(true);
 
   useEffect(() => {
@@ -42,7 +40,7 @@ export function usePublicWatchParties(): UsePublicWatchPartiesReturn {
       setIsLoading(true);
       setError(null);
 
-      const { data, error: sbError } = await supabase
+      const { data: watchPartiesData, error: wpError } = await supabase
         .from("watch_parties")
         .select("*")
         .eq("privacy", "publica")
@@ -51,17 +49,47 @@ export function usePublicWatchParties(): UsePublicWatchPartiesReturn {
 
       if (!mountedRef.current) return;
 
-      if (sbError) {
-        setError(sbError.message);
-      } else {
-        setParties((data as WatchParty[]).map(mapToWatchPartyMatch));
+      if (wpError) {
+        setError(wpError.message);
+        setIsLoading(false);
+        return;
       }
+
+      const allParties = (watchPartiesData ?? []) as WatchParty[];
+
+      if (allParties.length === 0) {
+        setParties([]);
+        setIsLoading(false);
+        return;
+      }
+
+      const fixtureIds = [...new Set(allParties.map((wp) => wp.fixture_id))];
+
+      const { data: fixturesData } = await supabase
+        .from("fixtures")
+        .select("fixture_id, status")
+        .in("fixture_id", fixtureIds);
+
+      if (!mountedRef.current) return;
+
+   
+      const doneIds = new Set(
+        (fixturesData ?? [])
+          .filter((f) => f.status === "finished")
+          .map((f) => f.fixture_id)
+      );
+
+      const active = allParties
+        .filter((wp) => !doneIds.has(wp.fixture_id))
+        .map(mapToWatchPartyMatch);
+
+      setParties(active);
       setIsLoading(false);
     };
 
     fetchPublic();
 
-    // Suscripción en tiempo real — agrega la nueva sala directamente
+    // Realtime: nueva sala pública insertada
     const channel = supabase
       .channel("public-watch-parties-realtime")
       .on<WatchParty>(
@@ -71,14 +99,25 @@ export function usePublicWatchParties(): UsePublicWatchPartiesReturn {
           if (!mountedRef.current) return;
           const newParty = mapToWatchPartyMatch(payload.new);
           setParties((prev) => {
-            // Evitar duplicados
             if (prev.some((p) => p.code === newParty.code)) return prev;
-            // Mantener límite de 8 y orden por fecha
-            const updated = [...prev, newParty]
+            return [...prev, newParty]
               .sort((a, b) => new Date(a.match_date ?? 0).getTime() - new Date(b.match_date ?? 0).getTime())
               .slice(0, 8);
-            return updated;
           });
+        }
+      )
+      // Realtime: fixture actualizado a done → eliminar sus salas del listado
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "fixtures" },
+        (payload) => {
+          if (!mountedRef.current) return;
+          const updated = payload.new as { fixture_id: string; status: string };
+          if (updated.status === "finished") {
+            setParties((prev) =>
+              prev.filter((p) => p.id !== updated.fixture_id)
+            );
+          }
         }
       )
       .subscribe();

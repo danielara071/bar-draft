@@ -1,11 +1,16 @@
 import type { JoinModalProps } from "../interfaces/index.interfaces";
 
-// Se agrega onConfirmJoin — en vez de navegar directo, abre PrediccionesModal
-export default function WatchPartyJoinModal({ match, onClose, onConfirmJoin }: JoinModalProps) {
+// Se agrega isConfirming para bloquear el botón mientras se verifica el acceso
+export default function WatchPartyJoinModal({
+  match,
+  onClose,
+  onConfirmJoin,
+  isConfirming = false,
+}: JoinModalProps & { isConfirming?: boolean }) {
   if (!match) return null;
 
   const handleJoin = () => {
-    onConfirmJoin(match); // WatchPartyPage cierra este modal y abre PrediccionesModal
+    onConfirmJoin(match);
   };
 
   return (
@@ -33,8 +38,12 @@ export default function WatchPartyJoinModal({ match, onClose, onConfirmJoin }: J
           </div>
         </div>
 
-        <button className="wp-modal__submit" onClick={handleJoin}>
-          Unirme a esta sala →
+        <button
+          className="wp-modal__submit"
+          onClick={handleJoin}
+          disabled={isConfirming}
+        >
+          {isConfirming ? "Verificando..." : "Unirme a esta sala →"}
         </button>
       </div>
     </div>
