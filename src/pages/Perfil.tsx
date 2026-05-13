@@ -18,6 +18,9 @@ function Perfil() {
   const { usuario : Usuario } = useUsuarioById(user_id);
   const { logros : Logro } = useUsuarioLogros(Usuario?.id ?? "");
   const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "", "accepted");
+  const cerrar_sesion = () => {
+    console.log("Funcionalidad de cerrar sesion")
+  }
   if (user_id == ""){
     return (
     <div className="min-h-screen">
@@ -45,7 +48,7 @@ function Perfil() {
             xpMax={4000}
             logro={Usuario?.logro || ""}
 
-            onLogoutFunc={() => alert("Funcionalidad de cerrar sesion")}
+            onLogoutFunc={() => cerrar_sesion}
             onLogoutText="Cerrar sesión"
           />
         </div>
