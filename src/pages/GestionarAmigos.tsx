@@ -16,8 +16,8 @@ function GestionarAmigos() {
   const session = useSession();
   const user_id = session?.user?.id || "";
   const { usuario : Usuario } = useUsuarioById(user_id);
+  
   const {amigos: Amigo, reload: reloadAmigos} = useFetchAmigos(user_id, "accepted");
-
   const { amigos : Pendiente, reload: reloadPendientes} = useFetchAmigos(Usuario?.id ?? "", "pending");
   const { amigos : Solicitudes, reload: reloadSolicitudes } = useFetchAmigos(Usuario?.id ?? "", "request");
   
@@ -37,16 +37,9 @@ function GestionarAmigos() {
   const onDeny = async(idFriend: string) => {
     console.log("Denegar solicitud", idFriend );
     await removeFriend(user_id, idFriend);
+    await reloadSolicitudes();
     await reloadPendientes();
   }  
-  /*const onDelete = async(idFriend: string ) => {
-    setShowConfirm(true);
-    await setResponsePopUp()
-    console.log("Eliminar amigo", idFriend);
-    await removeFriend(user_id, idFriend);
-    await reloadAmigos();
-    await reloadPendientes();
-  }*/
   const onDelete = (idFriend: string) => {
     setFriendToDelete(idFriend);
     setShowConfirm(true);
@@ -55,7 +48,6 @@ function GestionarAmigos() {
     if (!friendToDelete) return;
 
     await removeFriend(user_id, friendToDelete);
-
     await reloadAmigos();
     await reloadPendientes();
 
