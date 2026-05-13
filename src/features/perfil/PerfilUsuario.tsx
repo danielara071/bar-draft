@@ -52,14 +52,15 @@ export default function PerfilUsuario({
             className="w-40 h-40 object-cover rounded-lg"
           />
         </div>
+        
         <div className="py-4 flex gap-14">
             <h2 className="text-white text-4xl font-semibold">@{username}</h2>
-            <button
+            {/** <button
                 onClick={onLogoutFunc}
                 className="text-white bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-md"
             >
                 {onLogoutText}
-            </button>
+            </button>*/}
         </div>
 
         <div className="flex flex-row gap-1 mb-5">
