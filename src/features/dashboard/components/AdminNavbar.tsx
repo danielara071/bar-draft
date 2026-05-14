@@ -1,7 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 
 const navItems = [{ name: "Reels", path: "/dashboard/reels" },
+  { name: "Mapa de Trofeos", path: "/dashboard/mapaTrofeos" },
   { name: "Regresar a Inicio", path: "/" }
+
 ];
 
 const AdminNavbar = () => {
