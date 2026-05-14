@@ -17,7 +17,7 @@ const ChatbotWidget = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="w-80 h-96 bg-white rounded-2xl shadow-xl border border-slate-200 flex flex-col overflow-hidden"
+            className="w-180 h-120 bg-white rounded-2xl shadow-xl border border-slate-200 flex flex-col overflow-hidden"
           >
             <div
               className="p-4 flex items-center gap-2"
@@ -53,9 +53,10 @@ const ChatbotWidget = () => {
                 marginRight: "-10px",
                 paddingRight: "18px",
               }}
-              className="text-white text-sm font-bold px-4 py-2 rounded-l-full whitespace-nowrap pointer-events-none select-none"
+              className="text-white text-sm h-20 w-60 truncate p-4 font-bold px-4 py-2 rounded-l-full whitespace-nowrap pointer-events-none select-none"
             >
-              Asistente
+              Hola Usuario, soy el asistente virtual del FC Barcelona. 
+              ¿En qué puedo ayudarte hoy?
             </motion.span>
           )}
         </AnimatePresence>
