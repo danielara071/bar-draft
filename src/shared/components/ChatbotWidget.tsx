@@ -50,12 +50,12 @@ const ChatbotWidget = () => {
               style={{
                 originX: 1,
                 background: "#004D98",
-                marginRight: "-10px",
+                marginRight: "-35px",
                 paddingRight: "18px",
               }}
-              className="text-white text-sm h-20 w-60 truncate p-4 font-bold px-4 py-2 rounded-l-full whitespace-nowrap pointer-events-none select-none"
+              className="text-white text-m h-19 w-88 text-left p-4 font-sans rounded-l-full whitespace-normal pointer-events-none select-none"
             >
-              Hola Usuario, soy el asistente virtual del FC Barcelona. 
+              ¡Hola! Soy el asistente virtual del Barça. 
               ¿En qué puedo ayudarte hoy?
             </motion.span>
           )}
