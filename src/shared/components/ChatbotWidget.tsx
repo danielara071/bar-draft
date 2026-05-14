@@ -1,11 +1,6 @@
 import { useState } from "react";
 
-const BARCA_RED = "#A50044";
-const BARCA_BLUE = "#004D98";
-
-// Cambia esta URL por la del bucket de Supabase cuando esté lista
-const LOGO_URL =
-  "https://vsywrimuzdnfyztreolz.supabase.co/storage/v1/object/sign/logo/barcelona_logo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtl eV85YjVhN2I1MC1iNThkLTRkMzEtOTJiZS1jMWRjNjdmZjY5MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb2dvL2JhcmNlbG9uYV9sb2dvLnBuZyIsImlhdCI6MTc3ODcyNzc0NywiZXhwIjoxODEwMjYzNzQ3fQ.ThhzjH9iwzc35JmvbFMXfx-p24cpCcgOCMvBiAJ87ac";
+const logoURL = "https://vsywrimuzdnfyztreolz.supabase.co/storage/v1/object/sign/logo/barcelona_logo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85YjVhN2I1MC1iNThkLTRkMzEtOTJiZS1jMWRjNjdmZjY5MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb2dvL2JhcmNlbG9uYV9sb2dvLnBuZyIsImlhdCI6MTc3ODc4NjIxMiwiZXhwIjoxODEwMzIyMjEyfQ.H2LaUn3HgO4lTLx2n8bpFjfHs3X2aXG8noWz9yDgRBQ";
 
 const ChatbotWidget = () => {
   const [open, setOpen] = useState(false);
@@ -17,10 +12,10 @@ const ChatbotWidget = () => {
           <div
             className="p-4 flex items-center gap-2"
             style={{
-              background: `linear-gradient(135deg, ${BARCA_RED}, ${BARCA_BLUE})`,
+              background: `linear-gradient(135deg, #A50044, #004D98 )`,
             }}
           >
-            <img src={LOGO_URL} alt="FC Barcelona" className="w-6 h-6" />
+            <img src={logoURL} alt="FC Barcelona" className="w-6 h-6" />
             <span className="font-bold text-white text-sm">Asistente Barça</span>
           </div>
           <div className="flex-1 p-4 text-sm text-slate-400 flex items-center justify-center">
@@ -32,15 +27,15 @@ const ChatbotWidget = () => {
       <button
         onClick={() => setOpen(!open)}
         aria-label="Abrir asistente Barça"
-        className="relative w-16 h-16 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-transform duration-200"
+        className="relative w-20 h-20 rounded-full shadow-lg hover:scale-110 active:scale-95 transition-transform duration-200"
         style={{
-          background: `conic-gradient(${BARCA_RED} 0deg 180deg, ${BARCA_BLUE} 180deg 360deg)`,
-          padding: "3px",
+          background: `conic-gradient( #A50044 0deg 180deg, #004D98 180deg 360deg)`,
+          padding: "8px",
         }}
       >
         <div className="w-full h-full rounded-full bg-white flex items-center justify-center">
           <img
-            src={LOGO_URL}
+            src={logoURL}
             alt="FC Barcelona"
             className="w-9 h-9 object-contain"
           />
