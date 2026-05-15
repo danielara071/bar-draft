@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react"
+import Chat from "../../pages/Chat";
 
-const logoURL = "https://vsywrimuzdnfyztreolz.supabase.co/storage/v1/object/sign/logo/barcelona_logo.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85YjVhN2I1MC1iNThkLTRkMzEtOTJiZS1jMWRjNjdmZjY5MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb2dvL2JhcmNlbG9uYV9sb2dvLnBuZyIsImlhdCI6MTc3ODc4NjIxMiwiZXhwIjoxODEwMzIyMjEyfQ.H2LaUn3HgO4lTLx2n8bpFjfHs3X2aXG8noWz9yDgRBQ";
+const logoURL = import.meta.env.VITE_LOGO_URL;
 
 const ChatbotWidget = () => {
   const [open, setOpen] = useState(false);
@@ -27,8 +28,9 @@ const ChatbotWidget = () => {
               <span className="font-bold text-white text-sm">Asistente Barça</span>
             </div>
             <div className="flex-1 p-4 text-sm text-slate-400 flex items-center justify-center">
-              Próximamente...
+              <Chat />
             </div>
+
           </motion.div>
         )}
       </AnimatePresence>
