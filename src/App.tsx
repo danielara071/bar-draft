@@ -18,7 +18,7 @@ import Tienda from "./pages/Tienda"
 import GestionarAmigos from "./pages/GestionarAmigos"
 import Ra from "./pages/ra";
 import Estadisticas from "./pages/Estadisticas";
-
+import NewsManagerPage from "./features/dashboard/pages/NewsManagerPager";
 
 function App() {
   return (
@@ -50,6 +50,8 @@ function App() {
       >
         <Route index element={<Dashboard />} />
         <Route path="reels" element={<ReelsAdminPage />} />
+        <Route path="noticias" element={<NewsManagerPage />} />
+
       </Route>
     </Routes>
   );
