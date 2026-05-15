@@ -7,7 +7,6 @@ export function useUserRole(userId?: string) {
 
   useEffect(() => {
   setLoading(true);
-
   if (!userId) {
     setRole(null);
     setLoading(false);
@@ -27,12 +26,11 @@ export function useUserRole(userId?: string) {
     } else {
       setRole(data.role);
     }
-
+    
     setLoading(false);
   };
 
   fetchRole();
 }, [userId]);
-
   return { role, loading };
 }

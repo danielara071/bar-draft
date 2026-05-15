@@ -1,21 +1,21 @@
 import { Routes, Route } from "react-router-dom";
 import SportsApi from "./pages/SportsApi";
 import Layout from "./layouts/Layout";
-import Index from "./pages/Index";
+import Index from "./pages/Login";
 import Chat from "./pages/Chat";
 import WatchParty from "./pages/WatchParty";
 import WatchPartyHUB from "./pages/WatchPartyHUB/pages/WatchPartyPage";
 import Wordle from "./pages/Wordle";
 import Perfil from "./pages/Perfil";
 import Amigo from "./pages/Amigo";
-import Reels from "./pages/Reels"
+import Reels from "./pages/Reels";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./features/dashboard/layouts/DashboardLayout";
 import ReelsAdminPage from "./features/dashboard/pages/ReelsAdminPage";
 import { AdminRoute } from "./auth/AdminRoute";
-import Tienda from "./pages/Tienda"
-import GestionarAmigos from "./pages/GestionarAmigos"
+import Tienda from "./pages/Tienda";
+import GestionarAmigos from "./pages/GestionarAmigos";
 import Ra from "./pages/ra";
 import Estadisticas from "./pages/Estadisticas";
 import NewsManagerPage from "./features/dashboard/pages/NewsManagerPager";

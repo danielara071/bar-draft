@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { supabase } from "../shared/services/supabaseClient";
 import SignInButton from "../features/login/components/SignInButton";
 
+// Traer la sesion de supabase para usar sus servicios
 const Index = () => {
   useEffect(() => {
     const init = async () => {
@@ -35,28 +36,28 @@ const Index = () => {
   };
 
   return (
-    <div className="h-dvh overflow-hidden bg-[#f3f3f3]">
-      <div className="grid h-full w-full grid-cols-1 lg:grid-cols-2">
+    <div className="h-dvh overflow-hidden bg-white">
+      <div className="grid h-full grid-cols-1 lg:grid-cols-2">
         <div className="relative hidden overflow-hidden lg:block">
           <img
             src="/loginStadium.png"
             alt="Estadio"
             className="h-full w-full object-cover"
           />
-          <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#a3004f]/55 via-transparent to-[#002f87]/35" />
+          <div className="absolute inset-0 bg-linear-to-t from-brand-crimson/55 via-transparent to-brand-navy/35" />
         </div>
 
         <div className="flex items-center justify-center px-6 py-8 sm:px-10">
           <div className="w-full max-w-105">
-            <p className="text-center text-5xl font-extrabold tracking-tight text-[#a50050]">
+            <p className="text-center text-5xl font-extrabold  text-brand-crimson">
               FC Barcelona
             </p>
 
             <div className="mt-16 space-y-3">
-              <h1 className="text-5xl font-semibold tracking-tight text-[#121212]">
+              <h1 className="text-5xl font-semibold text-brand-black">
                 Benvingut
               </h1>
-              <p className="text-lg text-[#7a7a7a]">
+              <p className="text-lg text-brand-gray-mid">
                 Inicia sesión para acceder a tu cuenta
               </p>
             </div>
@@ -67,21 +68,20 @@ const Index = () => {
                 label="Continuar con Google"
                 logoSrc="/web_neutral_sq_na.svg"
                 logoAlt="Google"
-                className="flex w-full items-center justify-center gap-3 rounded-full border border-[#d6d6d6] bg-white px-6 py-2 text-lg font-semibold text-[#1f1f1f] transition hover:bg-[#f8f8f8]"
+                className="flex w-full items-center justify-center gap-3 rounded-full border border-brand-gray-light bg-white px-6 py-2 text-lg font-semibold text-brand-black transition hover:bg-gray-50"
                 logoClassName="h-10 w-auto"
               />
-
               <SignInButton
                 onClick={signInSpotify}
                 label="Continuar con Spotify"
                 logoSrc="/Primary_Logo_White_RGB.svg"
                 logoAlt="Spotify"
-                className="flex w-full cursor-default items-center justify-center gap-3 rounded-full bg-[#1ED760] px-6 py-4 text-lg font-semibold text-white transition hover:bg-[#1bc457]"
+                className="flex w-full cursor-default items-center justify-center gap-3 rounded-full bg-green-500 px-6 py-4 text-lg font-semibold text-white transition hover:bg-green-600"
                 logoClassName="h-6 w-auto"
               />
             </div>
 
-            <div className="mt-14 space-y-8 text-center text-[#7a7a7a]">
+            <div className="mt-14 space-y-8 text-center text-brand-gray-mid">
               <p className="text-sm">
                 Al continuar, aceptas nuestros términos de servicio y política
                 de privacidad
