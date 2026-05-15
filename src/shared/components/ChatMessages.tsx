@@ -16,11 +16,6 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
   if (embedded) {
     return (
       <div className="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-2">
-        {messages.length === 0 && !isLoading && (
-          <p className="text-center text-xs text-slate-400 mt-4">
-            Hazme una pregunta sobre el Barça
-          </p>
-        )}
         {messages.map(message => (
           <div
             key={message.id}
