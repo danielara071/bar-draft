@@ -27,8 +27,8 @@ const ChatbotWidget = () => {
               <img src={logoURL} alt="FC Barcelona" className="w-6 h-6" />
               <span className="font-bold text-white text-sm">Asistente Barça</span>
             </div>
-            <div className="flex-1 p-4 text-sm text-slate-400 flex items-center justify-center">
-              <Chat />
+            <div className="flex-1 min-h-0 flex flex-col">
+              <Chat embedded />
             </div>
 
           </motion.div>

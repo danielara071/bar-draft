@@ -3,8 +3,11 @@ import { ChatMessages } from "../shared/components/ChatMessages"
 import { UsuariosPanel } from "../shared/components/UsuariosPanel"
 import { useChatSession } from "../shared/hooks/useChatSession"
 
+interface Props {
+  embedded?: boolean
+}
 
-const Chat = () => {
+const Chat = ({ embedded = false }: Props) => {
   const {
     input,
     setInput,
@@ -13,6 +16,26 @@ const Chat = () => {
     handleSubmit,
     getMessageText
   } = useChatSession()
+
+  if (embedded) {
+    return (
+      <div className="flex flex-col h-full">
+        <ChatMessages
+          messages={messages}
+          isLoading={isLoading}
+          getMessageText={getMessageText}
+          embedded
+        />
+        <ChatInput
+          input={input}
+          setInput={setInput}
+          isLoading={isLoading}
+          handleSubmit={handleSubmit}
+          embedded
+        />
+      </div>
+    )
+  }
 
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px' }}>

@@ -8,6 +8,7 @@ export interface ChatMessagesProps {
   messages: ChatMessage[]
   isLoading: boolean
   getMessageText: (message: ChatMessage) => string
+  embedded?: boolean
 }
 
 // Lo que necesita el componente del input y el botón Enviar
@@ -16,5 +17,6 @@ export interface ChatInputProps {
   setInput: (value: string) => void
   isLoading: boolean
   handleSubmit: (event: FormEvent<HTMLFormElement>) => void
+  embedded?: boolean
 }
 
