@@ -9,7 +9,7 @@ function CardAgregarTrofeo({
 }: CardAgregarTrofeoProps) {
   return (
         <div className="flex items-center justify-center  p-5">
-            <div className="w-full bg-brand-navy rounded-[2.5rem] shadow-2xl p-6 px-10">
+            <div className="w-full bg-brand-navy rounded-[2.5rem]  p-6 px-10">
               <h2 className="text-xl font-semibold text-white font-sans ">Nuevo Trofeo</h2>
               {/* Columnas */}
               <div className="grid grid-cols-2 gap-8 mt-4 mb-4">
