@@ -23,6 +23,7 @@ export const ChatInput: FC<ChatInputProps> = ({
         />
         <button
           type="submit"
+          // bloqueamos también si el input está vacío para no enviar mensajes en blanco
           disabled={isLoading || !input.trim()}
           className="w-9 h-9 flex-shrink-0 rounded-full flex items-center justify-center text-white disabled:opacity-40 transition-opacity"
           style={{ background: '#004D98' }}

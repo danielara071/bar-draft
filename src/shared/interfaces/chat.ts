@@ -8,7 +8,7 @@ export interface ChatMessagesProps {
   messages: ChatMessage[]
   isLoading: boolean
   getMessageText: (message: ChatMessage) => string
-  embedded?: boolean
+  embedded?: boolean // activa el layout compacto para el widget
 }
 
 // Lo que necesita el componente del input y el botón Enviar
@@ -17,6 +17,6 @@ export interface ChatInputProps {
   setInput: (value: string) => void
   isLoading: boolean
   handleSubmit: (event: FormEvent<HTMLFormElement>) => void
-  embedded?: boolean
+  embedded?: boolean // activa el layout compacto para el widget
 }
 

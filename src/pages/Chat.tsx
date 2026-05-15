@@ -4,6 +4,7 @@ import { UsuariosPanel } from "../shared/components/UsuariosPanel"
 import { useChatSession } from "../shared/hooks/useChatSession"
 
 interface Props {
+  // cuando viene del widget el layout cambia para caber en el panel flotante
   embedded?: boolean
 }
 
@@ -19,6 +20,7 @@ const Chat = ({ embedded = false }: Props) => {
 
   if (embedded) {
     return (
+      // h-full para ocupar exactamente el espacio que le da el panel del widget
       <div className="flex flex-col h-full">
         <ChatMessages
           messages={messages}

@@ -9,12 +9,14 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
 }) => {
   const bottomRef = useRef<HTMLDivElement>(null)
 
+  // cada vez que llega un mensaje nuevo bajamos al fondo automáticamente
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, isLoading])
 
   if (embedded) {
     return (
+      // min-h-0 es necesario para que flex-1 pueda hacer scroll dentro de un padre flex
       <div className="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-2">
         {messages.map(message => (
           <div
@@ -27,6 +29,7 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
                   ? 'text-white rounded-br-sm'
                   : 'bg-slate-100 text-slate-800 rounded-bl-sm'
               }`}
+              // color en inline style para no depender de una clase arbitraria de Tailwind
               style={message.role === 'user' ? { background: '#004D98' } : undefined}
             >
               {getMessageText(message)}
@@ -40,6 +43,7 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
             </div>
           </div>
         )}
+        {/* div invisible al que hacemos scroll para siempre ver el último mensaje */}
         <div ref={bottomRef} />
       </div>
     )
