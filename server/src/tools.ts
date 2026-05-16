@@ -17,7 +17,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 // Herramienta que el modelo llama cuando el usuario pregunta algo de la base de datos de Supabase
 export const dbTools = {
   getUsuarios: tool({
-    description: 'Obtiene la lista de usuarios de la base de datos',
+    description: 'Obtiene los datos de los jugadores masculinos y femeninos del FC Barcelona desde la base de datos',
     parameters: z.object({
       limit: z.number().optional().describe('Límite de resultados')
     }),

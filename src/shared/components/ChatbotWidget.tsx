@@ -25,7 +25,7 @@ const ChatbotWidget = () => {
               style={{ background: "linear-gradient(135deg, #A50044, #004D98)" }}
             >
               <img src={logoURL} alt="FC Barcelona" className="w-6 h-6" />
-              <span className="font-bold text-white text-sm">Asistente Barça</span>
+              <span className="font-bold text-white text-sm">Barçabot</span>
             </div>
             <div className="flex-1 min-h-0 flex flex-col">
               <Chat embedded />
