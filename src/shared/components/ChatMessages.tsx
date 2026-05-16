@@ -1,5 +1,26 @@
 import { useEffect, useRef, type FC } from 'react'
 import type { ChatMessagesProps } from '../interfaces/chat'
+import { PlayerCard } from './PlayerCard'
+
+// tools cuyo resultado se debe renderizar como tarjeta de jugador
+const PLAYER_TOOLS = new Set(['getJugadoresVaronil', 'getJugadoresFemenil'])
+
+// extrae tarjetas de jugador de los parts de un mensaje del asistente
+const extractPlayerCards = (message: any): any[] => {
+  const parts: any[] = message.parts ?? []
+  const players: any[] = []
+  for (const part of parts) {
+    if (
+      part.type === 'tool-invocation' &&
+      PLAYER_TOOLS.has(part.toolInvocation?.toolName) &&
+      part.toolInvocation?.state === 'result' &&
+      Array.isArray(part.toolInvocation.result)
+    ) {
+      players.push(...part.toolInvocation.result)
+    }
+  }
+  return players
+}
 
 export const ChatMessages: FC<ChatMessagesProps> = ({
   messages,
@@ -22,49 +43,65 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
       <div className="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-2">
         {messages.map(message => {
           const isUser = message.role === 'user'
+          const playerCards = !isUser ? extractPlayerCards(message) : []
+          const text = getMessageText(message)
+
           return (
-            <div
-              key={message.id}
-              className={`flex items-end gap-2 ${isUser ? 'justify-end' : 'justify-start'}`}
-            >
-              {/* avatar del asistente, solo en mensajes de la izquierda */}
-              {!isUser && (
-                <img
-                  src={logoUrl}
-                  alt="Barçabot"
-                  className="w-6 h-6 rounded-full object-contain flex-shrink-0 bg-white border border-slate-200"
-                />
+            <div key={message.id} className="flex flex-col gap-2">
+
+              {/* tarjetas de jugador (solo en mensajes del asistente con tool results) */}
+              {playerCards.length > 0 && (
+                <div className="flex gap-2 flex-wrap pl-8">
+                  {playerCards.map(player => (
+                    <PlayerCard key={player.id} player={player} />
+                  ))}
+                </div>
               )}
 
-              <div
-                className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm leading-snug ${
-                  isUser
-                    ? 'text-white rounded-br-sm'
-                    : 'bg-slate-100 text-slate-800 rounded-bl-sm'
-                }`}
-                // color en inline style para no depender de una clase arbitraria de Tailwind
-                style={isUser ? { background: '#004D98' } : undefined}
-              >
-                {getMessageText(message)}
-              </div>
-
-              {/* avatar del usuario, solo en mensajes de la derecha */}
-              {isUser && (
-                userAvatarUrl
-                  ? <img
-                      src={userAvatarUrl}
-                      alt="Tú"
-                      className="w-6 h-6 rounded-full object-cover flex-shrink-0"
+              {/* burbuja de texto (solo si hay texto que mostrar) */}
+              {text && (
+                <div className={`flex items-end gap-2 ${isUser ? 'justify-end' : 'justify-start'}`}>
+                  {/* avatar del asistente, solo en mensajes de la izquierda */}
+                  {!isUser && (
+                    <img
+                      src={logoUrl}
+                      alt="Barçabot"
+                      className="w-6 h-6 rounded-full object-contain flex-shrink-0 bg-white border border-slate-200"
                     />
-                  : <div className="w-6 h-6 rounded-full flex-shrink-0 bg-slate-300 flex items-center justify-center">
-                      <svg viewBox="0 0 24 24" className="w-4 h-4 text-slate-500" fill="currentColor">
-                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
-                      </svg>
-                    </div>
+                  )}
+
+                  <div
+                    className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm leading-snug ${
+                      isUser
+                        ? 'text-white rounded-br-sm'
+                        : 'bg-slate-100 text-slate-800 rounded-bl-sm'
+                    }`}
+                    // color en inline style para no depender de una clase arbitraria de Tailwind
+                    style={isUser ? { background: '#004D98' } : undefined}
+                  >
+                    {text}
+                  </div>
+
+                  {/* avatar del usuario, solo en mensajes de la derecha */}
+                  {isUser && (
+                    userAvatarUrl
+                      ? <img
+                          src={userAvatarUrl}
+                          alt="Tú"
+                          className="w-6 h-6 rounded-full object-cover flex-shrink-0"
+                        />
+                      : <div className="w-6 h-6 rounded-full flex-shrink-0 bg-slate-300 flex items-center justify-center">
+                          <svg viewBox="0 0 24 24" className="w-4 h-4 text-slate-500" fill="currentColor">
+                            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                          </svg>
+                        </div>
+                  )}
+                </div>
               )}
             </div>
           )
         })}
+
         {isLoading && (
           <div className="flex items-end gap-2 justify-start">
             <img
@@ -77,6 +114,7 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
             </div>
           </div>
         )}
+
         {/* div invisible al que hacemos scroll para siempre ver el último mensaje */}
         <div ref={bottomRef} />
       </div>
@@ -95,7 +133,7 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
     >
       {messages.map(message => (
         <div key={message.id} style={{ marginBottom: '10px' }}>
-          <strong>{message.role === 'user' ? 'Tú' : 'Qwen 2.5'}:</strong>
+          <strong>{message.role === 'user' ? 'Tú' : 'Barçabot'}:</strong>
           <p>{getMessageText(message)}</p>
         </div>
       ))}
