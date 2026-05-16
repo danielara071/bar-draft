@@ -13,15 +13,13 @@ if (!supabaseUrl || !supabaseAnonKey) {
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export const barcelonaTools = {
-  // Columnas: id, nombre, numero, posicion, goles, asistencias, atajadas,
-  //           goles_recibidos, partidos_jugados, minutos_jugados, imagen_url
   getJugadoresVaronil: tool({
     description:
       'Obtiene jugadores del equipo masculino del FC Barcelona con sus estadísticas acumuladas. Úsala cuando pregunten sobre jugadores, plantilla varonil o estadísticas de un jugador específico.',
     parameters: z.object({
       nombre: z.string().optional().describe('Nombre del jugador (búsqueda parcial)'),
       posicion: z.string().optional().describe('Posición: portero, defensa, centrocampista, delantero'),
-      limit: z.number().optional().describe('Máximo de resultados. Default 25'),
+      limit: z.coerce.number().optional().describe('Máximo de resultados. Default 25'),
     }),
     execute: async ({ nombre, posicion, limit = 25 }) => {
       let query = supabase.from('barcelona_varonil_jugadores').select('*').limit(limit)
@@ -41,7 +39,7 @@ export const barcelonaTools = {
     parameters: z.object({
       nombre: z.string().optional().describe('Nombre de la jugadora (búsqueda parcial)'),
       posicion: z.string().optional().describe('Posición: portera, defensa, centrocampista, delantera'),
-      limit: z.number().optional().describe('Máximo de resultados. Default 25'),
+      limit: z.coerce.number().optional().describe('Máximo de resultados. Default 25'),
     }),
     execute: async ({ nombre, posicion, limit = 25 }) => {
       let query = supabase.from('barcelona_femenil_jugadores').select('*').limit(limit)
@@ -58,10 +56,10 @@ export const barcelonaTools = {
     description:
       'Obtiene estadísticas mensuales de goles del equipo masculino. Útil para ver el rendimiento de un jugador en un mes o año concreto. jugador_id viene de getJugadoresVaronil.',
     parameters: z.object({
-      jugador_id: z.number().optional().describe('ID del jugador (obtenido de getJugadoresVaronil)'),
-      mes: z.number().min(1).max(12).optional().describe('Mes (1-12)'),
-      año: z.number().optional().describe('Año'),
-      limit: z.number().optional().describe('Máximo de resultados. Default 20'),
+      jugador_id: z.coerce.number().optional().describe('ID del jugador (obtenido de getJugadoresVaronil)'),
+      mes: z.coerce.number().min(1).max(12).optional().describe('Mes (1-12)'),
+      año: z.coerce.number().optional().describe('Año'),
+      limit: z.coerce.number().optional().describe('Máximo de resultados. Default 20'),
     }),
     execute: async ({ jugador_id, mes, año, limit = 20 }) => {
       let query = supabase.from('estadisticas_mes_varonil').select('*').limit(limit)
@@ -79,10 +77,10 @@ export const barcelonaTools = {
     description:
       'Obtiene estadísticas mensuales de goles del equipo femenino. Útil para ver el rendimiento de una jugadora en un mes o año concreto. jugadora_id viene de getJugadoresFemenil.',
     parameters: z.object({
-      jugadora_id: z.number().optional().describe('ID de la jugadora (obtenido de getJugadoresFemenil)'),
-      mes: z.number().min(1).max(12).optional().describe('Mes (1-12)'),
-      año: z.number().optional().describe('Año'),
-      limit: z.number().optional().describe('Máximo de resultados. Default 20'),
+      jugadora_id: z.coerce.number().optional().describe('ID de la jugadora (obtenido de getJugadoresFemenil)'),
+      mes: z.coerce.number().min(1).max(12).optional().describe('Mes (1-12)'),
+      año: z.coerce.number().optional().describe('Año'),
+      limit: z.coerce.number().optional().describe('Máximo de resultados. Default 20'),
     }),
     execute: async ({ jugadora_id, mes, año, limit = 20 }) => {
       let query = supabase.from('estadisticas_mes_femenil').select('*').limit(limit)
@@ -103,7 +101,7 @@ export const barcelonaTools = {
       equipo: z.string().optional().describe('Equipo: masculino o femenino'),
       ambito: z.string().optional().describe('Ámbito del torneo: Internacional, Nacional, etc.'),
       nombre_agrupado: z.string().optional().describe('Tipo de trofeo (ej: Champions League, Liga, Copa del Rey)'),
-      limit: z.number().optional().describe('Máximo de resultados. Default 50'),
+      limit: z.coerce.number().optional().describe('Máximo de resultados. Default 50'),
     }),
     execute: async ({ equipo, ambito, nombre_agrupado, limit = 50 }) => {
       let query = supabase.from('palmares_barcelona_unificado').select('*').limit(limit)
