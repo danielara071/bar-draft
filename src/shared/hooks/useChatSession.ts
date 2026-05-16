@@ -15,7 +15,7 @@ export const useChatSession = () => {
     error
   } = useChat({
     // DefaultChatTransport recibe el data stream del servidor, lo que permite leer tool results (para generative UI)
-    transport: new DefaultChatTransport({ url: '/api/chat' })
+    transport: new DefaultChatTransport({ api: '/api/chat' })
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'
