@@ -4,7 +4,7 @@ import { serve } from '@hono/node-server'
 import { cors } from 'hono/cors'
 import { streamText } from 'ai'
 import { createOpenAI } from '@ai-sdk/openai'
-import { dbTools } from './tools'
+import { barcelonaTools } from './tools'
 import { startWatchpartyExpressServer } from './routes/watchparty'
 import { registerCheckoutRoutes } from './routes/checkout'
 
@@ -21,19 +21,6 @@ registerCheckoutRoutes(app)
 
 startWatchpartyExpressServer()
 
-// Devuelve usuarios directo de la BD, es para el recuadro debajo del chat
-app.get('/api/usuarios', async (c) => {
-  try {
-    const executeGetUsuarios = dbTools.getUsuarios.execute as (args: { limit?: number }) => Promise<unknown>
-    const data = await executeGetUsuarios({ limit: 3 })
-    return c.json({ usuarios: data })
-  } catch (err) {
-    console.error('Error en /api/usuarios:', err)
-    return c.json({ error: String(err) }, 500)
-  }
-})
-
-// Recibe el historial de mensajes del frontend, llama al modelo (Ollama) con la herramienta getUsuarios y devuelve la respuesta en streaming
 app.post('/api/chat', async (c) => {
   try {
     const { messages: uiMessages } = await c.req.json()
@@ -53,18 +40,23 @@ app.post('/api/chat', async (c) => {
 
     const modelName = process.env.OLLAMA_MODEL ?? 'qwen2.5:7b'
 
-    // El modelo puede usar getUsuarios para consultar la BD y la respuesta se manda por chunks al navegador
     const result = streamText({
       model: ollama(modelName),
       system: `Eres Barçabot, el asistente virtual oficial del FC Barcelona.
 Respondes siempre en el idioma que usa el usuario (español, catalán o inglés).
 Eres apasionado del Barça: conoces su historia, jugadores, palmarés y estilo de juego (La Masia, tiki-taka).
-Cuando el usuario pregunte sobre datos del sistema, usa la herramienta getUsuarios.
+Tienes acceso a la base de datos del club con estas herramientas:
+- getJugadoresVaronil: plantilla masculina (goles, asistencias, posición, etc.)
+- getJugadoresFemenil: plantilla femenina (goles, asistencias, posición, etc.)
+- getEstadisticasMesVaronil: goles por mes del equipo masculino (usa jugador_id de getJugadoresVaronil)
+- getEstadisticasMesFemenil: goles por mes del equipo femenino (usa jugadora_id de getJugadoresFemenil)
+- getPalmares: trofeos y títulos de ambos equipos
+Cuando el usuario pida datos de jugadores, estadísticas o títulos, usa la herramienta correspondiente.
 Tono cercano y entusiasta, acorde con el espíritu del club: "Més que un club".
-No hables de temas que no tengan relación con el FC Barcelona.`,
+No hables de temas sin relación con el FC Barcelona.`,
       messages,
-      tools: dbTools,
-      maxSteps: 5,
+      tools: barcelonaTools,
+      maxSteps: 5, // permite encadenar llamadas (ej: buscar jugador_id y luego sus stats)
       toolChoice: 'auto',
       onError: (error) => {
         console.error('Error del streamText:', error)
@@ -79,7 +71,6 @@ No hables de temas que no tengan relación con el FC Barcelona.`,
     return c.json({ error: String(err) }, 500)
   }
 })
-
 
 serve({
   fetch: app.fetch,
