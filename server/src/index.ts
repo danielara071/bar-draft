@@ -36,15 +36,32 @@ app.get('/api/usuarios', async (c) => {
 // Recibe el historial de mensajes del frontend, llama al modelo (Ollama) con la herramienta getUsuarios y devuelve la respuesta en streaming
 app.post('/api/chat', async (c) => {
   try {
-    const { messages } = await c.req.json()
-    console.log('Mensaje recibido:', messages)
+    const { messages: uiMessages } = await c.req.json()
+
+    // El cliente usa ai@6 que manda UIMessages con `parts[]`.
+    // streamText de ai@4 espera CoreMessages con `content` como string.
+    // Por eso extraemos solo las partes de texto antes de pasarlos al modelo.
+    const messages = uiMessages.map((msg: any) => ({
+      role: msg.role,
+      content: Array.isArray(msg.parts)
+        ? msg.parts
+            .filter((p: any) => p.type === 'text')
+            .map((p: any) => p.text as string)
+            .join('')
+        : (msg.content ?? ''),
+    }))
 
     const modelName = process.env.OLLAMA_MODEL ?? 'qwen2.5:7b'
 
     // El modelo puede usar getUsuarios para consultar la BD y la respuesta se manda por chunks al navegador
     const result = streamText({
       model: ollama(modelName),
-      system: 'Eres un asistente útil que puede consultar información de usuarios en la base de datos. Cuando el usuario pregunte sobre usuarios, usa la herramienta getUsuarios para obtener la información.',
+      system: `Eres Barçabot, el asistente virtual oficial del FC Barcelona.
+Respondes siempre en el idioma que usa el usuario (español, catalán o inglés).
+Eres apasionado del Barça: conoces su historia, jugadores, palmarés y estilo de juego (La Masia, tiki-taka).
+Cuando el usuario pregunte sobre datos del sistema, usa la herramienta getUsuarios.
+Tono cercano y entusiasta, acorde con el espíritu del club: "Més que un club".
+No hables de temas que no tengan relación con el FC Barcelona.`,
       messages,
       tools: dbTools,
       maxSteps: 5,
@@ -52,16 +69,10 @@ app.post('/api/chat', async (c) => {
       onError: (error) => {
         console.error('Error del streamText:', error)
       },
-      onFinish: ({ text, toolCalls, toolResults }) => {
-        console.log('Finalizó respuesta:', text)
-        console.log('Tool calls:', toolCalls)
-        console.log('Tool results:', toolResults)
-      }
     })
 
-    result.text.then(t => console.log('Respuesta:', t))
-    result.toolCalls.then(t => console.log('Tool calls:', t))
-
+    // toTextStreamResponse es la pareja correcta de TextStreamChatTransport (ai@6 cliente)
+    // Cuando implementes generative UI, tendrás que migrar server a ai@6 y usar createUIMessageStreamResponse
     return result.toTextStreamResponse()
   } catch (err) {
     console.error('Error en /api/chat:', err)
