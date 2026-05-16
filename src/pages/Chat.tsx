@@ -2,6 +2,9 @@ import { ChatInput } from "../shared/components/ChatInput"
 import { ChatMessages } from "../shared/components/ChatMessages"
 import { UsuariosPanel } from "../shared/components/UsuariosPanel"
 import { useChatSession } from "../shared/hooks/useChatSession"
+import { useProfile } from "../shared/hooks/useProfile"
+
+const LOGO_URL = import.meta.env.VITE_LOGO_URL as string
 
 interface Props {
   // cuando viene del widget el layout cambia para caber en el panel flotante
@@ -18,6 +21,9 @@ const Chat = ({ embedded = false }: Props) => {
     getMessageText
   } = useChatSession()
 
+  // solo se usa en modo embedded para mostrar el avatar del usuario
+  const profile = useProfile()
+
   if (embedded) {
     return (
       // h-full para ocupar exactamente el espacio que le da el panel del widget
@@ -27,6 +33,8 @@ const Chat = ({ embedded = false }: Props) => {
           isLoading={isLoading}
           getMessageText={getMessageText}
           embedded
+          logoUrl={LOGO_URL}
+          userAvatarUrl={profile?.url_avatar ?? undefined}
         />
         <ChatInput
           input={input}
