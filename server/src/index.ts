@@ -64,9 +64,9 @@ No hables de temas sin relación con el FC Barcelona. Si el usuario te dice hola
       },
     })
 
-    // toTextStreamResponse es la pareja correcta de TextStreamChatTransport (ai@6 cliente)
-    // Cuando implementes generative UI, tendrás que migrar server a ai@6 y usar createUIMessageStreamResponse
-    return result.toTextStreamResponse()
+    // toDataStreamResponse envía text + tool calls + tool results en el stream
+    // es la pareja de DefaultChatTransport en el cliente, que permite generative UI
+    return result.toDataStreamResponse()
   } catch (err) {
     console.error('Error en /api/chat:', err)
     return c.json({ error: String(err) }, 500)
