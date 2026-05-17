@@ -1,7 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 
-const navItems = [{ name: "Reels", path: "/dashboard/reels" },
-  { name: "Regresar a Inicio", path: "/" }
+const navItems = [
+  { name: "Reels", path: "/dashboard/reels" },
+  { name: "Regresar a Inicio", path: "/" },
 ];
 
 const AdminNavbar = () => {
