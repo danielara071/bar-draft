@@ -1,28 +1,52 @@
+import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 
 type StatsCardProps = {
   icon: LucideIcon;
-  title: string;
+  title: ReactNode;
   stat: number | string;
+  variant?: "solid" | "outline";
+  tone?: "default" | "success" | "danger";
 };
 
-const StatsCard = ({ icon: Icon, title, stat }: StatsCardProps) => {
+const StatsCard = ({
+  icon: Icon,
+  title,
+  stat,
+  variant = "outline",
+  tone = "default",
+}: StatsCardProps) => {
+  const isSolid = variant === "solid";
+  const containerClass = isSolid
+    ? "bg-brand-navy border-brand-navy"
+    : "bg-brand-white border-brand-navy";
+  const labelClass = isSolid ? "text-brand-yellow" : "text-brand-navy";
+  const iconClass = isSolid
+    ? "text-brand-yellow"
+    : tone === "success"
+      ? "text-emerald-600"
+      : tone === "danger"
+        ? "text-brand-crimson"
+        : "text-brand-navy";
+  const statClass = isSolid ? "text-brand-white" : "text-brand-navy";
+
   return (
-    <div className="relative rounded-3xl p-6 bg-brand-white border border-brand-navy overflow-hidden min-h-37.5">
+    <div
+      className={`relative rounded-3xl p-6 border overflow-hidden min-h-37.5 ${containerClass}`}
+    >
       <div className="flex items-start gap-4">
-        <div className="flex items-center justify-center w-12 h-12 rounded-full border border-brand-navy">
-          <Icon className="text-brand-navy" />
-        </div>
+        <Icon className={iconClass} />
         <div>
-          <p className="text-xs tracking-spaced uppercase text-brand-navy font-semibold leading-tight">
+          <p
+            className={`text-xs tracking-spaced uppercase font-semibold leading-tight ${labelClass}`}
+          >
             {title}
           </p>
-          <p className="text-sm text-brand-gray-mid mt-1"></p>
         </div>
       </div>
 
       <div className="absolute left-6 bottom-6">
-        <span className="text-6xl font-extrabold text-brand-navy">{stat}</span>
+        <span className={`text-5xl font-extrabold ${statClass}`}>{stat}</span>
       </div>
     </div>
   );
