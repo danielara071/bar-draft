@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
   { name: "Reels", path: "/dashboard/reels" },
+  { name: "Reportes", path: "/dashboard/reportes" },
   { name: "Regresar a Inicio", path: "/" },
 ];
 
