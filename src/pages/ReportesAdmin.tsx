@@ -1,17 +1,17 @@
 import { TriangleAlert, CircleCheckBig, Ban, Eye } from "lucide-react";
 import StatCard from "../features/ReportesAdmin/components/StatsCard";
-import PendingReportsSection from "../features/ReportesAdmin/components/PendingReportsCard";
-import ReviewedReportsSection from "../features/ReportesAdmin/components/ReviewedReportsCard";
+import PendingReportsCard from "../features/ReportesAdmin/components/PendingReportsCard";
+import ReviewedReportsCard from "../features/ReportesAdmin/components/ReviewedReportsCard";
 
 const ReportesAdmin = () => {
   return (
     <div className="px-10 py-8 max-w-6xl">
       <div className="flex flex-col gap-2">
         <p className="text-brand-navy text-sm font-semibold tracking-spaced uppercase">
-          Mes Que Un Club
+          Més Que Un Club
         </p>
         <h1 className="text-3xl font-bold text-brand-navy">
-          Moderacion y <span className="text-brand-yellow">Reportes</span>
+          Moderación y <span className="text-brand-yellow">Reportes</span>
         </h1>
       </div>
 
@@ -61,8 +61,19 @@ const ReportesAdmin = () => {
         />
       </div>
 
-      <PendingReportsSection />
-      <ReviewedReportsSection />
+      <section className="mt-8">
+        <h2 className="text-brand-navy text-lg font-bold mb-4">
+          Reportes Pendientes de Revisión
+        </h2>
+        <PendingReportsCard />
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-brand-navy text-lg font-bold mb-4">
+          Reportes Revisados Recientemente
+        </h2>
+        <ReviewedReportsCard />
+      </section>
     </div>
   );
 };
