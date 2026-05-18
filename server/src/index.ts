@@ -59,14 +59,13 @@ No hables de temas sin relación con el FC Barcelona. Si el usuario te dice hola
       tools: barcelonaTools,
       maxSteps: 5, // permite encadenar llamadas (ej: buscar jugador_id y luego sus stats)
       toolChoice: 'auto',
-      onError: (error) => {
+      onError: ({ error }) => {
         console.error('Error del streamText:', error)
       },
     })
 
-    // toDataStreamResponse envía text + tool calls + tool results en el stream
-    // es la pareja de DefaultChatTransport en el cliente, que permite generative UI
-    return result.toDataStreamResponse()
+    // toUIMessageStreamResponse envía el nuevo formato de ai@6 que DefaultChatTransport espera
+    return result.toUIMessageStreamResponse()
   } catch (err) {
     console.error('Error en /api/chat:', err)
     return c.json({ error: String(err) }, 500)

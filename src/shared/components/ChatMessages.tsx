@@ -11,12 +11,12 @@ const extractPlayerCards = (message: any): any[] => {
   const players: any[] = []
   for (const part of parts) {
     if (
-      part.type === 'tool-invocation' &&
-      PLAYER_TOOLS.has(part.toolInvocation?.toolName) &&
-      part.toolInvocation?.state === 'result' &&
-      Array.isArray(part.toolInvocation.result)
+      part.type === 'dynamic-tool' &&
+      PLAYER_TOOLS.has(part.toolName) &&
+      part.state === 'output-available' &&
+      Array.isArray(part.output)
     ) {
-      players.push(...part.toolInvocation.result)
+      players.push(...part.output)
     }
   }
   return players
