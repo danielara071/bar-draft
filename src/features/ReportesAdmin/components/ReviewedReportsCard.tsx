@@ -1,28 +1,36 @@
 import { CircleCheckBig } from "lucide-react";
+import type { ReviewedReportCardData } from "../types/reportTypes";
 
-type ReviewedReport = {
-  id: string;
-  summary: string;
-  date: string;
-};
+interface ReviewedReportsCardProps {
+  reports: ReviewedReportCardData[];
+  isLoading?: boolean;
+  error?: string | null;
+}
 
-const reviewedReports: ReviewedReport[] = [
-  {
-    id: "rev-001",
-    summary: "Juan Pérez en 'Barcelona vs Valencia'",
-    date: "08/5/2026",
-  },
-  {
-    id: "rev-002",
-    summary: "María García en 'Barcelona vs Sevilla'",
-    date: "07/5/2026",
-  },
-];
+const ReviewedReportsCard = ({
+  reports,
+  isLoading = false,
+  error,
+}: ReviewedReportsCardProps) => {
+  if (isLoading) {
+    return (
+      <p className="text-sm text-brand-gray-mid">Cargando reportes revisados...</p>
+    );
+  }
 
-const ReviewedReportsCard = () => {
+  if (error && reports.length === 0) {
+    return <p className="text-sm text-brand-crimson">{error}</p>;
+  }
+
+  if (reports.length === 0) {
+    return (
+      <p className="text-sm text-brand-gray-mid">No hay reportes revisados.</p>
+    );
+  }
+
   return (
     <div className="space-y-3">
-      {reviewedReports.map((report) => (
+      {reports.map((report) => (
         <div
           key={report.id}
           className="bg-brand-white border border-brand-gray-light rounded-2xl px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"

@@ -1,56 +1,45 @@
 import { Ban, XCircle } from "lucide-react";
+import type { PendingReportCardData } from "../types/reportTypes";
 
-type PendingReport = {
-  id: string;
-  category: string;
-  timestamp: string;
-  matchLabel: string;
-  reporter: {
-    name: string;
-    initials: string;
-    id: string;
-  };
-  reported: {
-    name: string;
-    initials: string;
-    id: string;
-    previousReports: number;
-  };
-};
+interface PendingReportsCardProps {
+  reports: PendingReportCardData[];
+  isLoading?: boolean;
+  error?: string | null;
+  onBan?: (reportId: number, reportedUserId: string) => void;
+  onDismiss?: (reportId: number) => void;
+  actionLoading?: Record<number, boolean>;
+}
 
-const pendingReports: PendingReport[] = [
-  {
-    id: "rep-001",
-    category: "Lenguaje ofensivo",
-    timestamp: "12 de mayo de 2026 a las 20:45",
-    matchLabel: "Barcelona vs Real Madrid",
-    reporter: { name: "Carlos Martínez", initials: "CM", id: "101" },
-    reported: {
-      name: "Juan Pérez",
-      initials: "JP",
-      id: "204",
-      previousReports: 3,
-    },
-  },
-  {
-    id: "rep-002",
-    category: "Comentario negativo",
-    timestamp: "11 de mayo de 2026 a las 19:30",
-    matchLabel: "Barcelona vs Villarreal",
-    reporter: { name: "María García", initials: "MG", id: "142" },
-    reported: {
-      name: "Pedro López",
-      initials: "PL",
-      id: "208",
-      previousReports: 1,
-    },
-  },
-];
+const PendingReportsCard = ({
+  reports,
+  isLoading = false,
+  error,
+  onBan,
+  onDismiss,
+  actionLoading = {},
+}: PendingReportsCardProps) => {
+  if (isLoading) {
+    return (
+      <p className="text-sm text-brand-gray-mid">Cargando reportes pendientes...</p>
+    );
+  }
 
-const PendingReportsCard = () => {
+  if (error && reports.length === 0) {
+    return <p className="text-sm text-brand-crimson">{error}</p>;
+  }
+
+  if (reports.length === 0) {
+    return (
+      <p className="text-sm text-brand-gray-mid">No hay reportes pendientes.</p>
+    );
+  }
+
   return (
     <div className="space-y-5">
-      {pendingReports.map((report) => (
+      {reports.map((report) => {
+        const isBusy = Boolean(actionLoading[report.id]);
+
+        return (
         <article
           key={report.id}
           className="bg-brand-white border border-brand-navy/20 rounded-2xl p-6"
@@ -116,6 +105,8 @@ const PendingReportsCard = () => {
             <button
               type="button"
               className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-brand-navy text-white py-3 text-sm font-semibold hover:brightness-110 transition"
+              onClick={() => onBan?.(report.id, report.reported.id)}
+              disabled={isBusy}
             >
               <Ban size={16} />
               Banear Usuario
@@ -123,13 +114,16 @@ const PendingReportsCard = () => {
             <button
               type="button"
               className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-brand-gray-light text-brand-navy py-3 text-sm font-semibold hover:bg-brand-gray-light/70 transition"
+              onClick={() => onDismiss?.(report.id)}
+              disabled={isBusy}
             >
               <XCircle size={16} />
               Desestimar Reporte
             </button>
           </div>
         </article>
-      ))}
+        );
+      })}
     </div>
   );
 };

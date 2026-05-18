@@ -2,8 +2,20 @@ import { TriangleAlert, CircleCheckBig, Ban, Eye } from "lucide-react";
 import StatCard from "../features/ReportesAdmin/components/StatsCard";
 import PendingReportsCard from "../features/ReportesAdmin/components/PendingReportsCard";
 import ReviewedReportsCard from "../features/ReportesAdmin/components/ReviewedReportsCard";
+import { useReports } from "../features/ReportesAdmin/hooks/useReports";
 
 const ReportesAdmin = () => {
+  const {
+    metrics,
+    pendingReports,
+    reviewedReports,
+    isLoading,
+    error,
+    actionLoading,
+    banReport,
+    dismissReport,
+  } = useReports();
+
   return (
     <div className="px-10 py-8 max-w-6xl">
       <div className="flex flex-col gap-2">
@@ -24,7 +36,7 @@ const ReportesAdmin = () => {
               <span className="block">Pendientes</span>
             </>
           }
-          stat={4}
+          stat={metrics.pending}
           variant="solid"
         />
         <StatCard
@@ -35,7 +47,7 @@ const ReportesAdmin = () => {
               <span className="block">Revisados</span>
             </>
           }
-          stat={1}
+          stat={metrics.reviewed}
           tone="success"
         />
         <StatCard
@@ -46,7 +58,7 @@ const ReportesAdmin = () => {
               <span className="block">Baneados</span>
             </>
           }
-          stat={0}
+          stat={metrics.banned}
           tone="danger"
         />
         <StatCard
@@ -57,7 +69,7 @@ const ReportesAdmin = () => {
               <span className="block">Reportes</span>
             </>
           }
-          stat={5}
+          stat={metrics.total}
         />
       </div>
 
@@ -65,14 +77,25 @@ const ReportesAdmin = () => {
         <h2 className="text-brand-navy text-lg font-bold mb-4">
           Reportes Pendientes de Revisión
         </h2>
-        <PendingReportsCard />
+        <PendingReportsCard
+          reports={pendingReports}
+          isLoading={isLoading}
+          error={error}
+          actionLoading={actionLoading}
+          onBan={banReport}
+          onDismiss={dismissReport}
+        />
       </section>
 
       <section className="mt-8">
         <h2 className="text-brand-navy text-lg font-bold mb-4">
           Reportes Revisados Recientemente
         </h2>
-        <ReviewedReportsCard />
+        <ReviewedReportsCard
+          reports={reviewedReports}
+          isLoading={isLoading}
+          error={error}
+        />
       </section>
     </div>
   );
