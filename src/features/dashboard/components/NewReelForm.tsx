@@ -11,12 +11,23 @@ import { MoonLoader } from "react-spinners";
 
 interface NewReelFormProps {
   uploadVideo: (data: any) => void;
+  setLocalVideoPreview: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  setLocalThumbnailPreview: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRemove: () => void;
 }
 
-export function NewReelForm({ uploadVideo }: NewReelFormProps) {
+export function NewReelForm({
+  uploadVideo,
+  setLocalVideoPreview,
+  setLocalThumbnailPreview,
+  handleRemove,
+}: NewReelFormProps) {
+  const [isUploading, setIsUploading] = useState(false);
+
   const addToBuckets = async (thumbnail: File, video: File) => {
-    const videoPath = `${video.name}`;
-    const thumbPath = `${thumbnail.name}`;
+    const videoPath = `${Date.now()}-${video.name}`;
+    const thumbPath = `${Date.now()}-${thumbnail.name}`;
+
     const { error: upVid } = await supabase.storage
       .from("videos")
       .upload(videoPath, video, {
@@ -32,11 +43,13 @@ export function NewReelForm({ uploadVideo }: NewReelFormProps) {
         cacheControl: "3600",
         upsert: false,
       });
+
     if (upThumb) throw upThumb;
 
     const {
       data: { publicUrl: videoUrl },
     } = supabase.storage.from("videos").getPublicUrl(videoPath);
+
     const {
       data: { publicUrl: thumbnailUrl },
     } = supabase.storage.from("thumbnails").getPublicUrl(thumbPath);
@@ -48,46 +61,62 @@ export function NewReelForm({ uploadVideo }: NewReelFormProps) {
     e.preventDefault();
     setIsUploading(true);
 
-    const data = new FormData(e.currentTarget);
+    try {
+      const data = new FormData(e.currentTarget);
 
-    const video = data.get("video");
-    const thumbnail = data.get("thumbnail");
+      const video = data.get("video");
+      const thumbnail = data.get("thumbnail");
 
-    if (!(video instanceof File) || !(thumbnail instanceof File)) {
-      console.error("Missing or invalid files");
-      return;
+      if (!(video instanceof File) || !(thumbnail instanceof File)) {
+        throw new Error("Missing or invalid files");
+      }
+
+      const { videoUrl, thumbnailUrl } = await addToBuckets(thumbnail, video);
+
+      const result = {
+        video_url: videoUrl,
+        thumbnail_url: thumbnailUrl,
+        caption: data.get("caption") || "",
+        category: data.get("category") || "",
+        order_index: Number(data.get("order_index")),
+        is_active: data.get("is_active") === "yes",
+      };
+
+      await uploadVideo(result);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsUploading(false);
     }
-
-    const { videoUrl, thumbnailUrl } = await addToBuckets(thumbnail, video);
-
-    const result = {
-      video_url: videoUrl,
-      thumbnail_url: thumbnailUrl,
-      caption: data.get("caption") || "",
-      category: data.get("category") || "",
-      order_index: Number(data.get("order_index")),
-      is_active: data.get("is_active") === "yes",
-    };
-
-    uploadVideo(result);
-    setIsUploading(false);
   };
-
-  const [isUploading, setIsUploading] = useState(false);
 
   return (
     <form onSubmit={handleSubmit}>
       <FieldGroup>
         <Field>
           <FieldLabel>Agregar Video</FieldLabel>
-
-          <Input type="file" accept="video/*" name="video" required />
+          <Input
+            type="file"
+            accept="video/*"
+            name="video"
+            required
+            onChange={setLocalVideoPreview}
+            
+          />
         </Field>
+
         <Field>
           <FieldLabel>Agregar Miniatura</FieldLabel>
-
-          <Input type="file" accept="image/*" name="thumbnail" required />
+          <Input
+            type="file"
+            accept="image/*"
+            name="thumbnail"
+            required
+            onChange={setLocalThumbnailPreview}
+            
+          />
         </Field>
+
         <Field>
           <FieldLabel>Leyenda</FieldLabel>
           <Input name="caption" placeholder="Que buen gol" />
@@ -108,7 +137,7 @@ export function NewReelForm({ uploadVideo }: NewReelFormProps) {
           <select
             name="is_active"
             defaultValue={"yes"}
-            className="h-8 w-full rounded-lg border"
+            className="h-8 w-full rounded-lg border border-slate-300 px-2 text-sm"
           >
             <option value="yes">Si</option>
             <option value="no">No</option>
@@ -118,7 +147,7 @@ export function NewReelForm({ uploadVideo }: NewReelFormProps) {
         <Field orientation="horizontal">
           {!isUploading ? (
             <div className="flex flex-row items-center gap-x-2">
-              <Button type="reset" variant="outline">
+              <Button type="reset" variant="outline" onClick={handleRemove}>
                 Cancelar
               </Button>
               <Button type="submit" className="bg-brand-navy">
@@ -127,13 +156,10 @@ export function NewReelForm({ uploadVideo }: NewReelFormProps) {
             </div>
           ) : (
             <div className="flex flex-row items-center gap-x-2">
-              <Button
-                variant="outline"
-                className="cursor-not-allowed"
-              >
+              <Button variant="outline" type="button" className="cursor-not-allowed">
                 Cancelar
               </Button>
-              <Button className="bg-brand-navy">
+              <Button type="button" className="bg-brand-navy">
                 <MoonLoader size={15} color="white" />
               </Button>
             </div>
