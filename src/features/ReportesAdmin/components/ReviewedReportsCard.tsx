@@ -14,7 +14,9 @@ const ReviewedReportsCard = ({
 }: ReviewedReportsCardProps) => {
   if (isLoading) {
     return (
-      <p className="text-sm text-brand-gray-mid">Cargando reportes revisados...</p>
+      <p className="text-sm text-brand-gray-mid">
+        Cargando reportes revisados...
+      </p>
     );
   }
 
