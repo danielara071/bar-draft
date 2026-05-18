@@ -1,6 +1,6 @@
 import { useEffect, useRef, type FC } from 'react'
 import type { ChatMessagesProps } from '../interfaces/chat'
-import { PlayerCard } from './PlayerCard'
+import { PlayerStatsCard } from './PlayerStatsCard'
 
 // tools cuyo resultado se debe renderizar como tarjeta de jugador
 const PLAYER_TOOLS = new Set(['getJugadoresVaronil', 'getJugadoresFemenil'])
@@ -53,7 +53,7 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
               {playerCards.length > 0 && (
                 <div className="flex gap-2 flex-wrap pl-8">
                   {playerCards.map(player => (
-                    <PlayerCard key={player.id} player={player} />
+                    <PlayerStatsCard key={player.id} player={player} />
                   ))}
                 </div>
               )}
