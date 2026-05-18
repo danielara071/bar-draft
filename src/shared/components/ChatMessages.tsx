@@ -2,10 +2,7 @@ import { useEffect, useRef, type FC } from 'react'
 import type { ChatMessagesProps } from '../interfaces/chat'
 import { PlayerStatsCard } from './PlayerStatsCard'
 
-const PLAYER_TOOLS = new Set(['getJugadoresVaronil', 'getJugadoresFemenil'])
-
-// En ai@6, herramientas con execute emiten parts con type 'tool-<name>' (estáticas).
-// Las dinámicas usan type 'dynamic-tool' con campo toolName.
+// En ai@6, herramientas con execute emiten parts con type 'tool-<nombre>'.
 const getToolNameFromPart = (part: any): string | null => {
   if (typeof part.type !== 'string') return null
   if (part.type === 'dynamic-tool') return part.toolName ?? null
@@ -13,18 +10,19 @@ const getToolNameFromPart = (part: any): string | null => {
   return null
 }
 
+// Generative UI: el modelo decide renderizar una tarjeta llamando a 'renderizarJugador'.
+// El cliente lee part.input (los props que el modelo eligió) y monta el componente.
 const extractPlayerCards = (message: any): any[] => {
   const parts: any[] = message.parts ?? []
   const players: any[] = []
   for (const part of parts) {
     const toolName = getToolNameFromPart(part)
     if (
-      toolName &&
-      PLAYER_TOOLS.has(toolName) &&
+      toolName === 'renderizarJugador' &&
       part.state === 'output-available' &&
-      Array.isArray(part.output)
+      part.input
     ) {
-      players.push(...part.output)
+      players.push(part.input)
     }
   }
   return players
