@@ -5,19 +5,19 @@ interface PlayerStats {
   numero: number
   posicion: string
   goles: number
-  asistencia: number
+  asistencias: number
   atajadas: number | null
   partidos_jugados: number
-  minutos_jugador: number
+  minutos_jugados: number
   imagen_url: string | null
 }
 
 const STAT_BOXES = (p: PlayerStats) => [
-  { label: 'GOLES',            value: p.goles,            icon: Target },
-  { label: 'MINUTOS',          value: `${p.minutos_jugador}'`, icon: Clock },
-  { label: 'PARTIDOS JUGADOS', value: p.partidos_jugados, icon: CalendarDays },
-  { label: 'ASISTENCIAS',      value: p.asistencia,       icon: Footprints },
-  { label: 'ATAJADAS',         value: p.atajadas ?? '–',  icon: ShieldCheck },
+  { label: 'GOLES',            value: p.goles,              icon: Target },
+  { label: 'MINUTOS',          value: `${p.minutos_jugados}'`, icon: Clock },
+  { label: 'PARTIDOS JUGADOS', value: p.partidos_jugados,   icon: CalendarDays },
+  { label: 'ASISTENCIAS',      value: p.asistencias,        icon: Footprints },
+  { label: 'ATAJADAS',         value: p.atajadas ?? '–',    icon: ShieldCheck },
 ]
 
 export const PlayerStatsCard = ({ player }: { player: PlayerStats }) => (

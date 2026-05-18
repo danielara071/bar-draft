@@ -2,17 +2,25 @@ import { useEffect, useRef, type FC } from 'react'
 import type { ChatMessagesProps } from '../interfaces/chat'
 import { PlayerStatsCard } from './PlayerStatsCard'
 
-// tools cuyo resultado se debe renderizar como tarjeta de jugador
 const PLAYER_TOOLS = new Set(['getJugadoresVaronil', 'getJugadoresFemenil'])
 
-// extrae tarjetas de jugador de los parts de un mensaje del asistente
+// En ai@6, herramientas con execute emiten parts con type 'tool-<name>' (estáticas).
+// Las dinámicas usan type 'dynamic-tool' con campo toolName.
+const getToolNameFromPart = (part: any): string | null => {
+  if (typeof part.type !== 'string') return null
+  if (part.type === 'dynamic-tool') return part.toolName ?? null
+  if (part.type.startsWith('tool-')) return part.type.split('-').slice(1).join('-')
+  return null
+}
+
 const extractPlayerCards = (message: any): any[] => {
   const parts: any[] = message.parts ?? []
   const players: any[] = []
   for (const part of parts) {
+    const toolName = getToolNameFromPart(part)
     if (
-      part.type === 'dynamic-tool' &&
-      PLAYER_TOOLS.has(part.toolName) &&
+      toolName &&
+      PLAYER_TOOLS.has(toolName) &&
       part.state === 'output-available' &&
       Array.isArray(part.output)
     ) {
