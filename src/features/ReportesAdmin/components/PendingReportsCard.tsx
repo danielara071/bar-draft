@@ -106,7 +106,7 @@ const PendingReportsCard = ({
             <div className="mt-5 flex flex-col sm:flex-row gap-3">
               <button
                 type="button"
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-brand-navy text-white py-3 text-sm font-semibold hover:brightness-110 transition"
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-brand-navy text-white py-3 text-sm font-semibold hover:brightness-110 transition cursor-pointer hover:cursor-pointer disabled:cursor-not-allowed"
                 onClick={() => onBan?.(report.id, report.reported.id)}
                 disabled={isBusy}
               >
@@ -115,7 +115,7 @@ const PendingReportsCard = ({
               </button>
               <button
                 type="button"
-                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-brand-gray-light text-brand-navy py-3 text-sm font-semibold hover:bg-brand-gray-light/70 transition"
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-brand-gray-light text-brand-navy py-3 text-sm font-semibold hover:bg-brand-gray-light/70 transition cursor-pointer hover:cursor-pointer disabled:cursor-not-allowed"
                 onClick={() => onDismiss?.(report.id)}
                 disabled={isBusy}
               >
