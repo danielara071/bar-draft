@@ -36,7 +36,7 @@ export const PlayerStatsCard = ({ player }: { player: PlayerStats }) => (
           <span className="text-lg font-bold opacity-70">#{player.numero}</span>
         </div>
         <p className="text-[11px] text-white/60 uppercase tracking-widest mt-1">
-          {player.posicion}&nbsp;&nbsp;|&nbsp;&nbsp;FC BARCELONA&nbsp;&nbsp;·&nbsp;&nbsp;TEMP. 2024/25
+          {player.posicion}&nbsp;&nbsp;|&nbsp;&nbsp;FC BARCELONA&nbsp;&nbsp;·&nbsp;&nbsp;
         </p>
       </div>
 

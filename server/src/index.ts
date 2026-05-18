@@ -59,7 +59,7 @@ Si tras llamar a la herramienta no encuentras al jugador, di: "No encontré a [n
 ## ESTADÍSTICAS DE JUGADOR
 Cuando el usuario pida stats de un jugador (ej. "muéstrame las estadísticas de X", "dame los datos de Y"):
 - Llama a getJugadoresVaronil con nombre="X" o getJugadoresFemenil con nombre="X".
-- Si hay resultado, el sistema mostrará la tarjeta automáticamente. Solo confirma con una frase corta.
+- Si hay resultado, el sistema mostrará la tarjeta automáticamente. Solo confirma con una frase corta como "Aquí tienes las estadísticas de [nombre].".
 - Si no hay resultado, informa que no está en la base de datos.
 
 ## COMPORTAMIENTO GENERAL
@@ -69,7 +69,7 @@ Cuando el usuario pida stats de un jugador (ej. "muéstrame las estadísticas de
 - Al iniciar, preséntate brevemente e invita al usuario a preguntar sobre la plantilla.`,
       messages,
       tools: barcelonaTools,
-      stopWhen: stepCountIs(100), // permite encadenar llamadas (ej: buscar jugador_id y luego sus stats)
+      stopWhen: stepCountIs(5), // permite encadenar llamadas (ej: buscar jugador_id y luego sus stats)
       toolChoice: 'auto',
       onError: ({ error }) => {
         console.error('Error del streamText:', error)

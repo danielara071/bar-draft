@@ -47,5 +47,28 @@ export const barcelonaTools = {
       if (error) throw error
       return data ?? []
     },
-  })
+  }),
+
+  // ── Herramienta de UI (Generative UI) ──────────────────────────────────────
+  // El modelo llama a esta herramienta para declarar qué componente renderizar.
+  // El cliente intercepta la llamada y monta <PlayerStatsCard> con los datos del input.
+  renderizarJugador: tool({
+    description:
+      'Genera la tarjeta visual interactiva de estadísticas de un jugador/a. ' +
+      'Llámala SIEMPRE después de obtener datos con getJugadoresVaronil o getJugadoresFemenil, ' +
+      'pasando exactamente los campos del jugador encontrado. ' +
+      'NO respondas con texto de estadísticas: delega toda la visualización a esta herramienta.',
+    inputSchema: z.object({
+      nombre:           z.string().describe('Nombre completo del jugador/a'),
+      numero:           z.number().describe('Número de camiseta'),
+      posicion:         z.string().describe('Posición en el campo'),
+      goles:            z.number().describe('Total de goles'),
+      asistencias:      z.number().describe('Total de asistencias'),
+      atajadas:         z.number().nullable().describe('Total de atajadas (null si no aplica)'),
+      partidos_jugados: z.number().describe('Partidos jugados'),
+      minutos_jugados:  z.number().describe('Minutos jugados'),
+      imagen_url:       z.string().nullable().describe('URL de la foto del jugador/a'),
+    }),
+    execute: async () => ({ rendered: true }),
+  }),
 }
