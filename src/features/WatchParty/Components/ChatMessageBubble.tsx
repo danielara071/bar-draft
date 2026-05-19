@@ -53,7 +53,7 @@ const ChatMessageBubble = ({
             {showReport ? (
               <button
                 type="button"
-                className="absolute left-0 top-full mt-1 inline-flex items-center rounded-full bg-brand-crimson px-3 py-1 text-[10px] font-semibold text-brand-white shadow-sm"
+                className="absolute left-0 top-full mt-1 inline-flex items-center rounded-full bg-brand-crimson px-3 py-1 text-[10px] cursor-pointer font-semibold text-brand-white shadow-sm"
                 onClick={() => {
                   setIsReportModalOpen(true);
                   setShowReport(false);

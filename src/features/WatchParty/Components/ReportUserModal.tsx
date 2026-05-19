@@ -61,7 +61,7 @@ const ReportUserModal = ({
             <select
               value={motivo}
               onChange={(e) => setMotivo(e.target.value as ReportReason)}
-              className="mt-1 w-full rounded-xl border border-brand-gray-light px-3 py-2 text-sm text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-crimson/20"
+              className="mt-1 w-full rounded-xl border border-brand-gray-light px-3 py-2 text-sm cursor-pointer text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-crimson/20"
             >
               {reasons.map((reason) => (
                 <option key={reason} value={reason}>
@@ -94,7 +94,7 @@ const ReportUserModal = ({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full border border-brand-gray-light px-4 py-2 text-sm font-semibold text-brand-navy hover:bg-brand-gray-light/40"
+            className="rounded-full border border-brand-gray-light px-4 py-2 text-sm cursor-pointer font-semibold text-brand-navy hover:bg-brand-gray-light/40"
           >
             Cancelar
           </button>
@@ -104,7 +104,7 @@ const ReportUserModal = ({
               onSubmit?.(payload);
               onClose();
             }}
-            className="rounded-full bg-brand-crimson px-4 py-2 text-sm font-semibold text-brand-white hover:brightness-110"
+            className="rounded-full bg-brand-crimson px-4 py-2 text-sm cursor-pointer font-semibold text-brand-white hover:brightness-110"
           >
             Reportar
           </button>
