@@ -73,10 +73,17 @@ export const updateReportStatus = async (
 
 export const banUserAndResolveReport = async (
   reportId: number,
-  reportedUserId: string,
   resolvedBy?: string | null
 ) => {
-  const { error } = await supabase.from("profiles").update({ is_banned: true }).eq("id", reportedUserId);
+  const { data: report, error: reportError } = await supabase
+    .from("reportes")
+    .select("denunciado_id")
+    .eq("id", reportId)
+    .single();
+
+  if (reportError) throw new Error(reportError.message);
+
+  const { error } = await supabase.from("profiles").update({ is_banned: true }).eq("id", report.denunciado_id);
   if (error) throw new Error(error.message);
   await updateReportStatus(reportId, "resuelto", resolvedBy);
 };

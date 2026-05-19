@@ -97,8 +97,10 @@ export function useReports() {
     }
   };
 
-  const banReport = (reportId: number, reportedUserId: string) =>
-    runAction(reportId, () => banUserAndResolveReport(reportId, reportedUserId, resolvedBy));
+  const banReport = (reportId: number, reportedUserId: string) => {
+    void reportedUserId;
+    return runAction(reportId, () => banUserAndResolveReport(reportId, resolvedBy));
+  };
   const dismissReport = (reportId: number) =>
     runAction(reportId, () => updateReportStatus(reportId, "descartado", resolvedBy));
 
