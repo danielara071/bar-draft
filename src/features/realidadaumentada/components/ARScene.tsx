@@ -93,7 +93,7 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
 
   if (gpsError) {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-gradient-to-br from-[#0f0f1a] to-[#1a0f2e] font-sans">
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-linear-to-br from-[#0f0f1a] to-[#1a0f2e] font-sans">
         <p className="text-base text-white">⚠️ {gpsError}</p>
         <small className="mt-2 text-white/50">Activa el GPS e intenta de nuevo</small>
         <button onClick={onBack} className="mt-6 rounded-lg bg-white/10 px-6 py-2.5 font-sans text-sm font-semibold text-white transition-opacity hover:opacity-80">
@@ -105,7 +105,7 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
 
   if (!userCoords) {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-gradient-to-br from-[#0f0f1a] to-[#1a0f2e] font-sans">
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-linear-to-br from-[#0f0f1a] to-[#1a0f2e] font-sans">
         <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-white/20 border-t-white" />
         <p className="mt-4 text-white">Obteniendo ubicación GPS...</p>
         <button onClick={onBack} className="mt-6 rounded-lg bg-white/10 px-6 py-2.5 font-sans text-sm font-semibold text-white transition-opacity hover:opacity-80">
