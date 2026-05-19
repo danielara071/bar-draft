@@ -13,6 +13,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./features/dashboard/layouts/DashboardLayout";
 import ReelsAdminPage from "./features/dashboard/pages/ReelsAdminPage";
+import AdminMapaTrofeos from "./pages/AdminMapaTrofeos";
 import { AdminRoute } from "./auth/AdminRoute";
 import Tienda from "./pages/Tienda";
 import GestionarAmigos from "./pages/GestionarAmigos";
@@ -51,6 +52,7 @@ function App() {
       >
         <Route index element={<Dashboard />} />
         <Route path="reels" element={<ReelsAdminPage />} />
+        <Route path="mapaTrofeos" element={<AdminMapaTrofeos />} />
         <Route path="wordle" element={<WordleManagerPage />} />
         <Route path="noticias" element={<NewsManagerPage />} />
 

@@ -1,7 +1,9 @@
 import { Link, useLocation } from "react-router-dom";
 import { Newspaper, LetterText, UserRound, Video, Home } from "lucide-react";
 
-const navItems = [
+const navItems = [{ name: "Reels", path: "/dashboard/reels" },
+  { name: "Mapa de Trofeos", path: "/dashboard/mapaTrofeos" },
+  { name: "Regresar a Inicio", path: "/" },
   { name: "Reels", path: "/dashboard/reels", icon: Video },
   { name: "Gestión de Noticias", path: "/dashboard/noticias", icon: Newspaper },
   { name: "Palabras Wordle", path: "/dashboard/wordle", icon: LetterText },
