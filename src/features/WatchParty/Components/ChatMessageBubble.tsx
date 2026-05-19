@@ -1,18 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "../Types/chatType";
+import ReportUserModal from "./ReportUserModal";
 import formatTime from "../Utils/formatTime";
 
 type ChatMessageBubbleProps = {
   message: ChatMessage;
   currentUserName?: string;
+  roomCode: string;
 };
 
 const ChatMessageBubble = ({
   message,
   currentUserName,
+  roomCode,
 }: ChatMessageBubbleProps) => {
   const isCurrentUser = message.user_name === currentUserName;
   const [showReport, setShowReport] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const reportRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -50,6 +54,10 @@ const ChatMessageBubble = ({
               <button
                 type="button"
                 className="absolute left-0 top-full mt-1 inline-flex items-center rounded-full bg-brand-crimson px-3 py-1 text-[10px] font-semibold text-brand-white shadow-sm"
+                onClick={() => {
+                  setIsReportModalOpen(true);
+                  setShowReport(false);
+                }}
               >
                 Reportar
               </button>
@@ -83,6 +91,14 @@ const ChatMessageBubble = ({
           </div>
         )}
       </div>
+
+      <ReportUserModal
+        isOpen={isReportModalOpen}
+        reportedUserName={message.user_name ?? "Usuario"}
+        reportedUserId={message.user_id}
+        roomCode={roomCode}
+        onClose={() => setIsReportModalOpen(false)}
+      />
     </div>
   );
 };

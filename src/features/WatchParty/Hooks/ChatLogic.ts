@@ -69,6 +69,7 @@ const useWatchPartyChat = (session: Session | null, roomCode: string) => {
       event: "message",
       payload: {
         type: "text",
+        user_id: session?.user?.id,
         message: newMessage,
         user_name: session?.user?.user_metadata?.full_name,
         avatar: session?.user?.user_metadata?.avatar,
@@ -88,6 +89,7 @@ const useWatchPartyChat = (session: Session | null, roomCode: string) => {
     event: "message",
     payload: {
       type: "sticker",
+      user_id: session?.user?.id,
       stickerId: sticker.id,
       stickerUrl: sticker.url,
       user_name: session?.user?.user_metadata?.full_name,
