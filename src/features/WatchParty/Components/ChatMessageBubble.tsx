@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "../Types/chatType";
 import formatTime from "../Utils/formatTime";
 
@@ -11,6 +12,21 @@ const ChatMessageBubble = ({
   currentUserName,
 }: ChatMessageBubbleProps) => {
   const isCurrentUser = message.user_name === currentUserName;
+  const [showReport, setShowReport] = useState(false);
+  const reportRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!showReport) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (!reportRef.current?.contains(event.target as Node)) {
+        setShowReport(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, [showReport]);
 
   return (
     <div
@@ -21,9 +37,27 @@ const ChatMessageBubble = ({
           isCurrentUser ? "justify-end" : "justify-start"
         }`}
       >
-        <p className="font-semibold text-brand-crimson">
-          {isCurrentUser ? "" : message.user_name}
-        </p>
+        {!isCurrentUser ? (
+          <div className="relative" ref={reportRef}>
+            <button
+              type="button"
+              className="font-semibold text-brand-crimson hover:text-brand-navy transition-colors cursor-pointer"
+              onClick={() => setShowReport((prev) => !prev)}
+            >
+              {message.user_name}
+            </button>
+            {showReport ? (
+              <button
+                type="button"
+                className="absolute left-0 top-full mt-1 inline-flex items-center rounded-full bg-brand-crimson px-3 py-1 text-[10px] font-semibold text-brand-white shadow-sm"
+              >
+                Reportar
+              </button>
+            ) : null}
+          </div>
+        ) : (
+          <p className="font-semibold text-brand-crimson" />
+        )}
         <p className="text-brand-gray-mid">{formatTime(message.timestamp)}</p>
       </div>
 
