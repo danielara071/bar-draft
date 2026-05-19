@@ -29,14 +29,14 @@ export default function ARHub({ userId }: ARHubProps) {
   if (arActive) return <ARScene userId={userId} onBack={() => setArActive(false)} />
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#0A1535] font-serif text-white">
+    <div className="min-h-screen overflow-x-hidden bg-[#002244] font-serif text-white">
 
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section className="mx-auto flex max-w-275 flex-col items-center gap-12 px-6 py-16 md:flex-row md:px-12">
+      <section className="mx-auto flex max-w-275 flex-col items-center gap-12 px-6 py-22 md:flex-row md:px-12">
 
         {/* Texto */}
         <div className="flex-1">
-          <h1 className="mb-5 text-6xl font-black leading-none tracking-tight">
+          <h1 className="mb-5 text-6xl font-sans leading-none tracking-tight">
             <span className="text-white">Mundo</span>
             <br />
             <span className="text-[#EDBB00]">Culé</span>
@@ -58,16 +58,17 @@ export default function ARHub({ userId }: ARHubProps) {
 
         {/* Preview AR */}
         <div className="flex flex-1 justify-center">
-          <div className="relative aspect-4/3 w-full max-w-110 overflow-hidden rounded-xl border border-white/8 bg-linear-to-br from-[#1a2a50] to-[#0d1a35]">
-            {/* Grid decorativo */}
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
-                  'linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px)',
-                backgroundSize: '40px 40px',
-              }}
-            />
+          <div className="relative aspect-4/3 w-full max-w-110 overflow-hidden rounded-xl border border-white/8 bg-linear-to-br from-[#1a2a50] to-[#002244]">
+            {/* Fondo de Planeta Tierra */}
+                <div
+                className="absolute inset-0"
+                style={{
+                    backgroundImage: "url('https://images.vexels.com/media/users/3/157971/isolated/preview/393140c13ded6abdd322098d2d02a6d7-ilustracion-del-planeta-tierra.png')",
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                }}
+                />
             {/* Marker flotante */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex animate-bounce flex-col items-center">
@@ -77,16 +78,14 @@ export default function ARHub({ userId }: ARHubProps) {
                 <div className="h-0 w-0 border-x-8 border-t-10 border-x-transparent border-t-[#EDBB00]" />
               </div>
             </div>
-            <span className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap font-sans text-[11px] uppercase tracking-[1.5px] text-white/35">
-              Modo AR activo
-            </span>
+           
           </div>
         </div>
       </section>
 
       {/* ── COLECCIÓN ─────────────────────────────────────────── */}
       <section className="rounded-t-3xl bg-white pb-20">
-        <div className="mx-auto max-w-275 px-6 md:px-12">
+        <div className="mx-auto max-w-275 px-6 py-10 md:px-12">
 
           {/* Header con progreso */}
           <div className="-mt-px mb-8 flex flex-col items-start gap-6 rounded-xl bg-[#A50044] px-7 py-5 sm:flex-row sm:items-center">
@@ -99,7 +98,7 @@ export default function ARHub({ userId }: ARHubProps) {
                 <span className="ml-auto font-sans text-xs text-white/60">
                   {COLLECTED_N}/{TOTAL_ITEMS} Items
                 </span>
-                <span className="font-serif text-3xl font-black leading-none text-white">
+                <span className="font-sans text-3xl font-black leading-none text-white">
                   {PROGRESS_PCT}%
                 </span>
               </div>

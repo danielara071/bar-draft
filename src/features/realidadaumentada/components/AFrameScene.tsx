@@ -9,19 +9,16 @@ interface AFrameSceneProps {
   onSelectObject: (obj: SelectedObject) => void
 }
 
-const RENDER_DISTANCE = 3.5  // Más cercano
-const PROXIMITY_TRIGGER = 1.5  // Distancia para activar interacción (metros en 3D)
+const RENDER_DISTANCE = 5
 
 export default function AFrameScene({
   userCoords,
   nearbyObjects,
   compassRef,
-  onSelectObject,
 }: AFrameSceneProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const sceneRef     = useRef<HTMLElement | null>(null)
   const animFrameRef = useRef<number>(0)
-  const proximityRef = useRef<Set<string>>(new Set())
 
   useEffect(() => {
     if (!containerRef.current || nearbyObjects.length === 0) return
@@ -36,15 +33,21 @@ export default function AFrameScene({
     scene.setAttribute('vr-mode-ui', 'enabled: false')
     scene.setAttribute('device-orientation-permission-ui', 'enabled: false')
     scene.setAttribute('background', 'transparent: true')
-    scene.style.cssText = 'width:100%;height:100%;position:fixed;top:0;left:0;z-index:1;'
+    // Renderer con physically correct lights + exposure alta
+    scene.setAttribute(
+      'renderer',
+      'colorManagement: true; physicallyCorrectLights: true; exposure: 2; toneMapping: ACESFilmic'
+    )
+    scene.style.cssText =
+      'width:100%;height:100%;position:fixed;top:0;left:0;z-index:1;'
     sceneRef.current = scene
 
-    // Assets — preload de GLBs
+    // Assets
     const assets = document.createElement('a-assets') as HTMLElement
     nearbyObjects.forEach((obj) => {
       if (!obj.glbUrl) return
       const asset = document.createElement('a-asset-item') as HTMLElement
-      asset.id  = `glb-${obj.id}`
+      asset.id = `glb-${obj.id}`
       asset.setAttribute('src', obj.glbUrl)
       assets.appendChild(asset)
     })
@@ -56,42 +59,56 @@ export default function AFrameScene({
     camera.setAttribute('look-controls', 'enabled: false')
     camera.setAttribute('position', '0 1.6 0')
     camera.id = 'ar-camera'
-
-    // Cursor raycasting — mejorado
-    const cursor = document.createElement('a-entity') as HTMLElement
-    cursor.setAttribute('cursor', 'fuse: false; rayOrigin: mouse')
-    cursor.setAttribute('raycaster', 'objects: .clickable; far: 200; near: 0.1')
-    cursor.setAttribute('geometry', 'primitive: ring; radiusInner: 0.02; radiusOuter: 0.03')
-    cursor.setAttribute('material', 'color: white; shader: flat; opacity: 0.8')
-    cursor.style.pointerEvents = 'auto'
-    camera.appendChild(cursor)
     scene.appendChild(camera)
 
-    // ── LUCES ───────────────────────────────────────────────
-    // Luz ambiental fuerte
-    const ambientLight = document.createElement('a-entity') as HTMLElement
-    ambientLight.setAttribute('light', 'type: ambient; intensity: 1.2; color: #ffffff')
+
+    // Ambiente muy fuerte
+    const ambientLight = document.createElement('a-light') as HTMLElement
+    ambientLight.setAttribute('type', 'ambient')
+    ambientLight.setAttribute('color', '#ffffff')
+    ambientLight.setAttribute('intensity', '3')
     scene.appendChild(ambientLight)
 
-    // Luz hemisférica para profundidad
-    const hemLight = document.createElement('a-entity') as HTMLElement
-    hemLight.setAttribute('light', 'type: hemisphere; intensity: 0.8')
-    scene.appendChild(hemLight)
+    // Direccional frontal fuerte
+    const dirFront = document.createElement('a-light') as HTMLElement
+    dirFront.setAttribute('type', 'directional')
+    dirFront.setAttribute('color', '#ffffff')
+    dirFront.setAttribute('intensity', '3')
+    dirFront.setAttribute('position', '0 2 3')
+    scene.appendChild(dirFront)
 
-    // Luz direccional frontal
-    const dirLight1 = document.createElement('a-entity') as HTMLElement
-    dirLight1.setAttribute('light', 'type: directional; intensity: 1; color: #ffffff')
-    dirLight1.setAttribute('position', '2 3 2')
-    scene.appendChild(dirLight1)
+    // Direccional desde arriba
+    const dirTop = document.createElement('a-light') as HTMLElement
+    dirTop.setAttribute('type', 'directional')
+    dirTop.setAttribute('color', '#fffae0')
+    dirTop.setAttribute('intensity', '2')
+    dirTop.setAttribute('position', '0 5 0')
+    scene.appendChild(dirTop)
 
-    // Luz direccional trasera (fill light)
-    const dirLight2 = document.createElement('a-entity') as HTMLElement
-    dirLight2.setAttribute('light', 'type: directional; intensity: 0.5; color: #ffffff')
-    dirLight2.setAttribute('position', '-2 2 -3')
-    scene.appendChild(dirLight2)
+    // Direccional desde la izquierda (fill)
+    const dirLeft = document.createElement('a-light') as HTMLElement
+    dirLeft.setAttribute('type', 'directional')
+    dirLeft.setAttribute('color', '#c8d8ff')
+    dirLeft.setAttribute('intensity', '1.5')
+    dirLeft.setAttribute('position', '-3 2 0')
+    scene.appendChild(dirLeft)
 
-    // Almacenar referencias a entidades para proximity detection
-    const objectEntities = new Map<string, { entity: HTMLElement; distance: number }>()
+    // Direccional desde la derecha (fill)
+    const dirRight = document.createElement('a-light') as HTMLElement
+    dirRight.setAttribute('type', 'directional')
+    dirRight.setAttribute('color', '#ffd0a0')
+    dirRight.setAttribute('intensity', '1.5')
+    dirRight.setAttribute('position', '3 2 0')
+    scene.appendChild(dirRight)
+
+    // Point light debajo para rim light dorado
+    const pointLight = document.createElement('a-light') as HTMLElement
+    pointLight.setAttribute('type', 'point')
+    pointLight.setAttribute('color', '#FFD700')
+    pointLight.setAttribute('intensity', '2')
+    pointLight.setAttribute('distance', '10')
+    pointLight.setAttribute('position', '0 0 2')
+    scene.appendChild(pointLight)
 
     // Objetos
     nearbyObjects.forEach((obj) => {
@@ -101,7 +118,7 @@ export default function AFrameScene({
 
       const pos = {
         x:  Math.sin(bearingRad) * RENDER_DISTANCE,
-        y:  1.5,
+        y:  0,
         z: -Math.cos(bearingRad) * RENDER_DISTANCE,
       }
 
@@ -110,129 +127,69 @@ export default function AFrameScene({
       entity.setAttribute('id', `obj-${obj.id}`)
       entity.setAttribute(
         'animation',
-        'property: position; to: ' +
-          `${pos.x} ${pos.y + 0.2} ${pos.z}; ` +
-          'dir: alternate; dur: 2000; easing: easeInOutSine; loop: true'
+        `property: position; to: ${pos.x} ${pos.y + 0.15} ${pos.z}; ` +
+        'dir: alternate; dur: 2000; easing: easeInOutSine; loop: true'
       )
 
-      objectEntities.set(obj.id, { entity, distance })
-
-      const handleSelection = () => {
-        onSelectObject({ id: obj.id, label: obj.label, distance: Math.round(distance) })
-      }
-
       if (obj.glbUrl) {
-        // ── Modelo GLB ───────────────────────────────────────
         const model = document.createElement('a-gltf-model') as HTMLElement
         model.setAttribute('src', `#glb-${obj.id}`)
-        model.setAttribute('scale', '0.3 0.3 0.3')  // Más pequeño
-        model.setAttribute('class', 'clickable')
-        model.style.pointerEvents = 'auto'
+        // El modelo tiene scale interno 0.0106 — con 1 1 1 se ve al tamaño correcto
+        // Ajustamos a 0.05 para que sea pequeño pero visible
+        model.setAttribute('scale', '0.2 0.2 0.2')
+        model.setAttribute('rotation', '0 0 0')
 
-        // ── HITBOX INVISIBLE (colisionador) ───────────────────
-        const hitbox = document.createElement('a-box') as HTMLElement
-        hitbox.setAttribute('class', 'clickable')
-        hitbox.setAttribute('position', '0 0 0')
-        hitbox.setAttribute('scale', '1.2 1.2 1.2')
-        hitbox.setAttribute('material', 'transparent: true; opacity: 0')
-        hitbox.style.pointerEvents = 'auto'
-
-        // Halo debajo del modelo
+        // Halo dorado debajo
         const ring = document.createElement('a-ring') as HTMLElement
-        ring.setAttribute('radius-inner', '0.3')
-        ring.setAttribute('radius-outer', '0.5')
-        ring.setAttribute('position', '0 -0.6 0')
+        ring.setAttribute('radius-inner', '0.2')
+        ring.setAttribute('radius-outer', '0.35')
         ring.setAttribute('rotation', '-90 0 0')
+        ring.setAttribute('position', '0 0.01 0')
         ring.setAttribute(
           'material',
-          `color: ${obj.color}; opacity: 0.5; transparent: true`
+          'color: #FFD700; opacity: 0.6; transparent: true'
         )
         ring.setAttribute(
           'animation__pulse',
           'property: scale; from: 1 1 1; to: 1.4 1.4 1.4; dir: alternate; dur: 1500; easing: easeInOutSine; loop: true'
         )
-
-        // Event listeners en el hitbox (mejor raycasting)
-        hitbox.addEventListener('click', handleSelection)
-        hitbox.addEventListener('mouseenter', () => {
-          // Feedback visual al pasar el mouse/raycast
-          ring.setAttribute('material', `color: ${obj.color}; opacity: 0.8; transparent: true`)
-        })
-        hitbox.addEventListener('mouseleave', () => {
-          ring.setAttribute('material', `color: ${obj.color}; opacity: 0.5; transparent: true`)
-        })
 
         entity.appendChild(model)
-        entity.appendChild(hitbox)
         entity.appendChild(ring)
       } else {
-        // ── Fallback: esfera ─────────────────────────────────
         const sphere = document.createElement('a-sphere') as HTMLElement
-        sphere.setAttribute('radius', '0.4')
-        sphere.setAttribute('class', 'clickable')
+        sphere.setAttribute('radius', '0.3')
         sphere.setAttribute(
           'material',
-          `color: ${obj.color}; metalness: 0.3; roughness: 0.2; emissive: ${obj.color}; emissiveIntensity: 0.5`
+          `color: ${obj.color}; metalness: 0.3; roughness: 0.4; emissive: ${obj.color}; emissiveIntensity: 0.5`
         )
-        sphere.style.pointerEvents = 'auto'
-
-        const glow = document.createElement('a-sphere') as HTMLElement
-        glow.setAttribute('radius', '0.55')
-        glow.setAttribute(
-          'material',
-          `color: ${obj.color}; opacity: 0.2; transparent: true; side: back`
-        )
-        glow.setAttribute(
-          'animation__pulse',
-          'property: scale; from: 1 1 1; to: 1.4 1.4 1.4; dir: alternate; dur: 1500; easing: easeInOutSine; loop: true'
-        )
-
-        sphere.addEventListener('click', handleSelection)
         entity.appendChild(sphere)
-        entity.appendChild(glow)
       }
 
       // Etiqueta
       const text = document.createElement('a-text') as HTMLElement
       text.setAttribute('value', `${obj.label}\n${Math.round(distance)}m`)
       text.setAttribute('align', 'center')
-      text.setAttribute('position', '0 1.2 0')
-      text.setAttribute('scale', '1 1 1')
+      text.setAttribute('position', '0 1.0 0')
+      text.setAttribute('scale', '0.8 0.8 0.8')
       text.setAttribute('color', '#FFFFFF')
-
+      text.setAttribute(
+        'geometry',
+        'primitive: plane; width: 1.2; height: 0.4'
+      )
+      text.setAttribute(
+        'material',
+        'color: #0A1535; opacity: 0.6; transparent: true'
+      )
       entity.appendChild(text)
       scene.appendChild(entity)
     })
 
     containerRef.current.appendChild(scene)
 
-    // ── Loop: brújula + proximity detection ──────────────────
     const tick = () => {
       const cam = document.getElementById('ar-camera')
       if (cam) cam.setAttribute('rotation', `0 ${-compassRef.current} 0`)
-
-      // Proximity check — si el usuario está muy cerca, auto-abrir modal
-      objectEntities.forEach(({ distance }, objId) => {
-        const isNear = distance < PROXIMITY_TRIGGER
-        const wasNear = proximityRef.current.has(objId)
-
-        if (isNear && !wasNear) {
-          // Entró en rango de proximidad
-          proximityRef.current.add(objId)
-          const obj = nearbyObjects.find((o) => o.id === objId)
-          if (obj) {
-            onSelectObject({
-              id: obj.id,
-              label: obj.label,
-              distance: Math.round(distance),
-            })
-          }
-        } else if (!isNear && wasNear) {
-          // Salió del rango
-          proximityRef.current.delete(objId)
-        }
-      })
-
       animFrameRef.current = requestAnimationFrame(tick)
     }
     animFrameRef.current = requestAnimationFrame(tick)

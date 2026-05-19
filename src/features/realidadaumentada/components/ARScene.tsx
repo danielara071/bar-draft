@@ -6,18 +6,26 @@ import AFrameScene from './AFrameScene'
 import ARsystem from './ARsystem'
 import CameraFeed from './CameraFeed'
 import TrophyModal from './TrophyModal'
-import { getDistanceMeters } from '../../../lib/geoUtils'
+import { getDistanceMeters, getBearing } from '../../../lib/geoUtils'
 
 interface ARSceneProps {
   userId: string
   onBack: () => void
 }
 
+const FOV_DEGREES = 30  // tolerancia angular — mitad del campo de visión
+
+/** Diferencia angular más corta entre dos headings (0-360) */
+function angleDiff(a: number, b: number): number {
+  const diff = Math.abs(a - b) % 360
+  return diff > 180 ? 360 - diff : diff
+}
+
 export default function ARScene({ userId, onBack }: ARSceneProps) {
   const { userCoords, error: gpsError } = useGPS(true)
   const { compassRef, compassReady }    = useCompass(true)
   const [modalOpen, setModalOpen]       = useState(false)
-  const shownRef                        = useRef<Set<string>>(new Set())
+  const rafRef                          = useRef<number>(0)
 
   const {
     nearbyWorldObjects,
@@ -27,27 +35,48 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
     capture,
   } = useUserTrophies(userId, userCoords)
 
-  // ── Proximity detection — corre cuando cambian coords u objetos ──
+  // ── Loop: detecta si algún objeto está en el FOV ─────────────
   useEffect(() => {
     if (!userCoords || nearbyWorldObjects.length === 0) return
 
-    nearbyWorldObjects.forEach((obj) => {
-      const dist = getDistanceMeters(
-        userCoords.lat, userCoords.lng,
-        obj.lat, obj.lng,
-      )
+    const check = () => {
+      const heading = compassRef.current
 
-      if (dist <= 300 && !shownRef.current.has(obj.id)) {
-        shownRef.current.add(obj.id)
-        selectTrophy(obj.id)
+      let closest: { id: string; dist: number } | null = null
+
+      for (const obj of nearbyWorldObjects) {
+        const dist = getDistanceMeters(
+          userCoords.lat, userCoords.lng,
+          obj.lat, obj.lng,
+        )
+        if (dist > 300) continue
+
+        const bearing = getBearing(
+          userCoords.lat, userCoords.lng,
+          obj.lat, obj.lng,
+        )
+
+        const inFov = angleDiff(heading, bearing) <= FOV_DEGREES
+
+        if (inFov) {
+          if (!closest || dist < closest.dist) {
+            closest = { id: obj.id, dist }
+          }
+        }
+      }
+
+      if (closest) {
+        selectTrophy(closest.id)
+      } else {
+        clearSelectedTrophy()
         setModalOpen(false)
       }
 
-      // Si el usuario se aleja, lo reseteamos para que vuelva a aparecer
-      if (dist > 300 && shownRef.current.has(obj.id)) {
-        shownRef.current.delete(obj.id)
-      }
-    })
+      rafRef.current = requestAnimationFrame(check)
+    }
+
+    rafRef.current = requestAnimationFrame(check)
+    return () => cancelAnimationFrame(rafRef.current)
   }, [userCoords, nearbyWorldObjects])
 
   // Cleanup A-Frame al salir
@@ -60,12 +89,11 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
   const handleCloseAll = () => {
     setModalOpen(false)
     clearSelectedTrophy()
-    shownRef.current.clear()
   }
 
   if (gpsError) {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-linear-to-br from-[#0f0f1a] to-[#1a0f2e] font-sans">
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-gradient-to-br from-[#0f0f1a] to-[#1a0f2e] font-sans">
         <p className="text-base text-white">⚠️ {gpsError}</p>
         <small className="mt-2 text-white/50">Activa el GPS e intenta de nuevo</small>
         <button onClick={onBack} className="mt-6 rounded-lg bg-white/10 px-6 py-2.5 font-sans text-sm font-semibold text-white transition-opacity hover:opacity-80">
@@ -77,7 +105,7 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
 
   if (!userCoords) {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-linear-to-br from-[#0f0f1a] to-[#1a0f2e] font-sans">
+      <div className="flex h-screen w-full flex-col items-center justify-center bg-gradient-to-br from-[#0f0f1a] to-[#1a0f2e] font-sans">
         <div className="h-10 w-10 animate-spin rounded-full border-[3px] border-white/20 border-t-white" />
         <p className="mt-4 text-white">Obteniendo ubicación GPS...</p>
         <button onClick={onBack} className="mt-6 rounded-lg bg-white/10 px-6 py-2.5 font-sans text-sm font-semibold text-white transition-opacity hover:opacity-80">
@@ -90,10 +118,8 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
   return (
     <div className="relative h-screen w-full overflow-hidden">
 
-      {/* z-0 */}
       <CameraFeed />
 
-      {/* z-1 */}
       <AFrameScene
         userCoords={userCoords}
         nearbyObjects={nearbyWorldObjects}
@@ -104,17 +130,21 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
         }}
       />
 
-      {/* z-10 */}
       <ARsystem
         nearbyCount={nearbyWorldObjects.length}
         compassDeg={compassRef.current}
         compassReady={compassReady}
         selected={
-          selectedTrophy
-            ? { id: selectedTrophy.id, label: selectedTrophy.nombre, distance:
-                userCoords
-                  ? Math.round(getDistanceMeters(userCoords.lat, userCoords.lng, selectedTrophy.lat, selectedTrophy.lng))
-                  : 0
+          selectedTrophy && !modalOpen
+            ? {
+                id: selectedTrophy.id,
+                label: selectedTrophy.nombre,
+                distance: Math.round(
+                  getDistanceMeters(
+                    userCoords.lat, userCoords.lng,
+                    selectedTrophy.lat, selectedTrophy.lng,
+                  )
+                ),
               }
             : null
         }
@@ -122,7 +152,6 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
         onCollect={() => setModalOpen(true)}
       />
 
-      {/* z-20 */}
       <button
         onClick={onBack}
         className="fixed left-4 top-4 z-20 flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 font-sans text-sm font-semibold text-white backdrop-blur-md transition-opacity hover:opacity-80 active:opacity-60"
@@ -133,7 +162,6 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
         Volver
       </button>
 
-      {/* z-30 */}
       {modalOpen && selectedTrophy && (
         <TrophyModal
           trophy={selectedTrophy}
