@@ -4,16 +4,20 @@ import L from "leaflet" ;
 
 const AnyMapContainer = MapContainer as any;
 
-function ClickHandler() {
+type ClickHandlerProps = {
+  onMapClick: (lat: number, lng: number) => void;
+};
+
+function ClickHandler({ onMapClick }: ClickHandlerProps) {
   useMapEvents({
-    click(e:any) {
-      console.log(e.latlng);
+    click(e: any) {
+      const { lat, lng } = e.latlng;
+      onMapClick(lat, lng);
     },
   });
 
   return null;
 }
-
 
 
 export type Trofeo = {
@@ -25,9 +29,11 @@ export type Trofeo = {
 
 type MapaProps = {
   trofeos : Trofeo[]
+  onSelectCoords: (lat: number, lng: number) => void;
 }
 export default function Mapa({
-  trofeos
+  trofeos,
+  onSelectCoords,
 }: MapaProps) {
   const mapCenter = [25.6866, -100.3161] as [number, number];
 
@@ -57,7 +63,7 @@ export default function Mapa({
         </Marker>
       ))}
 
-      <ClickHandler />
+      <ClickHandler onMapClick={onSelectCoords}/>
     </AnyMapContainer>
   );
 }
