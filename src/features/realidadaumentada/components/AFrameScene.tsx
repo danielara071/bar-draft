@@ -212,7 +212,7 @@ export default function AFrameScene({
       if (cam) cam.setAttribute('rotation', `0 ${-compassRef.current} 0`)
 
       // Proximity check — si el usuario está muy cerca, auto-abrir modal
-      objectEntities.forEach(({ entity, distance }, objId) => {
+      objectEntities.forEach(({ distance }, objId) => {
         const isNear = distance < PROXIMITY_TRIGGER
         const wasNear = proximityRef.current.has(objId)
 

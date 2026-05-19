@@ -16,11 +16,9 @@ const TOTAL_ITEMS   = 63
 const COLLECTED_N   = MOCK_COLLECTION.filter((i) => i.collected).length
 const PROGRESS_PCT  = Math.round((COLLECTED_N / TOTAL_ITEMS) * 100)
 
-/**
- * ARHub — página principal de la experiencia "Mundo Culé".
- * Al pulsar "Activar Cámara" monta ARScene directamente (sin pantalla intermedia).
- * ARScene recibe onBack para regresar aquí y apagar la cámara.
- */
+//* ARHub — página principal de la experiencia "Mundo Culé".
+//* Al pulsar "Activar Cámara" monta ARScene directamente (sin pantalla intermedia).
+//* ARScene recibe onBack para regresar aquí y apagar la cámara.
 interface ARHubProps {
   userId: string
 }
@@ -34,7 +32,7 @@ export default function ARHub({ userId }: ARHubProps) {
     <div className="min-h-screen overflow-x-hidden bg-[#0A1535] font-serif text-white">
 
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section className="mx-auto flex max-w-[1100px] flex-col items-center gap-12 px-6 py-16 md:flex-row md:px-12">
+      <section className="mx-auto flex max-w-275 flex-col items-center gap-12 px-6 py-16 md:flex-row md:px-12">
 
         {/* Texto */}
         <div className="flex-1">
@@ -43,7 +41,7 @@ export default function ARHub({ userId }: ARHubProps) {
             <br />
             <span className="text-[#EDBB00]">Culé</span>
           </h1>
-          <p className="mb-9 max-w-[340px] font-sans text-[15px] leading-relaxed text-white/65">
+          <p className="mb-9 max-w-85 font-sans text-[15px] leading-relaxed text-white/65">
             Activa tu cámara y colecciona trofeos virtuales del Barça
             en el mundo real.
           </p>
@@ -60,7 +58,7 @@ export default function ARHub({ userId }: ARHubProps) {
 
         {/* Preview AR */}
         <div className="flex flex-1 justify-center">
-          <div className="relative aspect-[4/3] w-full max-w-[440px] overflow-hidden rounded-xl border border-white/8 bg-gradient-to-br from-[#1a2a50] to-[#0d1a35]">
+          <div className="relative aspect-4/3 w-full max-w-110 overflow-hidden rounded-xl border border-white/8 bg-linear-to-br from-[#1a2a50] to-[#0d1a35]">
             {/* Grid decorativo */}
             <div
               className="absolute inset-0"
@@ -76,7 +74,7 @@ export default function ARHub({ userId }: ARHubProps) {
                 <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#EDBB00] shadow-[0_0_24px_rgba(237,187,0,0.5)]">
                   <TrophyIcon size={24} color="#A50044" />
                 </div>
-                <div className="h-0 w-0 border-x-[8px] border-t-[10px] border-x-transparent border-t-[#EDBB00]" />
+                <div className="h-0 w-0 border-x-8 border-t-10 border-x-transparent border-t-[#EDBB00]" />
               </div>
             </div>
             <span className="absolute bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap font-sans text-[11px] uppercase tracking-[1.5px] text-white/35">
@@ -88,7 +86,7 @@ export default function ARHub({ userId }: ARHubProps) {
 
       {/* ── COLECCIÓN ─────────────────────────────────────────── */}
       <section className="rounded-t-3xl bg-white pb-20">
-        <div className="mx-auto max-w-[1100px] px-6 md:px-12">
+        <div className="mx-auto max-w-275 px-6 md:px-12">
 
           {/* Header con progreso */}
           <div className="-mt-px mb-8 flex flex-col items-start gap-6 rounded-xl bg-[#A50044] px-7 py-5 sm:flex-row sm:items-center">

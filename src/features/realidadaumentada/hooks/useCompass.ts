@@ -5,13 +5,12 @@ interface UseCompassResult {
   compassReady: boolean
 }
 
-/**
- * useCompass — gestiona el heading del dispositivo.
- * - Móvil: escucha deviceorientation / deviceorientationabsolute con permisos iOS.
- * - PC:    simula la brújula con teclas ◄ ► (±5°).
- *
- * Retorna un ref (no estado) para evitar re-renders en cada frame.
- */
+
+//useCompass — gestiona el heading del dispositivo.
+// Móvil: escucha deviceorientation / deviceorientationabsolute con permisos iOS.
+// PC:    simula la brújula con teclas ◄ ► (±5°).
+
+
 export function useCompass(started: boolean): UseCompassResult {
   const compassRef = useRef<number>(0)
   const [compassReady, setCompassReady] = useState(false)
@@ -49,7 +48,7 @@ export function useCompass(started: boolean): UseCompassResult {
         window.removeEventListener('deviceorientation', handleOrientation as any, true)
       }
     } else {
-      // PC: simula brújula con teclas ◄ ►
+      // PC: simula brújula con teclas 
       setCompassReady(true)
       const handleKey = (e: KeyboardEvent) => {
         if (e.key === 'ArrowLeft')  compassRef.current = (compassRef.current - 5 + 360) % 360

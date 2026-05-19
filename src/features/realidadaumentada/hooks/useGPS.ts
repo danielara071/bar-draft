@@ -11,13 +11,12 @@ interface UseGPSResult {
   error: string | null
 }
 
-/**
- * useGPS — gestiona la posición del usuario y los objetos del mundo.
- * - Primera posición: genera WorldObjects centrados en el usuario via buildWorldObjects().
- * - Posiciones posteriores: filtra objetos dentro de VISIBILITY_RADIUS_METERS.
- *
- * Retorna worldObjects (todos) y nearbyObjects (filtrados por radio).
- */
+
+//useGPS — gestiona la posición del usuario y los objetos del mundo.
+//Primera posición: genera WorldObjects centrados en el usuario via buildWorldObjects().
+// Posiciones posteriores: filtra objetos dentro de VISIBILITY_RADIUS_METERS.
+//Retorna worldObjects (todos) y nearbyObjects (filtrados por radio).
+
 export function useGPS(started: boolean): UseGPSResult {
   const [userCoords, setUserCoords]     = useState<UserCoords | null>(null)
   const [worldObjects, setWorldObjects] = useState<WorldObject[]>([])

@@ -26,14 +26,8 @@ interface UseUserTrophiesResult {
   error: string | null
 }
 
-/**
- * useUserTrophies — gestiona toda la lógica de trofeos del usuario.
- *
- * - Carga trofeos cercanos al usuario (para AFrameScene)
- * - Carga trofeos capturados (para ARHub colección)
- * - Expone `capture()` que guarda en BD y actualiza estado local sin refetch
- * - Expone `selectTrophy()` para abrir el modal de detalle
- */
+// useUserTrophies — gestiona toda la lógica de trofeos del usuario.
+
 export function useUserTrophies(
   userId: string | null,
   userCoords: UserCoords | null,
@@ -42,11 +36,11 @@ export function useUserTrophies(
   const [nearbyTrophies, setNearbyTrophies]     = useState<TrophyWithCapture[]>([])
   const [collectedTrophies, setCollectedTrophies] = useState<TrophyWithCapture[]>([])
   const [selectedTrophy, setSelectedTrophy]     = useState<TrophyWithCapture | null>(null)
-  const [totalTrophies, setTotalTrophies]       = useState(0)
+  const [totalTrophies]       = useState(0)
   const [loading, setLoading]                   = useState(false)
   const [error, setError]                       = useState<string | null>(null)
 
-  // ── Carga inicial de trofeos del usuario ────────────────────
+  //  Carga los trofeos capturados por el usuario al iniciar o cambiar de usuario
   const loadCollected = useCallback(async () => {
     if (!userId) return
     try {
@@ -61,7 +55,7 @@ export function useUserTrophies(
     loadCollected()
   }, [loadCollected])
 
-  // ── Carga trofeos cercanos cuando cambia la posición GPS ────
+  // Carga los trofeos cercanos cada vez que cambian las coordenadas, el usuario o el radio
   useEffect(() => {
     if (!userId || !userCoords) return
 
@@ -85,7 +79,7 @@ export function useUserTrophies(
     load()
   }, [userId, userCoords?.lat, userCoords?.lng, radiusMeters])
 
-  // ── Selecciona un trofeo por id para el modal ───────────────
+  // Selecciona un trofeo por id para el modal
   const selectTrophy = useCallback(
     (trophyId: string) => {
       const found = nearbyTrophies.find((t) => t.id === trophyId) ?? null
@@ -96,7 +90,7 @@ export function useUserTrophies(
 
   const clearSelectedTrophy = useCallback(() => setSelectedTrophy(null), [])
 
-  // ── Captura un trofeo y actualiza estado local ──────────────
+  // Captura un trofeo: llama a la API, marca como capturado en nearbyTrophies y lo agrega a collectedTrophies
   const capture = useCallback(
     async (trophyId: string) => {
       if (!userId) return
@@ -133,7 +127,7 @@ export function useUserTrophies(
     [userId, nearbyTrophies],
   )
 
-  // ── WorldObjects para AFrameScene ───────────────────────────
+  // Convierte los nearbyTrophies a WorldObjects para la ARScene
   const nearbyWorldObjects = toWorldObjects(nearbyTrophies)
 
   return {

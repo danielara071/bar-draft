@@ -40,7 +40,7 @@ export default function ARsystem({
 
       {/* ── Panel objeto seleccionado ───────────────────────── */}
       {selected && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-10 w-[calc(100%-48px)] max-w-[420px] pointer-events-auto">
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-10 w-[calc(100%-48px)] max-w-105 pointer-events-auto">
           <div className="relative rounded-3xl border border-[#0A1535]/10 bg-white shadow-xl px-5 pt-5 pb-5 flex flex-col items-center gap-3">
 
             {/* Cerrar */}

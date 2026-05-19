@@ -9,7 +9,6 @@ import { getDistanceMeters } from '../../../lib/geoUtils'
 
 const TROPHY_COLOR_DEFAULT = '#FFD700'
 
-// ── Helpers privados ──────────────────────────────────────────────
 
 function mergeTrophyData(
   trophy: Trophy,
@@ -31,7 +30,7 @@ function mergeTrophyData(
   }
 }
 
-// ── API pública ───────────────────────────────────────────────────
+// Carga todas las ubicaciones de trofeos, filtra por cercanía y marca cuáles ya fueron capturados por el usuario.
 
 export async function getTrophiesNearby(
   userLat: number,
