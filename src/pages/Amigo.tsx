@@ -10,7 +10,11 @@ import { useLocation } from "react-router-dom";
 import useSession  from "../shared/hooks/useSession"
 
 import { useSendFriendRequest } from "../shared/hooks/useFriendRequests"; 
- import { useFriendStatus } from "../shared/hooks/useFriendStatus";
+import { useFriendStatus } from "../shared/hooks/useFriendStatus";
+
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
+
 
 function Amigo() {
   const session = useSession();
@@ -21,7 +25,10 @@ function Amigo() {
   const { logros : Logro } = useUsuarioLogros(Usuario?.id ?? "");
   const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "", "accepted");
   const { sendRequest } = useSendFriendRequest();
-
+  const navigate = useNavigate();
+  const irPerfil = () => {
+    navigate("/perfil")
+  }
   const {
     friend_status: friend_status,
     loading,
@@ -48,6 +55,12 @@ function Amigo() {
     
     <div>
       <div className="bg-[#002244] px-6 py-6">
+        <button 
+          onClick={irPerfil}
+          className="bg-red-50 p-3 rounded-full group hover:bg-red-100 transition-colors"
+        > 
+          <ArrowLeft className="text-brand-navy w-5 h-5 group-hover:scale-110 transition-transform" />
+        </button>
         <div className="max-w-5xl mx-auto mt-13">
           <PerfilUsuario
             username= {Usuario?.nombre_usuario || "Usuario"}
