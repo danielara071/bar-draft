@@ -1,4 +1,4 @@
-import { Trophy, Trash2 } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 
 type CardTrofeoAdminProps = {
   nombre: string;
