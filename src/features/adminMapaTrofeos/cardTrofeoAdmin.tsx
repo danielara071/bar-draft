@@ -36,7 +36,7 @@ export default function CardTrofeoAdmin({
           > 
             <Trash2 className="text-red-500 w-5 h-5 group-hover:scale-110 transition-transform" />
           </button>*/}
-        </div>
+        </div> 
 
         <div className="ml-1">
           <p className="text-gray-500 text-base leading-relaxed">
