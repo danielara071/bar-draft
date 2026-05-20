@@ -53,9 +53,9 @@ export default function PerfilUsuario({
           />
         </div>
         
-        <div className="py-4 flex gap-14">
+        <div className="py-4 flex justify-between">
             <h2 className="text-white text-4xl font-semibold">@{username}</h2>
-            {onLogoutText === "Cerrar sesión" ? null : (
+            {onLogoutText === "Cerrar " ? null : (
                 <button
                     onClick={onLogoutFunc}
                     className="text-white bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-md"
