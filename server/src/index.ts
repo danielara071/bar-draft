@@ -3,14 +3,16 @@ import { Hono } from 'hono'
 import { serve } from '@hono/node-server'
 import { cors } from 'hono/cors'
 import { streamText, stepCountIs, convertToModelMessages } from 'ai'
-import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
+import { createOpenAI } from '@ai-sdk/openai'
 import { barcelonaTools } from './tools'
 import { startWatchpartyExpressServer } from './routes/watchparty'
 import { registerCheckoutRoutes } from './routes/checkout'
 
-const ollama = createOpenAICompatible({
-  name: 'ollama',
+// .chat() usa explícitamente Chat Completions (/v1/chat/completions), no el Responses API.
+// Esto es necesario para que Ollama procese las tool calls en formato estructurado.
+const ollamaProvider = createOpenAI({
   baseURL: process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434/v1',
+  apiKey: 'ollama',
 })
 
 const app = new Hono()
@@ -32,7 +34,7 @@ app.post('/api/chat', async (c) => {
     const modelName = process.env.OLLAMA_MODEL ?? 'qwen2.5:7b'
 
     const result = streamText({
-      model: ollama(modelName),
+      model: ollamaProvider.chat(modelName),
       system: `Eres Barçabot, el asistente virtual oficial del FC Barcelona.
 
 ## ÚNICA FUENTE DE VERDAD — REGLA ABSOLUTA
@@ -42,23 +44,25 @@ Tu ÚNICA fuente de información son estas tablas:
 
 PROHIBIDO: usar conocimiento previo, inventar datos, o responder sobre jugadores sin haber consultado la BD primero.
 
-## FLUJO OBLIGATORIO PARA ESTADÍSTICAS (Generative UI)
-Cuando el usuario pida estadísticas o datos de un jugador/a, sigue SIEMPRE estos pasos en orden:
+## HERRAMIENTAS DE INTERFAZ (Generative UI) — USO OBLIGATORIO
+Tienes dos herramientas. Cada una consulta la BD y genera SU componente visual.
+Tú solo decides CUÁL llamar y CON QUÉ buscar; los datos los pone la herramienta.
 
-PASO 1 — Buscar en BD:
-  - Llama a getJugadoresVaronil(nombre="X") para el equipo masculino.
-  - Llama a getJugadoresFemenil(nombre="X") para el equipo femenino.
+A) getPlayerStats(nombre, equipo?) → para UN jugador/a específico.
+   Úsala cuando pidan datos de una persona concreta (ej: "estadísticas de Lewandowski").
+   Pasa equipo="femenil" solo si el usuario dice que es del equipo femenino.
 
-PASO 2 — Si encontraste al jugador:
-  - Llama a renderizarJugador() con EXACTAMENTE estos campos del resultado:
-    { nombre, numero, posicion, goles, asistencias, atajadas, partidos_jugados, minutos_jugados, imagen_url }
-  - El sistema generará automáticamente la tarjeta visual. No escribas las estadísticas en texto.
-  - Después de llamar a renderizarJugador, escribe solo una frase corta de confirmación.
+B) getPlayerList(titulo, equipo?, posicion?, orden?, limit?) → para VARIOS jugadores.
+   Úsala para grupos/rankings (ej: "todos los delanteros", "los máximos goleadores").
+   Pon un 'titulo' descriptivo; usa 'posicion' y 'orden' para filtrar/ordenar.
 
-PASO 3 — Si NO encontraste al jugador:
-  - Di: "No encontré a [nombre] en la base de datos."
-
-NUNCA omitas el PASO 2 cuando encuentres datos. NUNCA escribas estadísticas en texto plano.
+REGLAS:
+  - NO consultes ni transcribas datos por tu cuenta: la herramienta ya trae los
+    datos reales de la BD y renderiza la tarjeta.
+  - Tu texto de respuesta debe ser SOLO una frase corta de confirmación
+    (ej: "¡Aquí tienes a Lewandowski!" / "Estos son los goleadores 💙❤️").
+  - NUNCA repitas estadísticas ni URLs de imágenes en el texto.
+  - Si getPlayerStats devuelve found=false, di: "No encontré a [nombre] en la base de datos."
 
 ## COMPORTAMIENTO GENERAL
 - Responde en el idioma del usuario (español, catalán o inglés).
@@ -67,7 +71,7 @@ NUNCA omitas el PASO 2 cuando encuentres datos. NUNCA escribas estadísticas en 
 - Al iniciar, preséntate brevemente e invita al usuario a preguntar sobre la plantilla.`,
       messages,
       tools: barcelonaTools,
-      stopWhen: stepCountIs(5), // permite encadenar llamadas (ej: buscar jugador_id y luego sus stats)
+      stopWhen: stepCountIs(3), // 1 tool-call (consulta+UI) + frase de confirmación
       toolChoice: 'auto',
       onError: ({ error }) => {
         console.error('Error del streamText:', error)

@@ -4,7 +4,7 @@ import { UsuariosPanel } from "../shared/components/UsuariosPanel"
 import { useChatSession } from "../shared/hooks/useChatSession"
 import { useProfile } from "../shared/hooks/useProfile"
 
-const LOGO_URL = import.meta.env.VITE_LOGO_URL as string
+const logoURL = import.meta.env.VITE_LOGO_URL as string
 
 interface Props {
   // cuando viene del widget el layout cambia para caber en el panel flotante
@@ -33,7 +33,7 @@ const Chat = ({ embedded = false }: Props) => {
           isLoading={isLoading}
           getMessageText={getMessageText}
           embedded
-          logoUrl={LOGO_URL}
+          logoUrl={logoURL}
           userAvatarUrl={profile?.url_avatar ?? undefined}
         />
         <ChatInput

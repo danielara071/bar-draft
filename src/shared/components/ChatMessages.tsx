@@ -1,32 +1,6 @@
 import { useEffect, useRef, type FC } from 'react'
 import type { ChatMessagesProps } from '../interfaces/chat'
-import { PlayerStatsCard } from './PlayerStatsCard'
-
-// En ai@6, herramientas con execute emiten parts con type 'tool-<nombre>'.
-const getToolNameFromPart = (part: any): string | null => {
-  if (typeof part.type !== 'string') return null
-  if (part.type === 'dynamic-tool') return part.toolName ?? null
-  if (part.type.startsWith('tool-')) return part.type.split('-').slice(1).join('-')
-  return null
-}
-
-// Generative UI: el modelo decide renderizar una tarjeta llamando a 'renderizarJugador'.
-// El cliente lee part.input (los props que el modelo eligió) y monta el componente.
-const extractPlayerCards = (message: any): any[] => {
-  const parts: any[] = message.parts ?? []
-  const players: any[] = []
-  for (const part of parts) {
-    const toolName = getToolNameFromPart(part)
-    if (
-      toolName === 'renderizarJugador' &&
-      part.state === 'output-available' &&
-      part.input
-    ) {
-      players.push(part.input)
-    }
-  }
-  return players
-}
+import { collectGenUI } from '../genui/registry'
 
 export const ChatMessages: FC<ChatMessagesProps> = ({
   messages,
@@ -49,20 +23,15 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
       <div className="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-2">
         {messages.map(message => {
           const isUser = message.role === 'user'
-          const playerCards = !isUser ? extractPlayerCards(message) : []
+          // Generative UI: nodos decididos por el modelo (tool calls) vía registry.
+          const genUI = !isUser ? collectGenUI(message) : []
           const text = getMessageText(message)
 
           return (
             <div key={message.id} className="flex flex-col gap-2">
 
-              {/* tarjetas de jugador (solo en mensajes del asistente con tool results) */}
-              {playerCards.length > 0 && (
-                <div className="flex gap-2 flex-wrap pl-8">
-                  {playerCards.map(player => (
-                    <PlayerStatsCard key={player.id} player={player} />
-                  ))}
-                </div>
-              )}
+              {/* Generative UI: el modelo eligió qué componente renderizar */}
+              {genUI}
 
               {/* burbuja de texto (solo si hay texto que mostrar) */}
               {text && (
@@ -88,7 +57,7 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
                     {text}
                   </div>
 
-                  {/* avatar del usuario, solo en mensajes de la derecha */}
+                  {/*foto perfil del usuario, solo en mensajes de la derecha */}
                   {isUser && (
                     userAvatarUrl
                       ? <img
@@ -137,12 +106,22 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
         marginBottom: '10px',
       }}
     >
-      {messages.map(message => (
-        <div key={message.id} style={{ marginBottom: '10px' }}>
-          <strong>{message.role === 'user' ? 'Tú' : 'Barçabot'}:</strong>
-          <p>{getMessageText(message)}</p>
-        </div>
-      ))}
+      {messages.map(message => {
+        const isUser = message.role === 'user'
+        const genUI = !isUser ? collectGenUI(message) : []
+        const text = getMessageText(message)
+        return (
+          <div key={message.id} style={{ marginBottom: '10px' }}>
+            <strong>{isUser ? 'Tú' : 'Barçabot'}:</strong>
+            {genUI.length > 0 && (
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '8px 0' }}>
+                {genUI}
+              </div>
+            )}
+            {text && <p>{text}</p>}
+          </div>
+        )
+      })}
       {isLoading && <p>Pensando...</p>}
       <div ref={bottomRef} />
     </div>
