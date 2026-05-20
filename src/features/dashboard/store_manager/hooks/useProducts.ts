@@ -13,7 +13,7 @@ export default function useProducts() {
             .from("products")
             .select(`
                 *,
-                categories(name)
+                categories(id, name)
             `)
             .order("id");
 
@@ -31,5 +31,5 @@ export default function useProducts() {
         fetchProducts();
     }, []);
 
-    return { products, loading };
+    return { products, loading, fetchProducts };
 }
