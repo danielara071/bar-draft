@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Newspaper, LetterText, UserRound, Video, Home } from "lucide-react";
+import { Newspaper, LetterText, UserRound, Video } from "lucide-react";
 
 const navItems = [{ name: "Reels", path: "/dashboard/reels" },
   { name: "Mapa de Trofeos", path: "/dashboard/mapaTrofeos" },
@@ -31,7 +31,7 @@ const AdminNavbar = () => {
 
         <nav className="flex flex-col gap-1">
           {navItems.map((item) => {
-            const Icon = item.icon;
+            //const Icon = item.icon;
             const isActive = pathname.startsWith(item.path);
 
             return (
@@ -44,7 +44,7 @@ const AdminNavbar = () => {
                     : "text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
-                <Icon size={17} className="shrink-0" />
+                {/*<Icon size={17} className="shrink-0" />*/}
                 <span>{item.name}</span>
               </Link>
             );
