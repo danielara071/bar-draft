@@ -175,9 +175,6 @@ function AdminMapaTrofeos() {
               nombre={trofeo.nombre}
               descripcion={trofeo.descripcion}
               coordenadas={`${trofeo.coordenadas[0]}, ${trofeo.coordenadas[1]}`}
-              onDeleate={() =>
-                console.log(`Eliminar trofeo ${trofeo.id}`)
-              }
             />
           ))}
         </div>
