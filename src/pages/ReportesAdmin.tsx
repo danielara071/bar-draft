@@ -4,6 +4,7 @@ import StatCard from "../features/ReportesAdmin/components/StatsCard";
 import PendingReportsCard from "../features/ReportesAdmin/components/PendingReportsCard";
 import ReviewedReportsCard from "../features/ReportesAdmin/components/ReviewedReportsCard";
 import BanUserModal from "../features/ReportesAdmin/components/BanUserModal";
+import { DismissReportModal } from "../features/ReportesAdmin/components/DismissReportModal";
 import { useReports } from "../features/ReportesAdmin/hooks/useReports";
 import type {
   BanDuration,
@@ -12,6 +13,7 @@ import type {
 
 const ReportesAdmin = () => {
   const [banModalOpen, setBanModalOpen] = useState(false);
+  const [dismissModalOpen, setDismissModalOpen] = useState(false);
   const [selectedReport, setSelectedReport] =
     useState<PendingReportCardData | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<BanDuration>("7d");
@@ -37,6 +39,16 @@ const ReportesAdmin = () => {
     setSelectedReport(null);
   };
 
+  const openDismissModal = (report: PendingReportCardData) => {
+    setSelectedReport(report);
+    setDismissModalOpen(true);
+  };
+
+  const closeDismissModal = () => {
+    setDismissModalOpen(false);
+    setSelectedReport(null);
+  };
+
   const confirmBan = async () => {
     if (!selectedReport) return;
     await banReport(
@@ -45,6 +57,12 @@ const ReportesAdmin = () => {
       selectedDuration,
     );
     closeBanModal();
+  };
+
+  const confirmDismiss = async () => {
+    if (!selectedReport) return;
+    await dismissReport(selectedReport.id);
+    closeDismissModal();
   };
 
   return (
@@ -114,7 +132,7 @@ const ReportesAdmin = () => {
           error={error}
           actionLoading={actionLoading}
           onBanRequest={openBanModal}
-          onDismiss={dismissReport}
+          onDismissRequest={openDismissModal}
         />
       </section>
 
@@ -136,6 +154,16 @@ const ReportesAdmin = () => {
         onClose={closeBanModal}
         onSelectDuration={setSelectedDuration}
         onConfirmBan={confirmBan}
+        isSubmitting={
+          selectedReport ? Boolean(actionLoading[selectedReport.id]) : false
+        }
+      />
+
+      <DismissReportModal
+        isOpen={dismissModalOpen}
+        reportedUserName={selectedReport?.reported.name ?? "Usuario"}
+        onClose={closeDismissModal}
+        onConfirmDismiss={confirmDismiss}
         isSubmitting={
           selectedReport ? Boolean(actionLoading[selectedReport.id]) : false
         }
