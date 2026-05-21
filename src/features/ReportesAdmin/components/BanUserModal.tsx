@@ -89,7 +89,7 @@ const BanUserModal = ({
             type="button"
             onClick={onClose}
             disabled={isSubmitting}
-            className="rounded-full border border-brand-gray-light px-5 py-3 text-sm font-semibold text-brand-navy transition hover:bg-brand-gray-light/40 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-full border border-brand-gray-light px-5 py-3 text-sm font-semibold text-brand-navy transition cursor-pointer hover:bg-brand-gray-light/40 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Cancelar
           </button>
@@ -97,7 +97,7 @@ const BanUserModal = ({
             type="button"
             onClick={onConfirmBan}
             disabled={isSubmitting}
-            className="rounded-full bg-brand-crimson px-5 py-3 text-sm font-semibold text-brand-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-full bg-brand-crimson px-5 py-3 text-sm font-semibold text-brand-white transition cursor-pointer hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {isSubmitting ? "Baneando..." : "Confirmar baneo"}
           </button>
