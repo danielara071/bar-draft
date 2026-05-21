@@ -43,7 +43,7 @@ const ProductCard = ({
                 <p className="text-xs uppercase tracking-[0.22em] text-slate-400">
                   Precio
                 </p>
-                <p className="mt-1 text-2xl font-bold text-[#e0b100]">
+                <p className="mt-1 text-2xl font-bold text-brand-navy">
                   {price.toFixed(2)}
                 </p>
               </div>
@@ -62,7 +62,7 @@ const ProductCard = ({
                   Tipo
                 </p>
                 {premium ? (
-                  <p className="mt-1 text-2xl font-bold text-amber-500">
+                  <p className="mt-1 text-2xl font-bold text-brand-navy">
                     Premium
                   </p>
                 ) : (
