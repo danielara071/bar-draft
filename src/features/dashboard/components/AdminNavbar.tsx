@@ -4,7 +4,7 @@ import { Newspaper, LetterText, UserRound, Video } from "lucide-react";
 const navItems = [{ name: "Reels", path: "/dashboard/reels" },
   { name: "Administrar Noticias", path: "/dashboard/noticias" },
   { name: "Gestión de Tienda", path: "/dashboard/tienda" },
-  { name: "Regresar a Inicio", path: "/" }
+  { name: "Regresar a Inicio", path: "/" },
   { name: "Mapa de Trofeos", path: "/dashboard/mapaTrofeos" },
   { name: "Regresar a Inicio", path: "/" },
   { name: "Reels", path: "/dashboard/reels", icon: Video },
