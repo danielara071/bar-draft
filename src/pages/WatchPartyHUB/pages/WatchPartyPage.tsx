@@ -4,17 +4,23 @@ import type { WatchPartyMatch } from "../interfaces/index.interfaces";
 import { useFriendWatchParties } from "../hooks/useFriendWatchParties";
 import { usePublicWatchParties } from "../hooks/usePublicWatchParties";
 import { useCanJoinParty } from "../../../features/WatchParty/Hooks/useCanJoinParty";
+import { useBannedWatchPartyAccess } from "../hooks/useBannedWatchPartyAccess";
 import WatchPartyHero from "../components/WatchPartyHero";
 import WatchPartyUpcoming from "../components/WatchPartyUpcoming";
 import WatchPartyCodeInput from "../components/WatchPartyCodeInput";
 import WatchPartyGrid from "../components/WatchPartyGrid";
 import WatchPartyModal from "../components/WatchPartyModal";
 import WatchPartyJoinModal from "../components/WatchPartyJoinModal";
+import WatchPartySuspendedModal from "../components/WatchPartySuspendedModal";
 import { PrediccionesModal } from "../components/PrediccionesModal";
 
 // ── Contador regresivo ────────────────────────────────────────────────────────
 function useCountdown(targetDate: Date | null) {
-  const [timeLeft, setTimeLeft] = useState<{ h: number; m: number; s: number } | null>(null);
+  const [timeLeft, setTimeLeft] = useState<{
+    h: number;
+    m: number;
+    s: number;
+  } | null>(null);
 
   useEffect(() => {
     if (!targetDate) return;
@@ -92,7 +98,13 @@ function TooEarlyBanner({
 }
 
 // ── Banner de error genérico ──────────────────────────────────────────────────
-function JoinErrorBanner({ message, onClose }: { message: string; onClose: () => void }) {
+function JoinErrorBanner({
+  message,
+  onClose,
+}: {
+  message: string;
+  onClose: () => void;
+}) {
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-4">
       <div className="bg-white dark:bg-neutral-900 rounded-t-3xl sm:rounded-2xl w-full sm:max-w-sm p-6 flex flex-col items-center text-center gap-4">
@@ -123,10 +135,15 @@ function JoinErrorBanner({ message, onClose }: { message: string; onClose: () =>
 export default function WatchPartyPage() {
   const session = useSession();
   const userId = session?.user?.id;
+  const { isBanned } = useBannedWatchPartyAccess(userId);
 
   const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
-  const [selectedMatch, setSelectedMatch] = useState<WatchPartyMatch | null>(null);
-  const [prediccionMatch, setPrediccionMatch] = useState<WatchPartyMatch | null>(null);
+  const [selectedMatch, setSelectedMatch] = useState<WatchPartyMatch | null>(
+    null,
+  );
+  const [prediccionMatch, setPrediccionMatch] =
+    useState<WatchPartyMatch | null>(null);
+  const [suspendedModalOpen, setSuspendedModalOpen] = useState(false);
 
   // Para el contador: guardamos la fecha del partido bloqueado
   const [tooEarlyDate, setTooEarlyDate] = useState<Date | null>(null);
@@ -142,6 +159,11 @@ export default function WatchPartyPage() {
     usePublicWatchParties();
 
   const handleCardClick = (match: WatchPartyMatch): void => {
+    if (isBanned && match.privacy === "publica") {
+      setSuspendedModalOpen(true);
+      return;
+    }
+
     setSelectedMatch(match);
   };
 
@@ -201,6 +223,11 @@ export default function WatchPartyPage() {
         onClose={() => setSelectedMatch(null)}
         onConfirmJoin={handleConfirmJoin}
         isConfirming={isCheckingJoin}
+      />
+
+      <WatchPartySuspendedModal
+        isOpen={suspendedModalOpen}
+        onClose={() => setSuspendedModalOpen(false)}
       />
 
       <PrediccionesModal
