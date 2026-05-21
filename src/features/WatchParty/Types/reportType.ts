@@ -12,3 +12,15 @@ export type WatchPartyReportDraft = {
   motivo: ReportReason;
   detalles: string;
 };
+
+export type WatchPartyReportInsert = {
+  denunciante_id: string;
+  denunciado_id: string;
+  watch_party_id: string | null;
+  motivo: ReportReason;
+  detalles: string | null;
+};
+
+export type WatchPartyReportCreated = {
+  id: number;
+};

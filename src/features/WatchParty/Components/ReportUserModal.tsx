@@ -7,7 +7,9 @@ type ReportUserModalProps = {
   reportedUserId?: string;
   roomCode: string;
   onClose: () => void;
-  onSubmit?: (payload: WatchPartyReportDraft) => void;
+  onSubmit?: (payload: WatchPartyReportDraft) => Promise<void> | void;
+  isSubmitting?: boolean;
+  submitError?: string | null;
 };
 
 const reasons: ReportReason[] = [
@@ -25,6 +27,8 @@ const ReportUserModal = ({
   roomCode,
   onClose,
   onSubmit,
+  isSubmitting = false,
+  submitError,
 }: ReportUserModalProps) => {
   const [motivo, setMotivo] = useState<ReportReason>("Lenguaje ofensivo");
   const [detalles, setDetalles] = useState("");
@@ -44,7 +48,7 @@ const ReportUserModal = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-brand-navy/50 px-4">
-      <div className="w-full max-w-md rounded-2xl bg-brand-white p-5 shadow-xl border border-brand-gray-light">
+      <div className="w-full max-w-md rounded-2xl border border-brand-gray-light bg-brand-white p-5 shadow-xl">
         <h3 className="text-lg font-bold text-brand-navy">Reportar Usuario</h3>
         <p className="mt-1 text-sm text-brand-gray-mid">
           Completa el reporte para{" "}
@@ -61,7 +65,8 @@ const ReportUserModal = ({
             <select
               value={motivo}
               onChange={(e) => setMotivo(e.target.value as ReportReason)}
-              className="mt-1 w-full rounded-xl border border-brand-gray-light px-3 py-2 text-sm cursor-pointer text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-crimson/20"
+              disabled={isSubmitting}
+              className="mt-1 w-full rounded-xl border border-brand-gray-light px-3 py-2 text-sm text-brand-navy cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-crimson/20 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {reasons.map((reason) => (
                 <option key={reason} value={reason}>
@@ -79,8 +84,9 @@ const ReportUserModal = ({
               value={detalles}
               onChange={(e) => setDetalles(e.target.value)}
               rows={4}
+              disabled={isSubmitting}
               placeholder="Describe brevemente lo ocurrido..."
-              className="mt-1 w-full rounded-xl border border-brand-gray-light px-3 py-2 text-sm text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-crimson/20"
+              className="mt-1 w-full rounded-xl border border-brand-gray-light px-3 py-2 text-sm text-brand-navy focus:outline-none focus:ring-2 focus:ring-brand-crimson/20 disabled:cursor-not-allowed disabled:opacity-60"
             />
           </div>
 
@@ -88,25 +94,28 @@ const ReportUserModal = ({
             Sala:{" "}
             <span className="font-semibold text-brand-navy">{roomCode}</span>
           </div>
+
+          {submitError ? (
+            <p className="text-xs text-red-600">{submitError}</p>
+          ) : null}
         </div>
 
         <div className="mt-5 flex items-center justify-end gap-2">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full border border-brand-gray-light px-4 py-2 text-sm cursor-pointer font-semibold text-brand-navy hover:bg-brand-gray-light/40"
+            disabled={isSubmitting}
+            className="rounded-full border border-brand-gray-light px-4 py-2 text-sm font-semibold text-brand-navy cursor-pointer hover:bg-brand-gray-light/40 disabled:cursor-not-allowed disabled:opacity-60"
           >
             Cancelar
           </button>
           <button
             type="button"
-            onClick={() => {
-              onSubmit?.(payload);
-              onClose();
-            }}
-            className="rounded-full bg-brand-crimson px-4 py-2 text-sm cursor-pointer font-semibold text-brand-white hover:brightness-110"
+            onClick={() => void onSubmit?.(payload)}
+            disabled={isSubmitting}
+            className="rounded-full bg-brand-crimson px-4 py-2 text-sm font-semibold text-brand-white cursor-pointer hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Reportar
+            {isSubmitting ? "Enviando..." : "Reportar"}
           </button>
         </div>
       </div>

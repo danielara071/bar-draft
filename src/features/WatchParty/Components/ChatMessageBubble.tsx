@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "../Types/chatType";
 import ReportUserModal from "./ReportUserModal";
 import formatTime from "../Utils/formatTime";
+import { useReportUser } from "../Hooks/useReportUser";
 
 type ChatMessageBubbleProps = {
   message: ChatMessage;
@@ -18,6 +19,7 @@ const ChatMessageBubble = ({
   const [showReport, setShowReport] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const reportRef = useRef<HTMLDivElement | null>(null);
+  const { submitReport, isSubmitting, error, clearError } = useReportUser();
 
   useEffect(() => {
     if (!showReport) return;
@@ -46,7 +48,10 @@ const ChatMessageBubble = ({
             <button
               type="button"
               className="font-semibold text-brand-crimson hover:text-brand-navy transition-colors cursor-pointer"
-              onClick={() => setShowReport((prev) => !prev)}
+              onClick={() => {
+                clearError();
+                setShowReport((prev) => !prev);
+              }}
             >
               {message.user_name}
             </button>
@@ -55,6 +60,7 @@ const ChatMessageBubble = ({
                 type="button"
                 className="absolute left-0 top-full mt-1 inline-flex items-center rounded-full bg-brand-crimson px-3 py-1 text-[10px] cursor-pointer font-semibold text-brand-white shadow-sm"
                 onClick={() => {
+                  clearError();
                   setIsReportModalOpen(true);
                   setShowReport(false);
                 }}
@@ -97,7 +103,17 @@ const ChatMessageBubble = ({
         reportedUserName={message.user_name ?? "Usuario"}
         reportedUserId={message.user_id}
         roomCode={roomCode}
-        onClose={() => setIsReportModalOpen(false)}
+        onClose={() => {
+          clearError();
+          setIsReportModalOpen(false);
+        }}
+        onSubmit={async (payload) => {
+          await submitReport(payload);
+          clearError();
+          setIsReportModalOpen(false);
+        }}
+        isSubmitting={isSubmitting}
+        submitError={error}
       />
     </div>
   );
