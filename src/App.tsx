@@ -21,11 +21,13 @@ import Ra from "./pages/ra";
 import Estadisticas from "./pages/Estadisticas";
 import NewsManagerPage from "./features/dashboard/pages/NewsManagerPager";
 import WordleManagerPage from "./features/dashboard/pages/WordleManagerPage";
+import HealthCheck from "./pages/HealthCheck";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Index />} />
+      <Route path="/health" element={<HealthCheck />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/sportsapi" element={<SportsApi />} />
@@ -55,7 +57,6 @@ function App() {
         <Route path="mapaTrofeos" element={<AdminMapaTrofeos />} />
         <Route path="wordle" element={<WordleManagerPage />} />
         <Route path="noticias" element={<NewsManagerPage />} />
-
       </Route>
     </Routes>
   );
