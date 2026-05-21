@@ -9,7 +9,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
 
 const ProductPanel = () => {
-  const { products, loading, fetchProducts } = useProducts();
+  const { products, fetchProducts } = useProducts();
   const [selectedProduct, setSelectedProduct] = useState<ProductWithCategory | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState<ProductWithCategory | null>(null);
