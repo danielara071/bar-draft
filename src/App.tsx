@@ -20,6 +20,7 @@ import GestionarAmigos from "./pages/GestionarAmigos";
 import Ra from "./pages/ra";
 import Estadisticas from "./pages/Estadisticas";
 import NewsManagerPage from "./features/dashboard/pages/NewsManagerPager";
+import StoreManager from "./features/dashboard/pages/StoreManager";
 import WordleManagerPage from "./features/dashboard/pages/WordleManagerPage";
 import HealthCheck from "./pages/HealthCheck";
 
@@ -57,6 +58,8 @@ function App() {
         <Route path="mapaTrofeos" element={<AdminMapaTrofeos />} />
         <Route path="wordle" element={<WordleManagerPage />} />
         <Route path="noticias" element={<NewsManagerPage />} />
+        <Route path="tienda" element={<StoreManager />} />
+
       </Route>
     </Routes>
   );
