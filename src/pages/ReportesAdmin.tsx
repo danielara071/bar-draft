@@ -1,10 +1,16 @@
+import { useState } from "react";
 import { TriangleAlert, CircleCheckBig, Ban, Eye } from "lucide-react";
 import StatCard from "../features/ReportesAdmin/components/StatsCard";
 import PendingReportsCard from "../features/ReportesAdmin/components/PendingReportsCard";
 import ReviewedReportsCard from "../features/ReportesAdmin/components/ReviewedReportsCard";
+import BanUserModal from "../features/ReportesAdmin/components/BanUserModal";
 import { useReports } from "../features/ReportesAdmin/hooks/useReports";
+import type { BanDuration, PendingReportCardData } from "../features/ReportesAdmin/types/reportTypes";
 
 const ReportesAdmin = () => {
+  const [banModalOpen, setBanModalOpen] = useState(false);
+  const [selectedReport, setSelectedReport] = useState<PendingReportCardData | null>(null);
+  const [selectedDuration, setSelectedDuration] = useState<BanDuration>("7d");
   const {
     metrics,
     pendingReports,
@@ -15,6 +21,23 @@ const ReportesAdmin = () => {
     banReport,
     dismissReport,
   } = useReports();
+
+  const openBanModal = (report: PendingReportCardData) => {
+    setSelectedReport(report);
+    setSelectedDuration("7d");
+    setBanModalOpen(true);
+  };
+
+  const closeBanModal = () => {
+    setBanModalOpen(false);
+    setSelectedReport(null);
+  };
+
+  const confirmBan = async () => {
+    if (!selectedReport) return;
+    await banReport(selectedReport.id, selectedReport.reported.id, selectedDuration);
+    closeBanModal();
+  };
 
   return (
     <div className="px-10 py-8 max-w-6xl">
@@ -82,7 +105,7 @@ const ReportesAdmin = () => {
           isLoading={isLoading}
           error={error}
           actionLoading={actionLoading}
-          onBan={banReport}
+          onBanRequest={openBanModal}
           onDismiss={dismissReport}
         />
       </section>
@@ -97,6 +120,16 @@ const ReportesAdmin = () => {
           error={error}
         />
       </section>
+
+      <BanUserModal
+        isOpen={banModalOpen}
+        reportedUserName={selectedReport?.reported.name ?? "Usuario"}
+        selectedDuration={selectedDuration}
+        onClose={closeBanModal}
+        onSelectDuration={setSelectedDuration}
+        onConfirmBan={confirmBan}
+        isSubmitting={selectedReport ? Boolean(actionLoading[selectedReport.id]) : false}
+      />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 export type ReportStatus = "pendiente" | "resuelto" | "descartado";
+export type BanDuration = "24h" | "7d" | "30d" | "permanent";
 
 export type ReportMetrics = { pending: number; reviewed: number; banned: number; total: number };
 

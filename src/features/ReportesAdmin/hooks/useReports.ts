@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useSession from "../../WatchParty/Hooks/SessionLogic";
-import type { PendingReportCardData, ReportMetrics, ReviewedReportCardData } from "../types/reportTypes";
+import type { BanDuration, PendingReportCardData, ReportMetrics, ReviewedReportCardData } from "../types/reportTypes";
 import {
   banUserAndResolveReport,
   fetchPendingReports,
@@ -97,9 +97,10 @@ export function useReports() {
     }
   };
 
-  const banReport = (reportId: number, reportedUserId: string) => {
+  const banReport = (reportId: number, reportedUserId: string, duration: BanDuration) => {
     void reportedUserId;
-    return runAction(reportId, () => banUserAndResolveReport(reportId, resolvedBy));
+    void duration;
+    return runAction(reportId, () => banUserAndResolveReport(reportId, resolvedBy, duration));
   };
   const dismissReport = (reportId: number) =>
     runAction(reportId, () => updateReportStatus(reportId, "descartado", resolvedBy));

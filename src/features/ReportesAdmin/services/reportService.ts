@@ -1,5 +1,5 @@
 import { supabase } from "../../../shared/services/supabaseClient";
-import type { ReportMetrics, ReportWithRelations } from "../types/reportTypes";
+import type { BanDuration, ReportMetrics, ReportWithRelations } from "../types/reportTypes";
 
 const REVIEWED_STATES = ["resuelto", "descartado"] as const;
 const REPORT_SELECT =
@@ -73,8 +73,10 @@ export const updateReportStatus = async (
 
 export const banUserAndResolveReport = async (
   reportId: number,
-  resolvedBy?: string | null
+  resolvedBy?: string | null,
+  duration?: BanDuration
 ) => {
+  void duration;
   const { data: report, error: reportError } = await supabase
     .from("reportes")
     .select("denunciado_id")

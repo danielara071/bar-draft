@@ -5,7 +5,7 @@ interface PendingReportsCardProps {
   reports: PendingReportCardData[];
   isLoading?: boolean;
   error?: string | null;
-  onBan?: (reportId: number, reportedUserId: string) => void;
+  onBanRequest?: (report: PendingReportCardData) => void;
   onDismiss?: (reportId: number) => void;
   actionLoading?: Record<number, boolean>;
 }
@@ -14,7 +14,7 @@ const PendingReportsCard = ({
   reports,
   isLoading = false,
   error,
-  onBan,
+  onBanRequest,
   onDismiss,
   actionLoading = {},
 }: PendingReportsCardProps) => {
@@ -107,7 +107,7 @@ const PendingReportsCard = ({
               <button
                 type="button"
                 className="flex-1 inline-flex items-center justify-center gap-2 rounded-full bg-brand-navy text-white py-3 text-sm font-semibold hover:brightness-110 transition cursor-pointer hover:cursor-pointer disabled:cursor-not-allowed"
-                onClick={() => onBan?.(report.id, report.reported.id)}
+                onClick={() => onBanRequest?.(report)}
                 disabled={isBusy}
               >
                 <Ban size={16} />
