@@ -5,11 +5,15 @@ import PendingReportsCard from "../features/ReportesAdmin/components/PendingRepo
 import ReviewedReportsCard from "../features/ReportesAdmin/components/ReviewedReportsCard";
 import BanUserModal from "../features/ReportesAdmin/components/BanUserModal";
 import { useReports } from "../features/ReportesAdmin/hooks/useReports";
-import type { BanDuration, PendingReportCardData } from "../features/ReportesAdmin/types/reportTypes";
+import type {
+  BanDuration,
+  PendingReportCardData,
+} from "../features/ReportesAdmin/types/reportTypes";
 
 const ReportesAdmin = () => {
   const [banModalOpen, setBanModalOpen] = useState(false);
-  const [selectedReport, setSelectedReport] = useState<PendingReportCardData | null>(null);
+  const [selectedReport, setSelectedReport] =
+    useState<PendingReportCardData | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<BanDuration>("7d");
   const {
     metrics,
@@ -35,7 +39,11 @@ const ReportesAdmin = () => {
 
   const confirmBan = async () => {
     if (!selectedReport) return;
-    await banReport(selectedReport.id, selectedReport.reported.id, selectedDuration);
+    await banReport(
+      selectedReport.id,
+      selectedReport.reported.id,
+      selectedDuration,
+    );
     closeBanModal();
   };
 
@@ -128,7 +136,9 @@ const ReportesAdmin = () => {
         onClose={closeBanModal}
         onSelectDuration={setSelectedDuration}
         onConfirmBan={confirmBan}
-        isSubmitting={selectedReport ? Boolean(actionLoading[selectedReport.id]) : false}
+        isSubmitting={
+          selectedReport ? Boolean(actionLoading[selectedReport.id]) : false
+        }
       />
     </div>
   );

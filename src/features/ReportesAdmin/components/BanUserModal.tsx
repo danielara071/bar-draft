@@ -37,9 +37,15 @@ const BanUserModal = ({
             <CircleAlert className="h-6 w-6" strokeWidth={2.25} />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-brand-navy">Bannear usuario</h3>
+            <h3 className="text-xl font-bold text-brand-navy">
+              Bannear usuario
+            </h3>
             <p className="mt-1 text-sm text-brand-gray-mid">
-              Selecciona durante cuánto tiempo quedará suspendido <span className="font-semibold text-brand-navy">{reportedUserName}</span>.
+              Selecciona durante cuánto tiempo quedará suspendido{" "}
+              <span className="font-semibold text-brand-navy">
+                {reportedUserName}
+              </span>
+              .
             </p>
           </div>
         </div>
@@ -61,10 +67,16 @@ const BanUserModal = ({
               >
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-brand-navy">{option.label}</p>
+                    <p className="text-sm font-semibold text-brand-navy">
+                      {option.label}
+                    </p>
                   </div>
-                  <div className={`flex h-6 w-6 items-center justify-center rounded-full border ${isSelected ? "border-brand-crimson bg-brand-crimson" : "border-brand-gray-light"}`}>
-                    {isSelected ? <Clock3 className="h-3.5 w-3.5 text-brand-white" /> : null}
+                  <div
+                    className={`flex h-6 w-6 items-center justify-center rounded-full border ${isSelected ? "border-brand-crimson bg-brand-crimson" : "border-brand-gray-light"}`}
+                  >
+                    {isSelected ? (
+                      <Clock3 className="h-3.5 w-3.5 text-brand-white" />
+                    ) : null}
                   </div>
                 </div>
               </button>
