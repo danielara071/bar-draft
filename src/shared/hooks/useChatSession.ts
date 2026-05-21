@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useChat } from '@ai-sdk/react'
-import { TextStreamChatTransport } from 'ai'
+import { DefaultChatTransport } from 'ai'
 import type { ChatMessage } from '../interfaces/chat'
 import { getMessageText } from '../../lib/chat'
 
@@ -14,7 +14,8 @@ export const useChatSession = () => {
     status,
     error
   } = useChat({
-    transport: new TextStreamChatTransport({ api: '/api/chat' })
+    // DefaultChatTransport recibe el data stream del servidor, lo que permite leer tool results (para generative UI)
+    transport: new DefaultChatTransport({ api: '/api/chat' })
   })
 
   const isLoading = status === 'streaming' || status === 'submitted'

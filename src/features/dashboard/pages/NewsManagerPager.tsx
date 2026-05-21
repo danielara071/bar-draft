@@ -1,5 +1,5 @@
 import { useState } from "react";
-import News from "../components/News";
+import News from "../components/news/News";
 import { LoginButton } from "@/shared/components/Buttons";
 import { supabase } from "@/lib/supabase";
 import ConfirmationPopup from "../components/ConfirmationPopUp";
@@ -28,8 +28,8 @@ export default function NewsManagerPage() {
     return (
        <>
        <div className="py-10 px-5 flex md:flex-row items-center justify-between">
-            <p className="text-2xl md:text-3xl lg:text-4xl font-sans text-black">
-                <span className="text-black">Gestión de </span>
+            <p className="text-2xl md:text-3xl lg:text-4xl font-sans font-bold">
+                <span className="text-brand-navy">Gestión de </span>
                 <span className="text-brand-yellow">Noticias</span>
             </p>
             <LoginButton  onClick={fetchNews} size="sm">Actualizar API</LoginButton>

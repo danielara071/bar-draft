@@ -2,7 +2,7 @@ import { useState } from "react";
 import { PrimaryButton, SecondaryButton } from "@/shared/components/Buttons";
 import type { Article } from "@/shared/components/NewsCard";
 import { supabase } from "@/lib/supabase";
-import ConfirmationPopup from "./ConfirmationPopUp";
+import ConfirmationPopup from "../ConfirmationPopUp";
 
 interface EditArticleModalProps {
   article: Article;

@@ -2,15 +2,17 @@ import './loadEnv'
 import { Hono } from 'hono'
 import { serve } from '@hono/node-server'
 import { cors } from 'hono/cors'
-import { streamText } from 'ai'
+import { streamText, stepCountIs, convertToModelMessages } from 'ai'
 import { createOpenAI } from '@ai-sdk/openai'
-import { dbTools } from './tools'
+import { barcelonaTools } from './tools'
 import { startWatchpartyExpressServer } from './routes/watchparty'
 import { registerCheckoutRoutes } from './routes/checkout'
 
-const ollama = createOpenAI({
+// .chat() usa explícitamente Chat Completions (/v1/chat/completions), no el Responses API.
+// Esto es necesario para que Ollama procese las tool calls en formato estructurado.
+const ollamaProvider = createOpenAI({
   baseURL: process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434/v1',
-  apiKey: 'ollama'
+  apiKey: 'ollama',
 })
 
 const app = new Hono()
@@ -21,54 +23,68 @@ registerCheckoutRoutes(app)
 
 startWatchpartyExpressServer()
 
-// Devuelve usuarios directo de la BD, es para el recuadro debajo del chat
-app.get('/api/usuarios', async (c) => {
-  try {
-    const executeGetUsuarios = dbTools.getUsuarios.execute as (args: { limit?: number }) => Promise<unknown>
-    const data = await executeGetUsuarios({ limit: 3 })
-    return c.json({ usuarios: data })
-  } catch (err) {
-    console.error('Error en /api/usuarios:', err)
-    return c.json({ error: String(err) }, 500)
-  }
-})
-
-// Recibe el historial de mensajes del frontend, llama al modelo (Ollama) con la herramienta getUsuarios y devuelve la respuesta en streaming
 app.post('/api/chat', async (c) => {
   try {
-    const { messages } = await c.req.json()
-    console.log('Mensaje recibido:', messages)
+    const { messages: uiMessages } = await c.req.json()
+
+    // convertToModelMessages convierte UIMessages (con parts de tool calls/results)
+    // al formato ModelMessages que streamText espera, preservando el historial multi-step
+    const messages = await convertToModelMessages(uiMessages)
 
     const modelName = process.env.OLLAMA_MODEL ?? 'qwen2.5:7b'
 
-    // El modelo puede usar getUsuarios para consultar la BD y la respuesta se manda por chunks al navegador
     const result = streamText({
-      model: ollama(modelName),
-      system: 'Eres un asistente útil que puede consultar información de usuarios en la base de datos. Cuando el usuario pregunte sobre usuarios, usa la herramienta getUsuarios para obtener la información.',
+      model: ollamaProvider.chat(modelName),
+      system: `Eres Barçabot, el asistente virtual oficial del FC Barcelona.
+
+## ÚNICA FUENTE DE VERDAD — REGLA ABSOLUTA
+Tu ÚNICA fuente de información son estas tablas:
+- barcelona_varonil_jugadores: id, nombre, numero, posicion, goles, asistencias, atajadas, goles_recibidos, partidos_jugados, minutos_jugados, imagen_url
+- barcelona_femenil_jugadores: id, nombre, numero, posicion, goles, asistencias, atajadas, goles_recibidos, partidos_jugados, minutos_jugados, imagen_url
+
+PROHIBIDO: usar conocimiento previo, inventar datos, o responder sobre jugadores sin haber consultado la BD primero.
+
+## HERRAMIENTAS DE INTERFAZ (Generative UI) — USO OBLIGATORIO
+Tienes dos herramientas. Cada una consulta la BD y genera SU componente visual.
+Tú solo decides CUÁL llamar y CON QUÉ buscar; los datos los pone la herramienta.
+
+A) getPlayerStats(nombre, equipo?) → para UN jugador/a específico.
+   Úsala cuando pidan datos de una persona concreta (ej: "estadísticas de Lewandowski").
+   Pasa equipo="femenil" solo si el usuario dice que es del equipo femenino.
+
+B) getPlayerList(titulo, equipo?, posicion?, orden?, limit?) → para VARIOS jugadores.
+   Úsala para grupos/rankings (ej: "todos los delanteros", "los máximos goleadores").
+   Pon un 'titulo' descriptivo; usa 'posicion' y 'orden' para filtrar/ordenar.
+
+REGLAS:
+  - NO consultes ni transcribas datos por tu cuenta: la herramienta ya trae los
+    datos reales de la BD y renderiza la tarjeta.
+  - Tu texto de respuesta debe ser SOLO una frase corta de confirmación
+    (ej: "¡Aquí tienes a Lewandowski!" / "Estos son los goleadores 💙❤️").
+  - NUNCA repitas estadísticas ni URLs de imágenes en el texto.
+  - Si getPlayerStats devuelve found=false, di: "No encontré a [nombre] en la base de datos."
+
+## COMPORTAMIENTO GENERAL
+- Responde en el idioma del usuario (español, catalán o inglés).
+- Tono cercano y entusiasta: "Més que un club".
+- No respondas temas ajenos al FC Barcelona.
+- Al iniciar, preséntate brevemente e invita al usuario a preguntar sobre la plantilla.`,
       messages,
-      tools: dbTools,
-      maxSteps: 5,
+      tools: barcelonaTools,
+      stopWhen: stepCountIs(3), // 1 tool-call (consulta+UI) + frase de confirmación
       toolChoice: 'auto',
-      onError: (error) => {
+      onError: ({ error }) => {
         console.error('Error del streamText:', error)
       },
-      onFinish: ({ text, toolCalls, toolResults }) => {
-        console.log('Finalizó respuesta:', text)
-        console.log('Tool calls:', toolCalls)
-        console.log('Tool results:', toolResults)
-      }
     })
 
-    result.text.then(t => console.log('Respuesta:', t))
-    result.toolCalls.then(t => console.log('Tool calls:', t))
-
-    return result.toTextStreamResponse()
+    // toUIMessageStreamResponse envía el nuevo formato de ai@6 que DefaultChatTransport espera
+    return result.toUIMessageStreamResponse()
   } catch (err) {
     console.error('Error en /api/chat:', err)
     return c.json({ error: String(err) }, 500)
   }
 })
-
 
 serve({
   fetch: app.fetch,

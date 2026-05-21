@@ -22,6 +22,10 @@ export default defineConfig({
       ignored: ["**/server/**"],
     },
     proxy: {
+      "/api/chat": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
       "/api/checkout": {
         target: "http://localhost:3000",
         changeOrigin: true,

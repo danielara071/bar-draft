@@ -3,7 +3,7 @@ import { supabase } from "@/lib/supabase";
 import NewsCardEditor from "./NewsCardEditor";
 import type { Article } from "@/shared/components/NewsCard";
 import ArticleCounter from "./ArticleCounter";
-import ConfirmationPopup from "./ConfirmationPopUp";
+import ConfirmationPopup from "../ConfirmationPopUp";
 
 interface NewsProps {
     refetchTrigger: number;

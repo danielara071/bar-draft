@@ -5,11 +5,11 @@ import AdminNavbar from "../components/AdminNavbar";
 
 const Layout = () => {
   return (
-    <div className="min-h-screen flex flex-row bg-slate-50 relative overflow-hidden">
+    <div className="min-h-screen flex flex-row bg-slate-50 relative">
       
       <AdminNavbar />
       
-      <main className="flex-1 relative z-10 pb-12">
+      <main className="flex-1 relative z-10 pb-12 px-5">
         <Outlet />
       </main>
       {/* <Footer/> */}

@@ -10,6 +10,7 @@ interface Profile {
   nivel: number
   logros: number
   predicciones: number
+  url_avatar: string | null
 }
 
 export function useProfile() {
@@ -22,7 +23,7 @@ export function useProfile() {
     const fetchProfile = async () => {
       const { data, error } = await supabase
         .from('profiles')     
-        .select('monedas, puntos, nivel, nombre, logros, predicciones')
+        .select('monedas, puntos, nivel, nombre, logros, predicciones, url_avatar')
         .eq('id', session.user.id)
         .single()
 
@@ -45,7 +46,7 @@ export function useProfileWithRefetch() {
 
     const { data, error } = await supabase
       .from('profiles')     
-      .select('monedas, puntos, nivel, nombre, logros, predicciones')
+      .select('monedas, puntos, nivel, nombre, logros, predicciones, url_avatar')
       .eq('id', session.user.id)
       .single()
 
