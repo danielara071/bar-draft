@@ -25,8 +25,10 @@ const genuiRegistry: Record<string, GenUIRenderer> = {
     <PlayerListCard titulo={output?.titulo} jugadores={output?.jugadores ?? []} />,
 }
 
-// En ai@6 las herramientas con execute emiten parts con type 'tool-<nombre>'.
-// 'dynamic-tool' lleva el nombre en part.toolName.
+// En ai@6 las herramientas estáticas (definidas en el servidor con `tool()`) emiten
+// parts con type 'tool-<nombre>'. Las herramientas dinámicas (generadas en runtime)
+// usan type 'dynamic-tool' y guardan el nombre en part.toolName en lugar del type.
+// Esta función normaliza ambos formatos a un único string con el nombre de la herramienta.
 const getToolName = (part: any): string | null => {
   if (typeof part?.type !== 'string') return null
   if (part.type === 'dynamic-tool') return part.toolName ?? null

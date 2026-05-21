@@ -50,9 +50,15 @@ const ChatbotWidget = () => {
               exit={{ opacity: 0, scaleX: 0 }}
               transition={{ duration: 0.2, ease: "easeOut" }}
               style={{
+                // originX: 1 hace que la animación scaleX arranque desde el lado derecho
+                // (donde está el botón), así la etiqueta "crece" hacia la izquierda.
                 originX: 1,
                 background: "#004D98",
+                // marginRight negativo mete la etiqueta debajo del botón para que
+                // visualmente parezca que ambos forman una sola pieza unida.
                 marginRight: "-35px",
+                // paddingRight compensa el overlap del marginRight; sin él el texto
+                // quedaría cortado debajo del botón circular.
                 paddingRight: "18px",
               }}
               className="text-white text-m h-19 w-88 text-left p-4 font-sans rounded-l-full whitespace-normal pointer-events-none select-none"
@@ -67,6 +73,8 @@ const ChatbotWidget = () => {
         <motion.button
           onClick={() => setOpen(!open)}
           aria-label="Abrir asistente Barça"
+          // Se desplaza 6px a la izquierda en hover para acercarse a la etiqueta,
+          // reforzando visualmente que ambos elementos son una unidad interactiva.
           animate={{ x: isHovered ? -6 : 0 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
           className="relative w-20 h-20 rounded-full shadow-lg active:scale-95"
