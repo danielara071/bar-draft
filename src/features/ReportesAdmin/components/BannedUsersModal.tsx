@@ -3,7 +3,6 @@ import { CircleAlert, Clock3 } from "lucide-react";
 export type BannedUserEntry = {
   id: string;
   name: string;
-  reason: string;
   remainingTime: string;
 };
 
@@ -11,12 +10,18 @@ type BannedUsersModalProps = {
   isOpen: boolean;
   users: BannedUserEntry[];
   onClose: () => void;
+  onRemoveBan: (userId: string) => void;
+  isLoading?: boolean;
+  error?: string | null;
 };
 
 const BannedUsersModal = ({
   isOpen,
   users,
   onClose,
+  onRemoveBan,
+  isLoading = false,
+  error,
 }: BannedUsersModalProps) => {
   if (!isOpen) return null;
 
@@ -38,7 +43,15 @@ const BannedUsersModal = ({
         </div>
 
         <div className="mt-5 max-h-[60vh] space-y-3 overflow-y-auto pr-1">
-          {users.length === 0 ? (
+          {isLoading ? (
+            <div className="rounded-2xl border border-dashed border-brand-gray-light px-4 py-6 text-center text-sm text-brand-gray-mid">
+              Cargando usuarios banneados...
+            </div>
+          ) : error ? (
+            <div className="rounded-2xl border border-brand-crimson/30 bg-brand-crimson/5 px-4 py-6 text-center text-sm text-brand-crimson">
+              {error}
+            </div>
+          ) : users.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-brand-gray-light px-4 py-6 text-center text-sm text-brand-gray-mid">
               No hay usuarios banneados por el momento.
             </div>
@@ -53,14 +66,20 @@ const BannedUsersModal = ({
                     <p className="text-sm font-semibold text-brand-navy">
                       {user.name}
                     </p>
-                    <p className="mt-1 text-xs text-brand-gray-mid">
-                      Motivo: {user.reason}
-                    </p>
                   </div>
 
-                  <div className="inline-flex items-center gap-2 rounded-full bg-brand-crimson/10 px-3 py-2 text-xs font-semibold text-brand-crimson">
-                    <Clock3 className="h-4 w-4" />
-                    {user.remainingTime}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <div className="inline-flex items-center gap-2 rounded-full bg-brand-crimson/10 px-3 py-2 text-xs font-semibold text-brand-crimson">
+                      <Clock3 className="h-4 w-4" />
+                      {user.remainingTime}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => onRemoveBan(user.id)}
+                      className="rounded-full border border-brand-navy px-3 py-2 text-xs font-semibold text-brand-navy transition hover:bg-brand-navy hover:text-brand-white cursor-pointer"
+                    >
+                      Levantar baneo
+                    </button>
                   </div>
                 </div>
               </article>

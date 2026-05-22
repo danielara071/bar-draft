@@ -76,7 +76,6 @@ export const banUserAndResolveReport = async (
   resolvedBy?: string | null,
   duration?: BanDuration
 ) => {
-  void duration;
   const { data: report, error: reportError } = await supabase
     .from("reportes")
     .select("denunciado_id")
@@ -85,7 +84,18 @@ export const banUserAndResolveReport = async (
 
   if (reportError) throw new Error(reportError.message);
 
-  const { error } = await supabase.from("profiles").update({ is_banned: true }).eq("id", report.denunciado_id);
+  const banUntil = resolveBanUntil(duration);
+  const { error } = await supabase
+    .from("profiles")
+    .update({ is_banned: true, banned_until: banUntil })
+    .eq("id", report.denunciado_id);
   if (error) throw new Error(error.message);
   await updateReportStatus(reportId, "resuelto", resolvedBy);
+};
+
+const resolveBanUntil = (duration?: BanDuration) => {
+  if (!duration || duration === "permanent") return null;
+  const now = Date.now();
+  const hours = duration === "24h" ? 24 : duration === "7d" ? 7 * 24 : 30 * 24;
+  return new Date(now + hours * 60 * 60 * 1000).toISOString();
 };

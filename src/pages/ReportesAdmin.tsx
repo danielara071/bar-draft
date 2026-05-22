@@ -4,8 +4,10 @@ import StatCard from "../features/ReportesAdmin/components/StatsCard";
 import PendingReportsCard from "../features/ReportesAdmin/components/PendingReportsCard";
 import ReviewedReportsCard from "../features/ReportesAdmin/components/ReviewedReportsCard";
 import BanUserModal from "../features/ReportesAdmin/components/BanUserModal";
+import BannedUsersModal from "../features/ReportesAdmin/components/BannedUsersModal";
 import { DismissReportModal } from "../features/ReportesAdmin/components/DismissReportModal";
 import { useReports } from "../features/ReportesAdmin/hooks/useReports";
+import { useBannedUsers } from "../features/ReportesAdmin/hooks/useBannedUsers";
 import type {
   BanDuration,
   PendingReportCardData,
@@ -14,6 +16,7 @@ import type {
 const ReportesAdmin = () => {
   const [banModalOpen, setBanModalOpen] = useState(false);
   const [dismissModalOpen, setDismissModalOpen] = useState(false);
+  const [bannedUsersModalOpen, setBannedUsersModalOpen] = useState(false);
   const [selectedReport, setSelectedReport] =
     useState<PendingReportCardData | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<BanDuration>("7d");
@@ -27,6 +30,13 @@ const ReportesAdmin = () => {
     banReport,
     dismissReport,
   } = useReports();
+  const {
+    users: bannedUsers,
+    isLoading: bannedLoading,
+    error: bannedError,
+    refresh: refreshBannedUsers,
+    unbanUser,
+  } = useBannedUsers();
 
   const openBanModal = (report: PendingReportCardData) => {
     setSelectedReport(report);
@@ -63,6 +73,11 @@ const ReportesAdmin = () => {
     if (!selectedReport) return;
     await dismissReport(selectedReport.id);
     closeDismissModal();
+  };
+
+  const openBannedUsersModal = () => {
+    setBannedUsersModalOpen(true);
+    void refreshBannedUsers();
   };
 
   return (
@@ -109,6 +124,7 @@ const ReportesAdmin = () => {
           }
           stat={metrics.banned}
           tone="danger"
+          onClick={openBannedUsersModal}
         />
         <StatCard
           icon={Eye}
@@ -167,6 +183,15 @@ const ReportesAdmin = () => {
         isSubmitting={
           selectedReport ? Boolean(actionLoading[selectedReport.id]) : false
         }
+      />
+
+      <BannedUsersModal
+        isOpen={bannedUsersModalOpen}
+        users={bannedUsers}
+        onClose={() => setBannedUsersModalOpen(false)}
+        onRemoveBan={unbanUser}
+        isLoading={bannedLoading}
+        error={bannedError}
       />
     </div>
   );
