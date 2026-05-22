@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { PlayerStatsCard, PlayerNotFoundCard } from '../components/PlayerStatsCard'
 import { PlayerListCard } from '../components/PlayerListCard'
+import { GenUICapture } from '../components/GenUICapture'
 
 /**
  * Generative UI registry.
@@ -18,11 +19,11 @@ type GenUIRenderer = (output: any) => ReactNode
 const genuiRegistry: Record<string, GenUIRenderer> = {
   getPlayerStats: (output) =>
     output?.found
-      ? <PlayerStatsCard player={output.player} />
+      ? <GenUICapture filename={output.player.nombre}><PlayerStatsCard player={output.player} /></GenUICapture>
       : <PlayerNotFoundCard query={output?.query} />,
 
   getPlayerList: (output) =>
-    <PlayerListCard titulo={output?.titulo} jugadores={output?.jugadores ?? []} />,
+    <GenUICapture filename={output?.titulo ?? 'lista-jugadores'}><PlayerListCard titulo={output?.titulo} jugadores={output?.jugadores ?? []} /></GenUICapture>,
 }
 
 // En ai@6 las herramientas estáticas (definidas en el servidor con `tool()`) emiten
