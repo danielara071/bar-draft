@@ -1,17 +1,15 @@
-import { Trophy, Trash2 } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 
 type CardTrofeoAdminProps = {
   nombre: string;
   descripcion: string;
   coordenadas: string;
-  onDeleate: () => void;
 };
 
 export default function CardTrofeoAdmin({
   nombre,
   descripcion,
   coordenadas,
-  onDeleate
 }: CardTrofeoAdminProps) {
   return (
     <div className="flex items-center justify-center p-4">
@@ -31,14 +29,14 @@ export default function CardTrofeoAdmin({
               </span>
             </div>
           </div>
-
+          {/*
           <button 
             onClick={onDeleate}
             className="bg-red-50 p-3 rounded-full group hover:bg-red-100 transition-colors"
-          >
+          > 
             <Trash2 className="text-red-500 w-5 h-5 group-hover:scale-110 transition-transform" />
-          </button>
-        </div>
+          </button>*/}
+        </div> 
 
         <div className="ml-1">
           <p className="text-gray-500 text-base leading-relaxed">

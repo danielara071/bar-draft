@@ -6,6 +6,7 @@ import useSession  from "../shared/hooks/useSession"
 import { useUsuarioById } from "../shared/hooks/useUsuario";
 import { useUsuarioLogros } from "../shared/hooks/useLogros";
 import { useFetchAmigos } from "../shared/hooks/useAmigos";
+import { supabase } from "@/shared/services/supabaseClient";
 
 
 
@@ -18,9 +19,15 @@ function Perfil() {
   const { usuario : Usuario } = useUsuarioById(user_id);
   const { logros : Logro } = useUsuarioLogros(Usuario?.id ?? "");
   const { amigos : Amigo } = useFetchAmigos(Usuario?.id ?? "", "accepted");
-  const cerrar_sesion = () => {
-    console.log("Funcionalidad de cerrar sesion")
-  }
+  const cerrar_sesion = async () => {
+    const { error } = await supabase.auth.signOut();
+    console.log("Cerrando sesión...");
+    if (error) {
+      console.error("Error al cerrar sesión:", error.message);
+    } else {
+      console.log("Sesión cerrada");
+    }
+  };
   if (user_id == ""){
     return (
     <div className="min-h-screen">
@@ -48,7 +55,7 @@ function Perfil() {
             xpMax={4000}
             logro={Usuario?.logro || ""}
 
-            onLogoutFunc={() => cerrar_sesion}
+            onLogoutFunc={cerrar_sesion}
             onLogoutText="Cerrar sesión"
           />
         </div>

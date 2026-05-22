@@ -10,6 +10,8 @@ import { useRemoveFriend } from "../shared/hooks/useFriendRequests";
 
 import AskPopUp from "../features/gestorAmigos/AskPopUp";
 
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 
 function GestionarAmigos() {
@@ -26,7 +28,10 @@ function GestionarAmigos() {
   
   const [showConfirm, setShowConfirm] = useState(false);
   const [friendToDelete, setFriendToDelete] = useState<string | null>(null);
-  
+  const navigate = useNavigate();
+  const irPerfil = () => {
+    navigate("/perfil")
+  }
 
   const onAccept = async(idFriend: string) => {
     console.log("Aceptar solicitud amigo>> ", idFriend);
@@ -70,6 +75,7 @@ function GestionarAmigos() {
   }
   return (
     <div>
+
       {showConfirm && (
         <AskPopUp
           pregunta="Eliminar amigo"
@@ -80,8 +86,16 @@ function GestionarAmigos() {
           onDeny={cancelDelete}
         />
       )}
-      <div className="bg-[#002244] h-25 "/>
+      <div className="bg-[#002244] h-25 px-6 py-6">
+        <button 
+          className="bg-red-50 p-3 rounded-full group hover:bg-red-100 transition-colors"
+          onClick={irPerfil}
+        > 
+          <ArrowLeft className="text-brand-navy w-5 h-5 group-hover:scale-110 transition-transform" />
+        </button>
+      </div>
       <div className="bg-gray-100">
+        
         <div className="max-w-5xl py-8 mx-auto" >
             {Solicitudes?.length != 0 && (
               <GestorContainer
@@ -105,7 +119,17 @@ function GestionarAmigos() {
                 red="Eliminar"
                 deny={(idFriend: string) => onDelete(idFriend)}                
             />)}
+            {(Solicitudes?.length || 0) === 0 &&
+              (Pendiente?.length || 0) === 0 &&
+              (Amigo?.length || 0) === 0 && (
+                <div className="flex items-center justify-center py-20">
+                  <p className="text-gray-500 text-xl font-medium">
+                    Aún no has agregado amigos
+                  </p>
+                </div>
+              )}
         </div>
+
       </div>
     </div>
   );

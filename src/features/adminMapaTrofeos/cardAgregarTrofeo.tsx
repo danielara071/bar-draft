@@ -40,13 +40,13 @@ function CardAgregarTrofeo({
         setArchivo(file);
         setNombreArchivo(file.name);
       } else {
-        alert("Por favor, selecciona un archivo .glb válido");
+        console.log("Archivo no válido. Por favor, sube un archivo .glb.");
       }
     }
   };
 const handleConfirmarClick = () => {
     if (!nombre || !latitud || !longitud || !archivo) {
-      alert("Por favor, completa los campos obligatorios y sube el objeto GLB.");
+      console.log("Por favor, completa los campos obligatorios y sube el objeto GLB.");
       return;
     }
 
