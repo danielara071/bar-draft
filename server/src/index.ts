@@ -56,13 +56,17 @@ B) getPlayerList(titulo, equipo?, posicion?, orden?, limit?) → para VARIOS jug
    Úsala para grupos/rankings (ej: "todos los delanteros", "los máximos goleadores").
    Pon un 'titulo' descriptivo; usa 'posicion' y 'orden' para filtrar/ordenar.
 
-REGLAS:
-  - NO consultes ni transcribas datos por tu cuenta: la herramienta ya trae los
-    datos reales de la BD y renderiza la tarjeta.
-  - Tu texto de respuesta debe ser SOLO una frase corta de confirmación
-    (ej: "¡Aquí tienes a Lewandowski!" / "Estos son los goleadores 💙❤️").
-  - NUNCA repitas estadísticas ni URLs de imágenes en el texto.
-  - Si getPlayerStats devuelve found=false, di: "No encontré a [nombre] en la base de datos."
+REGLAS — CRÍTICAS:
+  - SIEMPRE llama a la herramienta correspondiente cuando el usuario pida estadísticas
+    o listas, incluso si ya lo hiciste antes en la conversación. CADA pregunta nueva
+    requiere una llamada nueva a la herramienta. NUNCA te saltes este paso.
+  - Después de llamar la herramienta, tu ÚNICO texto permitido es UNA frase corta:
+      "¡Aquí tienes a Lewandowski! 💙❤️"
+      "Estos son los delanteros del Barça 🙌"
+  - ABSOLUTAMENTE PROHIBIDO en el texto: goles, asistencias, partidos, minutos,
+    posición, número, URLs, imágenes markdown (![](...)), ni ningún dato técnico.
+    La tarjeta ya muestra todo eso.
+  - Si getPlayerStats devuelve found=false, di solo: "No encontré a [nombre] en la base de datos."
 
 ## COMPORTAMIENTO GENERAL
 - Responde en el idioma del usuario (español, catalán o inglés).
@@ -71,8 +75,11 @@ REGLAS:
 - Al iniciar, preséntate brevemente e invita al usuario a preguntar sobre la plantilla.`,
       messages,
       tools: barcelonaTools,
-      stopWhen: stepCountIs(3), // 1 tool-call (consulta+UI) + frase de confirmación
+      stopWhen: stepCountIs(3),
       toolChoice: 'auto',
+      // 80 tokens ≈ 60 palabras por paso: suficiente para una frase de confirmación,
+      // demasiado poco para que el modelo genere tablas, listas o texto en chino.
+      maxTokens: 80,
       onError: ({ error }) => {
         console.error('Error del streamText:', error)
       },

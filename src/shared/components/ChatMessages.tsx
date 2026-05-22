@@ -19,15 +19,17 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
 
   if (embedded) {
     return (
-      // min-h-0 es necesario para que flex-1 pueda hacer scroll dentro de un padre flex
+      // min-h-0 es necesario porque flex-1 en un hijo flex no colapsa sin él:
+      // sin min-h-0 el div crece más allá del panel y overflow-y-auto no activa scroll.
       <div className="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-2">
         {messages.map(message => {
           const isUser = message.role === 'user'
-          // Generative UI: nodos decididos por el modelo (tool calls) vía registry.
+          // Los nodos GenUI solo existen en mensajes del asistente; el usuario no llama tools.
           const genUI = !isUser ? collectGenUI(message) : []
           const text = getMessageText(message)
 
           return (
+            // message.id es estable (generado por el SDK), se puede usar como key.
             <div key={message.id} className="flex flex-col gap-2">
 
               {/* Generative UI: el modelo eligió qué componente renderizar */}

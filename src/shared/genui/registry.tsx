@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { PlayerStatsCard, PlayerNotFoundCard } from '../components/PlayerStatsCard'
 import { PlayerListCard } from '../components/PlayerListCard'
+import { GenUICapture } from '../components/GenUICapture'
 
 /**
  * Generative UI registry.
@@ -18,15 +19,17 @@ type GenUIRenderer = (output: any) => ReactNode
 const genuiRegistry: Record<string, GenUIRenderer> = {
   getPlayerStats: (output) =>
     output?.found
-      ? <PlayerStatsCard player={output.player} />
+      ? <GenUICapture filename={output.player.nombre}><PlayerStatsCard player={output.player} /></GenUICapture>
       : <PlayerNotFoundCard query={output?.query} />,
 
   getPlayerList: (output) =>
-    <PlayerListCard titulo={output?.titulo} jugadores={output?.jugadores ?? []} />,
+    <GenUICapture filename={output?.titulo ?? 'lista-jugadores'}><PlayerListCard titulo={output?.titulo} jugadores={output?.jugadores ?? []} /></GenUICapture>,
 }
 
-// En ai@6 las herramientas con execute emiten parts con type 'tool-<nombre>'.
-// 'dynamic-tool' lleva el nombre en part.toolName.
+// En ai@6 las herramientas estáticas (definidas en el servidor con `tool()`) emiten
+// parts con type 'tool-<nombre>'. Las herramientas dinámicas (generadas en runtime)
+// usan type 'dynamic-tool' y guardan el nombre en part.toolName en lugar del type.
+// Esta función normaliza ambos formatos a un único string con el nombre de la herramienta.
 const getToolName = (part: any): string | null => {
   if (typeof part?.type !== 'string') return null
   if (part.type === 'dynamic-tool') return part.toolName ?? null

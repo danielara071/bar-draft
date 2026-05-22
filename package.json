@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "lsof -ti:3000,3001 | xargs kill -9 2>/dev/null; true",
     "dev": "concurrently -n client,server -c green,cyan \"vite\" \"npm --prefix server run dev\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -26,6 +27,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "html-to-image": "^1.11.13",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.11.0",
     "motion": "^12.38.0",

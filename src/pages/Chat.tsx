@@ -7,7 +7,8 @@ import { useProfile } from "../shared/hooks/useProfile"
 const logoURL = import.meta.env.VITE_LOGO_URL as string
 
 interface Props {
-  // cuando viene del widget el layout cambia para caber en el panel flotante
+  // embedded=true: el componente vive dentro del panel flotante de ChatbotWidget.
+  // embedded=false (default): página completa con panel (UsuariosPanel).
   embedded?: boolean
 }
 
@@ -21,7 +22,7 @@ const Chat = ({ embedded = false }: Props) => {
     getMessageText
   } = useChatSession()
 
-  // solo se usa en modo embedded para mostrar el avatar del usuario
+  // El avatar del usuario solo se necesita en el widget; en la vista completa no se muestra.
   const profile = useProfile()
 
   if (embedded) {
@@ -64,6 +65,7 @@ const Chat = ({ embedded = false }: Props) => {
         handleSubmit={handleSubmit}
       />
 
+      {/* UsuariosPanel solo existe en la vista completa; sería ruido visual en el widget */}
       <UsuariosPanel />
     </div>
   )

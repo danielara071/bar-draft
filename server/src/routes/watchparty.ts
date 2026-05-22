@@ -125,7 +125,18 @@ export const startWatchpartyExpressServer = () => {
     }
   })
 
-  app.listen(WATCHPARTY_PORT, () => {
+  const server = app.listen(WATCHPARTY_PORT, () => {
     console.log(`WatchParty Express corriendo en http://localhost:${WATCHPARTY_PORT}`)
+  })
+
+  // Sin este handler, EADDRINUSE (puerto ocupado por una sesión anterior)
+  // dispara un 'error' event no capturado que mata todo el proceso de Node,
+  // incluyendo el servidor principal de Hono en el puerto 3000.
+  server.on('error', (err: NodeJS.ErrnoException) => {
+    if (err.code === 'EADDRINUSE') {
+      console.warn(`[watchparty] Puerto ${WATCHPARTY_PORT} ocupado — WatchParty no disponible. Reinicia para liberarlo.`)
+    } else {
+      console.error('[watchparty] Error al iniciar servidor:', err)
+    }
   })
 }
