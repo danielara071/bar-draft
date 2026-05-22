@@ -4,6 +4,7 @@ interface ButtonProps {
   children: React.ReactNode;
   className?: string;
   size?: "sm" | "md" | "lg";
+  disabled?: boolean;
 }
 
 const sizes = {
@@ -12,28 +13,31 @@ const sizes = {
   lg: "px-14 py-5 text-base",
 };
 
-export const PrimaryButton = ({ onClick, children, className = "", size = "md" }: ButtonProps) => (
+export const PrimaryButton = ({ onClick, children, className = "", size = "md", disabled = false }: ButtonProps) => (
   <button
     onClick={onClick}
-    className={`${sizes[size]} rounded-full bg-brand-crimson text-white font-bold tracking-wide hover:brightness-110 active:scale-95 transition-all duration-150 cursor-pointer ${className}`}
+    disabled={disabled}
+    className={`${sizes[size]} rounded-full bg-brand-crimson text-white font-bold tracking-wide hover:brightness-110 active:scale-95 transition-all duration-150 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
   >
     {children}
   </button>
 );
 
-export const SecondaryButton = ({ onClick, children, className = "", size = "md" }: ButtonProps) => (
+export const SecondaryButton = ({ onClick, children, className = "", size = "md", disabled = false }: ButtonProps) => (
   <button
     onClick={onClick}
-    className={`${sizes[size]} rounded-full bg-brand-yellow text-black font-bold tracking-wide hover:brightness-105 active:scale-95 transition-all duration-150 cursor-pointer ${className}`}
+    disabled={disabled}
+    className={`${sizes[size]} rounded-full bg-brand-yellow text-black font-bold tracking-wide hover:brightness-105 active:scale-95 transition-all duration-150 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
   >
     {children}
   </button>
 );
 
-export const LoginButton = ({ onClick, children, className = "", size = "md" }: ButtonProps) => (
+export const LoginButton = ({ onClick, children, className = "", size = "md", disabled = false }: ButtonProps) => (
   <button
     onClick={onClick}
-    className={`${sizes[size]} rounded-full bg-brand-navy text-white font-medium tracking-wide hover:brightness-110 active:scale-95 transition-all duration-150 cursor-pointer ${className}`}
+    disabled={disabled}
+    className={`${sizes[size]} rounded-full bg-brand-navy text-white font-medium tracking-wide hover:brightness-110 active:scale-95 transition-all duration-150 cursor-pointer ${disabled ? 'opacity-50 cursor-not-allowed' : ''} ${className}`}
   >
     {children}
   </button>

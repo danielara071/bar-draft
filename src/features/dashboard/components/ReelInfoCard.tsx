@@ -120,7 +120,7 @@ const ReelInfoCard = ({
       }}
     >
       <div
-        className="bg-brand-white z-50 rounded-2xl p-8 min-h-7/12 min-w-7/12 relative"
+        className="bg-brand-white z-50 rounded-2xl p-8 min-h-5/12 min-w-5/12 relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button

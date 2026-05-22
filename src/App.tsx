@@ -13,17 +13,23 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import DashboardLayout from "./features/dashboard/layouts/DashboardLayout";
 import ReelsAdminPage from "./features/dashboard/pages/ReelsAdminPage";
+import AdminMapaTrofeos from "./pages/AdminMapaTrofeos";
 import { AdminRoute } from "./auth/AdminRoute";
 import Tienda from "./pages/Tienda";
 import GestionarAmigos from "./pages/GestionarAmigos";
 import Ra from "./pages/ra";
 import Estadisticas from "./pages/Estadisticas";
 import ReportesAdmin from "./pages/ReportesAdmin";
+import NewsManagerPage from "./features/dashboard/pages/NewsManagerPager";
+import StoreManager from "./features/dashboard/pages/StoreManager";
+import WordleManagerPage from "./features/dashboard/pages/WordleManagerPage";
+import HealthCheck from "./pages/HealthCheck";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Index />} />
+      <Route path="/health" element={<HealthCheck />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/sportsapi" element={<SportsApi />} />
@@ -51,6 +57,11 @@ function App() {
         <Route index element={<Dashboard />} />
         <Route path="reels" element={<ReelsAdminPage />} />
         <Route path="reportes" element={<ReportesAdmin />} />
+        <Route path="mapaTrofeos" element={<AdminMapaTrofeos />} />
+        <Route path="wordle" element={<WordleManagerPage />} />
+        <Route path="noticias" element={<NewsManagerPage />} />
+        <Route path="tienda" element={<StoreManager />} />
+
       </Route>
     </Routes>
   );
