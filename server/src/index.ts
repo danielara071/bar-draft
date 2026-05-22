@@ -77,9 +77,6 @@ REGLAS — CRÍTICAS:
       tools: barcelonaTools,
       stopWhen: stepCountIs(3),
       toolChoice: 'auto',
-      // 200 tokens por paso: suficiente para una respuesta conversacional normal
-      // pero demasiado poco para tablas completas o listados extensos.
-      maxTokens: 200,
       onError: ({ error }) => {
         console.error('Error del streamText:', error)
       },

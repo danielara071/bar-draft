@@ -49,13 +49,25 @@ export const renderGenUIPart = (part: any): ReactNode | null => {
   return renderer ? renderer(part.output) : null
 }
 
-/** Nodos GenUI de un mensaje del asistente (preserva orden, soporta varios). */
+/** Nodos GenUI de un mensaje del asistente (preserva orden, deduplica por tool+args). */
 export const collectGenUI = (message: any): ReactNode[] => {
   const parts: any[] = message?.parts ?? []
   const nodes: ReactNode[] = []
+  const seen = new Set<string>()
+
   parts.forEach((part, i) => {
     const node = renderGenUIPart(part)
-    if (node) nodes.push(<div key={`genui-${i}`} className="pl-8">{node}</div>)
+    if (!node) return
+    // Clave de dedup: misma herramienta + mismos args → mostrar solo una vez.
+    // Evita que un modelo que llama la tool 2-3 veces con los mismos args
+    // renderice el componente múltiples veces en el mismo mensaje.
+    const toolName = getToolName(part) ?? ''
+    const argsKey = JSON.stringify(part.input ?? {})
+    const key = `${toolName}:${argsKey}`
+    if (!seen.has(key)) {
+      seen.add(key)
+      nodes.push(<div key={`genui-${i}`} className="pl-8">{node}</div>)
+    }
   })
   return nodes
 }

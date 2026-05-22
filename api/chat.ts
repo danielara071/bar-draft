@@ -181,7 +181,20 @@ export default async function handler(req: Request): Promise<Response> {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { messages: uiMessages } = await req.json() as { messages: any[] }
-    const messages = await convertToModelMessages(uiMessages)
+    const allMessages = await convertToModelMessages(uiMessages)
+
+    // Llama 3.3 deja de llamar herramientas si acumula demasiado historial de tool calls.
+    // Solución: enviar solo el último intercambio completo (user→assistant→tool→assistant)
+    // más la pregunta actual. Así el modelo siempre ve UN ejemplo de cómo usar la herramienta.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userPositions = allMessages.reduce<number[]>((acc, m: any, i) => {
+      if (m.role === 'user') acc.push(i)
+      return acc
+    }, [])
+    const startIdx = userPositions.length >= 2
+      ? userPositions[userPositions.length - 2]
+      : 0
+    const messages = allMessages.slice(startIdx)
 
     const result = streamText({
       model: groq('llama-3.3-70b-versatile'),
