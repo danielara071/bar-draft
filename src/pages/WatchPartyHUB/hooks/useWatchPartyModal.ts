@@ -121,6 +121,7 @@ export function useWatchPartyModal(
       home_team: fixture.homeTeam,
       away_team: fixture.awayTeam,
       match_date: fixture.date,
+      privacy: form.privacy,
     };
 
     setRoomCode(confirmedCode);

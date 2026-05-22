@@ -242,6 +242,7 @@ const WatchParty = () => {
               key={`${msg.timestamp}-${msg.user_name}`}
               message={msg}
               currentUserName={session?.user?.user_metadata?.full_name}
+              roomCode={code}
             />
           ))}
         </div>

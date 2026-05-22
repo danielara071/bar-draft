@@ -1,6 +1,7 @@
 type ChatMessage = 
 | {
   type: "text";
+  user_id?: string;
   user_name?: string;
   avatar?: string;
   timestamp: string;
@@ -8,6 +9,7 @@ type ChatMessage =
 }
 | {
   type: "sticker";
+  user_id?: string;
   user_name?: string;
   avatar?: string;
   timestamp: string;

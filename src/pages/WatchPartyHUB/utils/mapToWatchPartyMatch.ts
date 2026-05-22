@@ -20,5 +20,6 @@ export function mapToWatchPartyMatch(wp: WatchParty): WatchPartyMatch {
     home_team:   wp.home_team,
     away_team:   wp.away_team,
     match_date:  wp.match_date,
+    privacy:     wp.privacy,
   };
 }

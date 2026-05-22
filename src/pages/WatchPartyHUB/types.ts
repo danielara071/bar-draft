@@ -8,6 +8,7 @@ export interface WatchPartyMatch {
   competition: string;
   time: string;
   code: string;
+  privacy: Privacy;
 }
 
 export interface CreatePartyForm {

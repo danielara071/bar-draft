@@ -55,6 +55,7 @@ export interface WatchPartyMatch {
   home_team?:  string;
   away_team?:  string;
   match_date?: string;
+  privacy:     Privacy;
 }
 
 export interface CreatePartyForm {
