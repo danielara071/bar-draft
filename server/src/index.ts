@@ -77,9 +77,9 @@ REGLAS — CRÍTICAS:
       tools: barcelonaTools,
       stopWhen: stepCountIs(3),
       toolChoice: 'auto',
-      // 80 tokens ≈ 60 palabras por paso: suficiente para una frase de confirmación,
-      // demasiado poco para que el modelo genere tablas, listas o texto en chino.
-      maxTokens: 80,
+      // 200 tokens por paso: suficiente para una respuesta conversacional normal
+      // pero demasiado poco para tablas completas o listados extensos.
+      maxTokens: 200,
       onError: ({ error }) => {
         console.error('Error del streamText:', error)
       },

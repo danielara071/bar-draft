@@ -15,7 +15,7 @@ const sanitize = (text: string): string => {
     .replace(/^\s*[-*•]\s+.+$/gm, '')                         // items de lista con bullet
     .replace(/\*\*([^*]+)\*\*/g, '$1')                        // **negrita** → texto plano
     .replace(/[一-鿿㐀-䶿＀-￯]+/g, '') // caracteres CJK (chino/japonés)
-    .replace(/^.*(would you like|quieres (saber|ver|más)|¿?(quieres|deseas|necesitas)).*/gim, '')
+    .replace(/^(would you like|¿?(quieres|deseas|necesitas))\b.*/gim, '') // solo líneas que EMPIEZAN con pregunta de seguimiento
     .replace(/\n{3,}/g, '\n')
     .trim()
 
