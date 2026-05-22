@@ -7,6 +7,7 @@ import type { ProductWithCategory } from "../interfaces/productWithCategory";
 import CreateProductModal from "./CreateProductModal";
 import { Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
+import PopUp from "./PopUp"; // adjust import path as needed
 
 const ProductPanel = () => {
   const { products, fetchProducts } = useProducts();
@@ -14,6 +15,7 @@ const ProductPanel = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState<ProductWithCategory | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [popup, setPopup] = useState<{ message: string; success: boolean } | null>(null);
 
   useEffect(() => {
     console.log(products);
@@ -22,20 +24,33 @@ const ProductPanel = () => {
   const handleDelete = async () => {
     if (!productToDelete) return;
     setDeleting(true);
+
     const { error } = await supabase
       .from("products")
       .delete()
       .eq("id", productToDelete.id);
 
-    if (!error) {
-      await fetchProducts();
-    }
     setDeleting(false);
     setProductToDelete(null);
+
+    if (error) {
+      setPopup({ message: "Error al eliminar el producto.", success: false });
+    } else {
+      await fetchProducts();
+      setPopup({ message: "Producto eliminado correctamente.", success: true });
+    }
   };
 
   return (
     <div className="border border-slate-200 rounded-2xl bg-brand-white p-5 mt-4 min-h-52 flex flex-col relative">
+      {popup && (
+        <PopUp
+          message={popup.message}
+          success={popup.success}
+          onClose={() => setPopup(null)}
+        />
+      )}
+
       <div className="flex flex-row gap-x-20">
         <SearchBar />
         <button
