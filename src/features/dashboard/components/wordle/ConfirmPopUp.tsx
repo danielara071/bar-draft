@@ -1,4 +1,4 @@
-//import { LoginButton } from "@/shared/components/Buttons";
+import { Trash2 } from "lucide-react";
 
 interface ConfirmPopupProps {
   message: string;
@@ -18,23 +18,29 @@ export default function ConfirmPopup({
   confirmLabel = "Eliminar",
 }: ConfirmPopupProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl px-8 py-6 flex flex-col items-center gap-4 w-80">
-        <p className="text-brand-navy font-semibold text-center">{message}</p>
-        {subMessage && (
-          <p className="text-sm text-gray-500 text-center">{subMessage}</p>
-        )}
-        <div className="flex gap-3 w-full">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+      <div className="w-full max-w-sm rounded-2xl bg-white p-8 shadow-xl flex flex-col items-center gap-5">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-crimson/10">
+          <Trash2 className="h-8 w-8 text-brand-crimson" strokeWidth={1.8} />
+        </div>
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-brand-navy">{message}</h2>
+          {subMessage && (
+            <p className="mt-2 text-sm text-slate-500">{subMessage}</p>
+          )}
+        </div>
+        <div className="flex w-full gap-3">
           <button
             onClick={onCancel}
-            className="flex-1 py-2 rounded-full border border-brand-navy text-brand-navy text-sm font-medium hover:bg-brand-navy/5 transition"
+            disabled={loading}
+            className="flex-1 rounded-xl border border-slate-200 py-3 font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
           >
             Cancelar
           </button>
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="flex-1 py-2 rounded-full bg-brand-crimson text-white text-sm font-medium hover:bg-brand-crimson/90 transition disabled:opacity-50"
+            className="flex-1 rounded-xl bg-brand-crimson py-3 font-semibold text-white transition hover:bg-brand-crimson/90 disabled:opacity-50"
           >
             {loading ? "Eliminando..." : confirmLabel}
           </button>

@@ -7,7 +7,7 @@ export default function ActiveWordCard() {
 
   useEffect(() => {
     const fetchWord = async () => {
-      const today = new Date().toISOString().split("T")[0];
+      const today =  new Date().toLocaleDateString('en-CA', {timeZone: 'America/Mexico_City'});
       const { data, error } = await supabase
         .from("wordle_words")
         .select("word, used_on")
