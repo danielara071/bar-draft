@@ -1,15 +1,41 @@
 import { isTextUIPart } from 'ai'
 
-// El modelo (qwen2.5) ignora las instrucciones del prompt y sigue metiendo imágenes
-// markdown y estadísticas en el texto. Esta función los elimina del lado del cliente
-// como salvaguarda, independientemente de lo que diga el sistema prompt.
-const sanitize = (text: string): string =>
-  text
-    .replace(/!\[.*?\]\(.*?\)/gs, '')          // imágenes markdown  ![alt](url)
-    .replace(/https?:\/\/\S+/g, '')             // URLs sueltas
-    .replace(/^[^\S\r\n]*(goles|asistencias|partidos\s+jugados|minutos|posici[oó]n|n[uú]mero|atajadas|goles[\s_]recibidos)[^\n]*/gim, '') // líneas de stats
-    .replace(/\n{3,}/g, '\n\n')
+// El modelo (qwen2.5) desobedece el prompt y genera tablas, listas, texto en chino
+// y JSON basura. Esta función limpia todo eso del lado del cliente como segunda línea
+// de defensa (la primera es maxTokens:80 en el servidor).
+const STATS_KW = /\b(goles|asistencias|partidos|minutos|posici[oó]n|n[uú]mero|número|atajadas|goals?|assists?)\b/i
+
+const sanitize = (text: string): string => {
+  let s = text
+    .replace(/!\[.*?\]\(.*?\)/gs, '')                         // imágenes markdown
+    .replace(/https?:\/\/\S+/g, '')                            // URLs sueltas
+    .replace(/\|[^|\n]+\|/g, '')                               // celdas de tabla markdown
+    .replace(/^\s*[-:|]+\s*$/gm, '')                           // separadores de tabla  |---|
+    .replace(/^\s*\d+\.\s+.+$/gm, '')                         // items de lista numerada
+    .replace(/^\s*[-*•]\s+.+$/gm, '')                         // items de lista con bullet
+    .replace(/\*\*([^*]+)\*\*/g, '$1')                        // **negrita** → texto plano
+    .replace(/[一-鿿㐀-䶿＀-￯]+/g, '') // caracteres CJK (chino/japonés)
+    .replace(/^.*(would you like|quieres (saber|ver|más)|¿?(quieres|deseas|necesitas)).*/gim, '')
+    .replace(/\n{3,}/g, '\n')
     .trim()
+
+  // Cortar stats inline que aparecen DESPUÉS del primer signo de puntuación final.
+  // Ej: "¡Aquí tienes a Cata Coll! 🙌 Posición: Portera Goles: 0" → "¡Aquí tienes a Cata Coll! 🙌"
+  const firstPunct = s.search(/[!?]/)
+  if (firstPunct > -1) {
+    const statsPos = s.slice(firstPunct + 1).search(STATS_KW)
+    if (statsPos > -1) s = s.slice(0, firstPunct + 1 + statsPos).trim()
+  }
+
+  // Seguridad final: si sigue siendo largo, tomar solo la primera oración corta
+  if (s.length > 120) {
+    const firstSentence = s.match(/^[^!?\n]*[!?]/)
+    if (firstSentence) return firstSentence[0].trim()
+    return (s.split('\n')[0] ?? '').trim().slice(0, 100)
+  }
+
+  return s
+}
 
 // Extrae el texto visible de un mensaje del AI SDK.
 // Un mensaje puede contener varias parts: texto, tool-call, tool-result, etc.
@@ -22,6 +48,8 @@ export const getMessageText = (message: any) => {
     .map((part: any) => part.text ?? '')
     .join('')
 
-  return sanitize(raw)
+  // Solo sanitizamos mensajes del asistente — los del usuario se muestran tal cual.
+  // Aplicar sanitize a mensajes del usuario borraba frases como "muéstrame los goles de X".
+  return message?.role === 'assistant' ? sanitize(raw) : raw
 }
 

@@ -75,8 +75,11 @@ REGLAS — CRÍTICAS:
 - Al iniciar, preséntate brevemente e invita al usuario a preguntar sobre la plantilla.`,
       messages,
       tools: barcelonaTools,
-      stopWhen: stepCountIs(3), // 1 tool-call (consulta+UI) + frase de confirmación
+      stopWhen: stepCountIs(3),
       toolChoice: 'auto',
+      // 80 tokens ≈ 60 palabras por paso: suficiente para una frase de confirmación,
+      // demasiado poco para que el modelo genere tablas, listas o texto en chino.
+      maxTokens: 80,
       onError: ({ error }) => {
         console.error('Error del streamText:', error)
       },
