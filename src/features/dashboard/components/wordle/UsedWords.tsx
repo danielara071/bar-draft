@@ -17,7 +17,7 @@ export default function UsedWords() {
 
   useEffect(() => {
     const fetchUsedWords = async () => {
-      const today = new Date().toISOString().split("T")[0];
+      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' });
       const { data, error } = await supabase
         .from("wordle_stats")
         .select("word, used_on, total_players, total_won, success_rate")
@@ -28,7 +28,7 @@ export default function UsedWords() {
         const formatted = data.map((item) => ({
           word: item.word,
           used_on: item.used_on,
-          date: new Date(item.used_on).toLocaleDateString("es-ES", {
+          date: new Date(item.used_on + "T12:00:00").toLocaleDateString("es-ES", {
             weekday: "long",
             day: "numeric",
             month: "long",

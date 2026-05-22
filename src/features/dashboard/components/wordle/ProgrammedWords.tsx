@@ -11,7 +11,7 @@ export default function ProgrammedWords() {
   const [words, setWords] = useState<ProgrammedWord[]>([]);
 
   const fetchProgrammedWords = async () => {
-    const today = new Date().toISOString().split("T")[0];
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Mexico_City' });
     const { data, error } = await supabase
       .from("wordle_words")
       .select("word, used_on")
@@ -21,7 +21,7 @@ export default function ProgrammedWords() {
     if (!error && data) {
       const formatted = data.map((item) => ({
         word: item.word,
-        date: new Date(item.used_on).toLocaleDateString("es-ES", {
+        date: new Date(item.used_on + "T12:00:00").toLocaleDateString("es-ES", {
         weekday: "long",
         day: "numeric",
         month: "long",
