@@ -181,7 +181,23 @@ export default async function handler(req: Request): Promise<Response> {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { messages: uiMessages } = await req.json() as { messages: any[] }
-    const messages = await convertToModelMessages(uiMessages)
+    const allMessages = await convertToModelMessages(uiMessages)
+
+    // Limpiar historial de tool calls de turnos anteriores.
+    // Llama 3.3 imita o ignora el patrón de llamadas acumuladas en el contexto,
+    // causando componentes duplicados o ausentes. Al quedarnos solo con los textos
+    // del asistente, el modelo toma cada pregunta como independiente.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const messages = allMessages.filter((msg: any) => {
+      if (msg.role === 'tool') return false
+      if (msg.role === 'assistant') {
+        const c = msg.content
+        if (typeof c === 'string') return !!c.trim()
+        if (Array.isArray(c)) return c.some((p: any) => p.type === 'text' && p.text?.trim())
+        return false
+      }
+      return true
+    })
 
     const result = streamText({
       model: groq('llama-3.3-70b-versatile'),
