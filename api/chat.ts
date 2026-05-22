@@ -188,7 +188,7 @@ export default async function handler(req: Request): Promise<Response> {
       system: SYSTEM_PROMPT,
       messages,
       tools: barcelonaTools,
-      stopWhen: stepCountIs(3),
+      stopWhen: stepCountIs(2),
       toolChoice: 'auto',
       onError: ({ error }) => {
         console.error('Error del streamText:', error)
