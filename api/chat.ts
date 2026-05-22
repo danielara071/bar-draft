@@ -1,11 +1,17 @@
 import { streamText, stepCountIs, convertToModelMessages, tool } from 'ai'
-import { createGroq } from '@ai-sdk/groq'
+import { createOpenAI } from '@ai-sdk/openai'
 import { z } from 'zod'
 import { createClient } from '@supabase/supabase-js'
 
 export const config = { runtime: 'edge' }
 
-const groq = createGroq({ apiKey: process.env.GROQ_API_KEY })
+// Groq es compatible con la API de OpenAI, así que usamos @ai-sdk/openai
+// apuntando al endpoint de Groq — evita incompatibilidad de versiones con @ai-sdk/groq
+const groq = createOpenAI({
+  name: 'groq',
+  baseURL: 'https://api.groq.com/openai/v1',
+  apiKey: process.env.GROQ_API_KEY,
+})
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL!,
@@ -173,7 +179,8 @@ export default async function handler(req: Request): Promise<Response> {
   }
 
   try {
-    const { messages: uiMessages } = await req.json()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { messages: uiMessages } = await req.json() as { messages: any[] }
     const messages = await convertToModelMessages(uiMessages)
 
     const result = streamText({
@@ -183,7 +190,6 @@ export default async function handler(req: Request): Promise<Response> {
       tools: barcelonaTools,
       stopWhen: stepCountIs(3),
       toolChoice: 'auto',
-      maxTokens: 200,
       onError: ({ error }) => {
         console.error('Error del streamText:', error)
       },
