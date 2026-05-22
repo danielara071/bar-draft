@@ -13,7 +13,10 @@ function AdminMapaTrofeos() {
   // esto es para poder pasar las coordenadas del mapa al card
   const [lat, setLat] = useState<number>(0); 
   const [lng, setLng] = useState<number>(0);
-  
+  //mensajes
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [mensaje, setMensaje] = useState("");
+
   const fetchTrofeos = async () => {
       try {
         setCargandoTrofeos(true);
@@ -115,10 +118,12 @@ function AdminMapaTrofeos() {
         setListaTrofeos((prev) => [...prev, nuevoTrofeoParaMapa]);
 
       } catch (error: any) {
-        console.error("Error en la transacción de Supabase:", error);
-        alert(error.message || "Hubo un error inesperado.");
+        setMensaje(`Error: ${error.message}`);
+        setShowConfirm(true);
       } finally {
         setCargando(false);
+        setMensaje(`Trofeo agregado`);
+        setShowConfirm(true);
       }
     };
 
@@ -154,32 +159,49 @@ function AdminMapaTrofeos() {
           </p>
         ) : (
         <div className="flex flex-row">
-        
-        <div className="p-8 h-200 w-150">
-          <Mapa
-            trofeos={listaTrofeos}
-            onSelectCoords={(lat, lng) => {
-              setLat(lat);
-              setLng(lng);
-            }}
-          />
-        </div>
-        <div className="flex flex-col w-100 max-h-[700px] overflow-y-auto gap-4 pr-2">
-          <h2 className="text-xl font-semibold text-brand-navy font-sans sticky top-0 bg-brand-bg-white">
-            Lista de Trofeos
-          </h2>
-
-          {listaTrofeos.map((trofeo) => (
-            <CardTrofeoAdmin
-              key={trofeo.id}
-              nombre={trofeo.nombre}
-              descripcion={trofeo.descripcion}
-              coordenadas={`${trofeo.coordenadas[0]}, ${trofeo.coordenadas[1]}`}
+        {!showConfirm && (
+          <div className="flex-auto p-8 h-200 min-w-150 max-w-full">
+            <Mapa
+              trofeos={listaTrofeos}
+              onSelectCoords={(lat, lng) => {
+                setLat(lat);
+                setLng(lng);
+              }}
             />
-          ))}
-        </div>
+          </div>
+        )}
+          <div className="flex flex-col w-100 max-h-[700px] overflow-y-auto gap-4 pr-2">
+            <h2 className="text-xl font-semibold text-brand-navy font-sans sticky top-0 bg-brand-bg-white">
+              Lista de Trofeos
+            </h2>
+
+            {listaTrofeos.map((trofeo) => (
+              <CardTrofeoAdmin
+                key={trofeo.id}
+                nombre={trofeo.nombre}
+                descripcion={trofeo.descripcion}
+                coordenadas={`${trofeo.coordenadas[0]}, ${trofeo.coordenadas[1]}`}
+              />
+            ))}
+          </div>
         </div>
         ) }
+      {showConfirm && (// hacer esto como un prop y reutilizarlo para eliminar amigo
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-gray-800">
+            <h3 className="text-xl font-bold mb-2">{mensaje}</h3>
+            
+            <div className="flex gap-3 justify-end">
+              <button 
+                onClick={() => setShowConfirm(false)}
+                className="px-4 py-2 bg-brand-yellow hover:bg-[#d9a90d] text-[#001d3d] rounded-lg transition-colors"
+              >
+                Continuar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
