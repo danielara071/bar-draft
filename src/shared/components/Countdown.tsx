@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+
 const pad = (n: number) => String(Math.floor(n)).padStart(2, "0");
 
 interface CountdownProps {
@@ -9,12 +10,20 @@ interface CountdownProps {
 const Countdown = ({ onCategoryLoad }: CountdownProps) => {
   const [matchDate, setMatchDate] = useState<Date | null>(null);
   const [time, setTime] = useState({ d: "--", h: "--", m: "--", s: "--" });
-  const PROXY = "https://fcb-proxy.onrender.com";
 
   useEffect(() => {
     const loadMatch = async () => {
-      const response = await fetch(`${PROXY}/api/scraper/next-game`);
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/barca-matches/next-game`,
+        {
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY!}`,
+            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY!,
+          },
+        }
+      );
       const data = await response.json();
+      console.log("barca-matches response:", data);
       setMatchDate(new Date(data.datetime));
       onCategoryLoad(data.category);
     };

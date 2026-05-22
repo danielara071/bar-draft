@@ -1,4 +1,4 @@
-
+import { Link } from "react-router-dom";
 
 const Footer = () => {
     return (
@@ -7,6 +7,7 @@ const Footer = () => {
                 <p className="text-xs font-bold">Términos y Condiciones</p>
                 <p className="text-xs font-bold">FAQ</p>
                 <p className="text-xs font-bold">Jela'an</p>
+                <Link to="/dashboard/reels" className="text-xs font-bold hover:opacity-70 transition">Admin</Link>
             </div>
             <div className="flex flex-row gap-8 py-10">
                 <img src="https://upload.wikimedia.org/wikipedia/sco/4/47/FC_Barcelona_%28crest%29.svg" className="w-5 h-5 shrink-0"/>
