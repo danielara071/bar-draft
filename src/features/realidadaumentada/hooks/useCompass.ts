@@ -5,6 +5,12 @@ interface UseCompassResult {
   compassReady: boolean
 }
 
+
+//useCompass — gestiona el heading del dispositivo.
+// Móvil: escucha deviceorientation / deviceorientationabsolute con permisos iOS.
+// PC:    simula la brújula con teclas ◄ ► (±5°).
+
+
 export function useCompass(started: boolean): UseCompassResult {
   const compassRef = useRef<number>(0)
   const [compassReady, setCompassReady] = useState(false)
@@ -29,23 +35,20 @@ export function useCompass(started: boolean): UseCompassResult {
       const requestAndListen = async () => {
         if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
           const permission = await (DeviceOrientationEvent as any).requestPermission()
-          if (permission === 'granted') {
-            window.addEventListener('deviceorientationabsolute', handleOrientation as any, true)
-            window.addEventListener('deviceorientation', handleOrientation as any, true)
-          }
-        } else {
-          window.addEventListener('deviceorientationabsolute', handleOrientation as any, true)
-          window.addEventListener('deviceorientation', handleOrientation as any, true)
+          if (permission !== 'granted') return
         }
+        window.addEventListener('deviceorientationabsolute', handleOrientation as any, true)
+        window.addEventListener('deviceorientation', handleOrientation as any, true)
       }
 
       requestAndListen()
+
       return () => {
         window.removeEventListener('deviceorientationabsolute', handleOrientation as any, true)
         window.removeEventListener('deviceorientation', handleOrientation as any, true)
       }
     } else {
-      // PC: simula brújula con teclas ◄ ►
+      // PC: simula brújula con teclas 
       setCompassReady(true)
       const handleKey = (e: KeyboardEvent) => {
         if (e.key === 'ArrowLeft')  compassRef.current = (compassRef.current - 5 + 360) % 360
