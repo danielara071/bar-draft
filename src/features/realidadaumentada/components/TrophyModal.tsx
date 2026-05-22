@@ -42,9 +42,6 @@ export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalP
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold leading-tight">{trophy.nombre}</h2>
-            {trophy.jugador_asociado && (
-              <p className="mt-1 text-sm text-white/50">{trophy.jugador_asociado}</p>
-            )}
             {trophy.nombre_lugar && (
               <p className="mt-0.5 text-xs text-white/35">📍 {trophy.nombre_lugar}</p>
             )}

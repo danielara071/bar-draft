@@ -1,7 +1,6 @@
 import { supabase } from '../../../shared/services/supabaseClient'
+
 import type {
-  Trophy,
-  TrophyLocation,
   TrophyWithCapture,
   WorldObject,
 } from '../interfaces/ar.types'
@@ -10,25 +9,7 @@ import { getDistanceMeters } from '../../../lib/geoUtils'
 const TROPHY_COLOR_DEFAULT = '#FFD700'
 
 
-function mergeTrophyData(
-  trophy: Trophy,
-  location: TrophyLocation,
-  capturedIds: Set<string>,
-  capturedDates: Map<string, string>,
-): TrophyWithCapture {
-  return {
-    id: trophy.id,
-    nombre: trophy.nombre,
-    descripcion: trophy.descripcion,
-    jugador_asociado: trophy.jugador_asociado,
-    lat: Number(location.latitud),
-    lng: Number(location.longitud),
-    nombre_lugar: location.nombre_lugar,
-    glbUrl: trophy.file_url,          // ya es URL pública directa
-    captured: capturedIds.has(trophy.id),
-    fecha_obtencion: capturedDates.get(trophy.id) ?? null,
-  }
-}
+
 
 // Carga todas las ubicaciones de trofeos, filtra por cercanía y marca cuáles ya fueron capturados por el usuario.
 
@@ -50,9 +31,13 @@ export async function getTrophiesNearby(
         id,
         nombre,
         descripcion,
-        jugador_asociado,
         file_url,
-        created_at
+        created_at,
+        tipo_trofeo (
+          id,
+          tipo_trofeo,
+          trofeo_url
+        )
       )
     `)
 
@@ -74,16 +59,22 @@ export async function getTrophiesNearby(
       const dist = getDistanceMeters(userLat, userLng, Number(loc.latitud), Number(loc.longitud))
       return dist <= radiusMeters
     })
+    .filter((loc) => loc.trofeos !== null)
     .map((loc) => {
-      const trophy = (loc as any).trofeos as Trophy
-      const location: TrophyLocation = {
-        id: loc.id,
-        trofeo_id: loc.trofeo_id,
-        latitud: loc.latitud,
-        longitud: loc.longitud,
-        nombre_lugar: loc.nombre_lugar,
+      const trophy   = loc.trofeos as any
+      const tipoData = trophy.tipo_trofeo as any
+      return {
+        id:              trophy.id,
+        nombre:          trophy.nombre,
+        descripcion:     trophy.descripcion,
+        lat:             Number(loc.latitud),
+        lng:             Number(loc.longitud),
+        nombre_lugar:    loc.nombre_lugar,
+        glbUrl:          trophy.file_url,
+        trofeo_url:      tipoData?.trofeo_url ?? null,
+        captured:        capturedIds.has(trophy.id),
+        fecha_obtencion: capturedDates.get(trophy.id) ?? null,
       }
-      return mergeTrophyData(trophy, location, capturedIds, capturedDates)
     })
 }
 
@@ -97,31 +88,38 @@ export async function getTrophiesByUser(userId: string): Promise<TrophyWithCaptu
         id,
         nombre,
         descripcion,
-        jugador_asociado,
         file_url,
-        created_at
+        created_at,
+        tipo_trofeo (
+          id,
+          tipo_trofeo,
+          trofeo_url
+        )
       )
     `)
     .eq('usuario_id', userId)
 
   if (error) throw new Error(`Error cargando colección: ${error.message}`)
-  if (!data) return []
+  if (!data || data.length === 0) return []
 
-  return data.map((row) => {
-    const trophy = (row as any).trofeos as Trophy
-    return {
-      id: trophy.id,
-      nombre: trophy.nombre,
-      descripcion: trophy.descripcion,
-      jugador_asociado: trophy.jugador_asociado,
-      lat: 0,
-      lng: 0,
-      nombre_lugar: null,
-      glbUrl: trophy.file_url,
-      captured: true,
-      fecha_obtencion: row.fecha_obtencion,
-    }
-  })
+  return data
+    .filter((row) => row.trofeos !== null)
+    .map((row) => {
+      const trophy   = row.trofeos as any
+      const tipoData = trophy.tipo_trofeo as any
+      return {
+        id:              trophy.id,
+        nombre:          trophy.nombre,
+        descripcion:     trophy.descripcion,
+        lat:             0,
+        lng:             0,
+        nombre_lugar:    null,
+        glbUrl:          trophy.file_url,
+        trofeo_url:      tipoData?.trofeo_url ?? null,
+        captured:        true,
+        fecha_obtencion: row.fecha_obtencion,
+      }
+    })
 }
 
 export async function captureTrophy(userId: string, trophyId: string): Promise<boolean> {

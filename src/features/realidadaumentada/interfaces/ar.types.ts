@@ -24,7 +24,6 @@ export interface Trophy {
   id: string
   nombre: string
   descripcion: string | null
-  jugador_asociado: string | null
   file_url: string | null        // URL pública directa (antes file_name)
   created_at: string
 }
@@ -50,19 +49,24 @@ export interface UserTrophy {
 
 // ── Tipo combinado para uso en la escena AR ───────────────────────
 
+export interface TipoTrofeo {
+  id: number
+  tipo_trofeo: string
+  trofeo_url: string
+}
+
 export interface TrophyWithCapture {
   id: string
   nombre: string
   descripcion: string | null
-  jugador_asociado: string | null
   lat: number
   lng: number
   nombre_lugar: string | null
-  glbUrl: string | null          // file_url directo de la BD
+  glbUrl: string | null
+  trofeo_url: string | null      // URL del PNG del tipo
   captured: boolean
   fecha_obtencion: string | null
 }
-
 // ── WorldObject: forma que consume AFrameScene ────────────────────
 
 export interface WorldObject {

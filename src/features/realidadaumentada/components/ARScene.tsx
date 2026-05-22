@@ -13,9 +13,8 @@ interface ARSceneProps {
   onBack: () => void
 }
 
-const FOV_DEGREES = 30  // tolerancia angular — mitad del campo de visión
+const FOV_DEGREES = 30
 
-/** Diferencia angular más corta entre dos headings (0-360) */
 function angleDiff(a: number, b: number): number {
   const diff = Math.abs(a - b) % 360
   return diff > 180 ? 360 - diff : diff
@@ -26,6 +25,8 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
   const { compassRef, compassReady }    = useCompass(true)
   const [modalOpen, setModalOpen]       = useState(false)
   const rafRef                          = useRef<number>(0)
+  // Guarda el id del trofeo actualmente en FOV para no re-triggerear
+  const inFovRef                        = useRef<string | null>(null)
 
   const {
     nearbyWorldObjects,
@@ -35,13 +36,12 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
     capture,
   } = useUserTrophies(userId, userCoords)
 
-  // ── Loop: detecta si algún objeto está en el FOV ─────────────
+  // ── FOV detection loop ───────────────────────────────────────
   useEffect(() => {
     if (!userCoords || nearbyWorldObjects.length === 0) return
 
     const check = () => {
       const heading = compassRef.current
-
       let closest: { id: string; dist: number } | null = null
 
       for (const obj of nearbyWorldObjects) {
@@ -51,25 +51,36 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
         )
         if (dist > 300) continue
 
-        const bearing = getBearing(
-          userCoords.lat, userCoords.lng,
-          obj.lat, obj.lng,
-        )
+        const bearing  = getBearing(userCoords.lat, userCoords.lng, obj.lat, obj.lng)
+        const inFov    = angleDiff(heading, bearing) <= FOV_DEGREES
 
-        const inFov = angleDiff(heading, bearing) <= FOV_DEGREES
-
-        if (inFov) {
-          if (!closest || dist < closest.dist) {
-            closest = { id: obj.id, dist }
-          }
+        if (inFov && (!closest || dist < closest.dist)) {
+          closest = { id: obj.id, dist }
         }
       }
 
       if (closest) {
-        selectTrophy(closest.id)
+        // Objeto nuevo en FOV
+        if (inFovRef.current !== closest.id) {
+          inFovRef.current = closest.id
+          selectTrophy(closest.id)
+
+          // Buscar si ya fue capturado
+          const obj = nearbyWorldObjects.find((o) => o.id === closest!.id)
+          if (obj?.captured) {
+            // Ya capturado — abrir modal directo
+            setModalOpen(true)
+          } else {
+            // No capturado — mostrar panel "Coleccióname"
+            setModalOpen(false)
+          }
+        }
       } else {
-        clearSelectedTrophy()
-        setModalOpen(false)
+        // Nada en FOV — limpiar solo si no hay modal abierto
+        if (!modalOpen) {
+          inFovRef.current = null
+          clearSelectedTrophy()
+        }
       }
 
       rafRef.current = requestAnimationFrame(check)
@@ -77,7 +88,7 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
 
     rafRef.current = requestAnimationFrame(check)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [userCoords, nearbyWorldObjects])
+  }, [userCoords, nearbyWorldObjects, modalOpen])
 
   // Cleanup A-Frame al salir
   useEffect(() => {
@@ -89,6 +100,7 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
   const handleCloseAll = () => {
     setModalOpen(false)
     clearSelectedTrophy()
+    inFovRef.current = null
   }
 
   if (gpsError) {
@@ -124,18 +136,16 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
         userCoords={userCoords}
         nearbyObjects={nearbyWorldObjects}
         compassRef={compassRef}
-        onSelectObject={(obj) => {
-          selectTrophy(obj.id)
-          setModalOpen(false)
-        }}
+        onSelectObject={(obj) => selectTrophy(obj.id)}
       />
 
+      {/* Panel "Coleccióname" — solo si NO está capturado y NO hay modal abierto */}
       <ARsystem
         nearbyCount={nearbyWorldObjects.length}
         compassDeg={compassRef.current}
         compassReady={compassReady}
         selected={
-          selectedTrophy && !modalOpen
+          selectedTrophy && !modalOpen && !selectedTrophy.captured
             ? {
                 id: selectedTrophy.id,
                 label: selectedTrophy.nombre,
@@ -148,25 +158,15 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
               }
             : null
         }
-        onCloseSelected={handleCloseAll}
+        onCloseSelected={handleCloseAll}  // se puede dejar aunque no se use en el panel
         onCollect={() => setModalOpen(true)}
       />
-
-      <button
-        onClick={onBack}
-        className="fixed left-4 top-4 z-20 flex items-center gap-2 rounded-full bg-black/50 px-4 py-2 font-sans text-sm font-semibold text-white backdrop-blur-md transition-opacity hover:opacity-80 active:opacity-60"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M19 12H5M5 12l7 7M5 12l7-7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        Volver
-      </button>
-
+      {/* Modal — capturado: cierra y vuelve al hub | no capturado: permite capturar */}
       {modalOpen && selectedTrophy && (
         <TrophyModal
           trophy={selectedTrophy}
           onCapture={capture}
-          onClose={handleCloseAll}
+          onClose={selectedTrophy.captured ? onBack : handleCloseAll}
         />
       )}
     </div>
