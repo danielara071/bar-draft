@@ -7,15 +7,21 @@ import type { ProductWithCategory } from "../interfaces/productWithCategory";
 import CreateProductModal from "./CreateProductModal";
 import { Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
-import PopUp from "./PopUp"; // adjust import path as needed
+import PopUp from "./PopUp";
 
 const ProductPanel = () => {
   const { products, fetchProducts } = useProducts();
+  const [search, setSearch] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<ProductWithCategory | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState<ProductWithCategory | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [popup, setPopup] = useState<{ message: string; success: boolean } | null>(null);
+
+  const filteredProducts = products.filter((item) =>
+    item.name.toLowerCase().includes(search.toLowerCase()) ||
+    item.categories.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   useEffect(() => {
     console.log(products);
@@ -52,7 +58,7 @@ const ProductPanel = () => {
       )}
 
       <div className="flex flex-row gap-x-20">
-        <SearchBar />
+        <SearchBar value={search} onChange={setSearch} />
         <button
           onClick={() => setShowCreateModal(true)}
           className="rounded-xl bg-[#EDBB00] px-5 py-2 font-semibold text-white transition flex flex-row justify-center items-center gap-x-3 mr-1 hover:cursor-pointer"
@@ -73,7 +79,7 @@ const ProductPanel = () => {
       )}
 
       <div className="mt-5 flex flex-col gap-y-5 h-140 overflow-y-auto">
-        {products.map((item) => (
+        {filteredProducts.map((item) => (
           <ProductCard
             key={item.id}
             name={item.name}
