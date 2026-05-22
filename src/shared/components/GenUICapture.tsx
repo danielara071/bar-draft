@@ -15,8 +15,12 @@ export const GenUICapture = ({ children, filename = 'barcabot' }: Props) => {
     if (!contentRef.current || capturing) return
     setCapturing(true)
     try {
-      // pixelRatio: 2 genera imagen a resolución retina (más nítida al guardar)
-      const dataUrl = await toPng(contentRef.current, { pixelRatio: 2, cacheBust: true })
+      // Apuntamos al primer hijo (la tarjeta real) en lugar del div wrapper.
+      // El wrapper es un bloque que se expande al ancho del contenedor padre,
+      // lo que causaba espacio vacío a la derecha en la imagen capturada.
+      // El primer hijo tiene el ancho exacto del componente (w-72, w-80, etc.).
+      const target = (contentRef.current.firstElementChild as HTMLElement) ?? contentRef.current
+      const dataUrl = await toPng(target, { pixelRatio: 2, cacheBust: true })
       setPreview(dataUrl)
     } catch (err) {
       console.error('[GenUICapture] Error al capturar:', err)
