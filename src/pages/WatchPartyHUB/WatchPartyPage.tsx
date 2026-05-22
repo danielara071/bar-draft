@@ -6,7 +6,6 @@ import WatchPartyCodeInput from "./WatchPartyCodeInput";
 import WatchPartyGrid from "./WatchPartyGrid";
 import WatchPartyModal from "./WatchPartyModal";
 
-
 // ── Mock data ──────────────────────────────────────────────────────────────
 const MY_PARTIES: WatchPartyMatch[] = [
   {
@@ -16,6 +15,7 @@ const MY_PARTIES: WatchPartyMatch[] = [
     competition: "UEFA Champions League – Cuartos de Final",
     time: "Hoy – 20:00",
     code: "FEM-2004",
+    privacy: "publica",
   },
   {
     id: 2,
@@ -24,6 +24,7 @@ const MY_PARTIES: WatchPartyMatch[] = [
     competition: "La Liga – Jornada 26",
     time: "Mañana – 21:30",
     code: "VAR-2334",
+    privacy: "publica",
   },
 ];
 
@@ -35,6 +36,7 @@ const LIVE_PARTIES: WatchPartyMatch[] = [
     competition: "UEFA Champions League – Cuartos de Final",
     time: "Hoy – 20:00",
     code: "FEM-2004",
+    privacy: "publica",
   },
   {
     id: 4,
@@ -43,6 +45,7 @@ const LIVE_PARTIES: WatchPartyMatch[] = [
     competition: "UEFA Champions League – Cuartos de Final",
     time: "Hoy – 20:00",
     code: "FEM-2004",
+    privacy: "publica",
   },
   {
     id: 5,
@@ -51,6 +54,7 @@ const LIVE_PARTIES: WatchPartyMatch[] = [
     competition: "UEFA Champions League – Cuartos de Final",
     time: "Hoy – 20:00",
     code: "FEM-2004",
+    privacy: "publica",
   },
   {
     id: 6,
@@ -59,6 +63,7 @@ const LIVE_PARTIES: WatchPartyMatch[] = [
     competition: "UEFA Champions League – Cuartos de Final",
     time: "Hoy – 20:00",
     code: "FEM-2004",
+    privacy: "publica",
   },
 ];
 

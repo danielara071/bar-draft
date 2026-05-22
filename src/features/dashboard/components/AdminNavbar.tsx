@@ -1,8 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
-import { Newspaper, LetterText, UserRound, Video, Store, Map } from "lucide-react";
+import {
+  Newspaper,
+  LetterText,
+  UserRound,
+  Video,
+  Store,
+  Map,
+} from "lucide-react";
 
 const navItems = [
-  { name: "Reportes", path: "/dashboard/reportes" },
+  { name: "Reportes", path: "/dashboard/reportes", icon: Newspaper },
   { name: "Reels", path: "/dashboard/reels", icon: Video },
   { name: "Gestión de Noticias", path: "/dashboard/noticias", icon: Newspaper },
   { name: "Gestión de Tienda", path: "/dashboard/tienda", icon: Store },
