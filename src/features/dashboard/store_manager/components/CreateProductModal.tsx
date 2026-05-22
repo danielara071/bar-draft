@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { X, UploadCloud } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
+import PopUp from "./PopUp"; // adjust import path as needed
 
 interface CreateProductModalProps {
   toggleCard: () => void;
@@ -31,6 +32,7 @@ const CreateProductModal = ({
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [popup, setPopup] = useState<{ message: string; success: boolean } | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -63,7 +65,6 @@ const CreateProductModal = ({
     return () => window.removeEventListener("keydown", handleEscape);
   }, [toggleCard]);
 
-  // Clean up the object URL to avoid memory leaks
   useEffect(() => {
     return () => {
       if (imagePreview) URL.revokeObjectURL(imagePreview);
@@ -97,7 +98,6 @@ const CreateProductModal = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Revoke previous preview URL
     if (imagePreview) URL.revokeObjectURL(imagePreview);
 
     setImageFile(file);
@@ -107,7 +107,7 @@ const CreateProductModal = ({
   const uploadImage = async (file: File): Promise<string> => {
     const ext = file.name.split(".").pop();
     const fileName = `${Date.now()}.${ext}`;
-    const filePath = fileName; // root of the bucket, no subfolder
+    const filePath = fileName;
 
     const { error: uploadError } = await supabase.storage
       .from("productos")
@@ -151,7 +151,10 @@ const CreateProductModal = ({
     try {
       image_url = await uploadImage(imageFile);
     } catch (err) {
-      setErrorMsg((err as Error).message);
+      setPopup({
+        message: (err as Error).message ?? "Error al subir la imagen.",
+        success: false,
+      });
       setSaving(false);
       return;
     }
@@ -165,208 +168,222 @@ const CreateProductModal = ({
     });
 
     if (error) {
-      setErrorMsg(error.message);
+      setPopup({ message: "Error al crear el producto.", success: false });
       setSaving(false);
       return;
     }
 
-    await onCreated();
+    setPopup({ message: "Producto creado correctamente.", success: true });
     setSaving(false);
   };
 
   return (
-    <div
-      className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 px-4"
-      onClick={toggleCard}
-    >
+    <>
+      {popup && (
+        <PopUp
+          message={popup.message}
+          success={popup.success}
+          onClose={async () => {
+            setPopup(null);
+            if (popup.success) {
+              await onCreated();
+              toggleCard();
+            }
+          }}
+        />
+      )}
+
       <div
-        className="relative z-50 w-full max-w-2xl rounded-2xl bg-brand-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="create-product-title"
+        className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 px-4"
+        onClick={toggleCard}
       >
-        {/* Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <h2
-            id="create-product-title"
-            className="text-2xl font-bold text-brand-navy"
-          >
-            Nuevo producto
-          </h2>
+        <div
+          className="relative z-50 w-full max-w-2xl rounded-2xl bg-brand-white p-6 shadow-2xl max-h-[90vh] overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="create-product-title"
+        >
+          {/* Header */}
+          <div className="mb-6 flex items-center justify-between">
+            <h2
+              id="create-product-title"
+              className="text-2xl font-bold text-brand-navy"
+            >
+              Nuevo producto
+            </h2>
 
-          <button
-            type="button"
-            onClick={toggleCard}
-            className="rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
-            aria-label="Cerrar modal"
-          >
-            <X className="h-6 w-6" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {/* Name */}
-            <div className="md:col-span-2">
-              <label
-                htmlFor="name"
-                className="mb-2 block text-sm font-semibold text-slate-700"
-              >
-                Nombre
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-navy"
-                placeholder="Nombre del producto"
-              />
-            </div>
-
-            {/* Image upload */}
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
-                Imagen
-              </label>
-
-              {/* Drop zone / click to upload */}
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-slate-500 transition hover:border-brand-navy hover:bg-slate-100"
-              >
-                <UploadCloud className="h-8 w-8" />
-                <span className="text-sm font-medium">
-                  {imageFile
-                    ? imageFile.name
-                    : "Haz clic para seleccionar una imagen"}
-                </span>
-                <span className="text-xs text-slate-400">
-                  PNG, JPG, WEBP — máx. 5 MB
-                </span>
-              </button>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                className="hidden"
-                onChange={handleFileChange}
-              />
-
-              {/* Live preview */}
-              {imagePreview && (
-                <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
-                  <img
-                    src={imagePreview}
-                    alt="Vista previa"
-                    className="h-48 w-full object-contain"
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Price */}
-            <div>
-              <label
-                htmlFor="price"
-                className="mb-2 block text-sm font-semibold text-slate-700"
-              >
-                Precio
-              </label>
-              <input
-                id="price"
-                name="price"
-                type="number"
-                min="0"
-                step="0.01"
-                value={formData.price}
-                onChange={handleInputChange}
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-navy"
-              />
-            </div>
-
-            {/* Premium dropdown */}
-            <div>
-              <label
-                htmlFor="premium"
-                className="mb-2 block text-sm font-semibold text-slate-700"
-              >
-                Tipo de producto
-              </label>
-              <select
-                id="premium"
-                name="premium"
-                value={String(formData.premium)}
-                onChange={handleSelectChange}
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-navy"
-              >
-                <option value="false">Estándar</option>
-                <option value="true">Premium</option>
-              </select>
-            </div>
-
-            {/* Category dropdown */}
-            <div className="md:col-span-2">
-              <label
-                htmlFor="category_id"
-                className="mb-2 block text-sm font-semibold text-slate-700"
-              >
-                Categoría
-              </label>
-              <select
-                id="category_id"
-                name="category_id"
-                value={formData.category_id}
-                onChange={handleSelectChange}
-                disabled={loadingCategories}
-                className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-navy disabled:bg-slate-100"
-              >
-                <option value="">
-                  {loadingCategories
-                    ? "Cargando categorías..."
-                    : "Selecciona una categoría"}
-                </option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          {/* Error message */}
-          {errorMsg && (
-            <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
-              {errorMsg}
-            </p>
-          )}
-
-          {/* Actions */}
-          <div className="mt-2 flex justify-end gap-3">
             <button
               type="button"
               onClick={toggleCard}
-              className="rounded-xl border border-slate-300 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-100"
+              className="rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+              aria-label="Cerrar modal"
             >
-              Cancelar
-            </button>
-
-            <button
-              type="submit"
-              disabled={saving || loadingCategories}
-              className="rounded-xl bg-brand-navy px-5 py-3 font-semibold text-white transition hover:bg-blue-950 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              {saving ? "Subiendo..." : "Crear producto"}
+              <X className="h-6 w-6" />
             </button>
           </div>
-        </form>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+              {/* Name */}
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="name"
+                  className="mb-2 block text-sm font-semibold text-slate-700"
+                >
+                  Nombre
+                </label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-navy"
+                  placeholder="Nombre del producto"
+                />
+              </div>
+
+              {/* Image upload */}
+              <div className="md:col-span-2">
+                <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  Imagen
+                </label>
+
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-slate-500 transition hover:border-brand-navy hover:bg-slate-100"
+                >
+                  <UploadCloud className="h-8 w-8" />
+                  <span className="text-sm font-medium">
+                    {imageFile
+                      ? imageFile.name
+                      : "Haz clic para seleccionar una imagen"}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    PNG, JPG, WEBP — máx. 5 MB
+                  </span>
+                </button>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+
+                {imagePreview && (
+                  <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+                    <img
+                      src={imagePreview}
+                      alt="Vista previa"
+                      className="h-48 w-full object-contain"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Price */}
+              <div>
+                <label
+                  htmlFor="price"
+                  className="mb-2 block text-sm font-semibold text-slate-700"
+                >
+                  Precio
+                </label>
+                <input
+                  id="price"
+                  name="price"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-navy"
+                />
+              </div>
+
+              {/* Premium dropdown */}
+              <div>
+                <label
+                  htmlFor="premium"
+                  className="mb-2 block text-sm font-semibold text-slate-700"
+                >
+                  Tipo de producto
+                </label>
+                <select
+                  id="premium"
+                  name="premium"
+                  value={String(formData.premium)}
+                  onChange={handleSelectChange}
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-navy"
+                >
+                  <option value="false">Estándar</option>
+                  <option value="true">Premium</option>
+                </select>
+              </div>
+
+              {/* Category dropdown */}
+              <div className="md:col-span-2">
+                <label
+                  htmlFor="category_id"
+                  className="mb-2 block text-sm font-semibold text-slate-700"
+                >
+                  Categoría
+                </label>
+                <select
+                  id="category_id"
+                  name="category_id"
+                  value={formData.category_id}
+                  onChange={handleSelectChange}
+                  disabled={loadingCategories}
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-brand-navy disabled:bg-slate-100"
+                >
+                  <option value="">
+                    {loadingCategories
+                      ? "Cargando categorías..."
+                      : "Selecciona una categoría"}
+                  </option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Error message */}
+            {errorMsg && (
+              <p className="rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+                {errorMsg}
+              </p>
+            )}
+
+            {/* Actions */}
+            <div className="mt-2 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={toggleCard}
+                className="rounded-xl border border-slate-300 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-100"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="submit"
+                disabled={saving || loadingCategories}
+                className="rounded-xl bg-brand-navy px-5 py-3 font-semibold text-white transition hover:bg-blue-950 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {saving ? "Subiendo..." : "Crear producto"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
