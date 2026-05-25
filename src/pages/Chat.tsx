@@ -18,6 +18,7 @@ const Chat = ({ embedded = false }: Props) => {
     setInput,
     messages,
     isLoading,
+    error,
     handleSubmit,
     getMessageText
   } = useChatSession()
@@ -36,6 +37,7 @@ const Chat = ({ embedded = false }: Props) => {
           embedded
           logoUrl={logoURL}
           userAvatarUrl={profile?.url_avatar ?? undefined}
+          error={error}
         />
         <ChatInput
           input={input}
@@ -56,6 +58,7 @@ const Chat = ({ embedded = false }: Props) => {
         messages={messages}
         isLoading={isLoading}
         getMessageText={getMessageText}
+        error={error}
       />
 
       <ChatInput

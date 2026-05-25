@@ -49,7 +49,24 @@ export const renderGenUIPart = (part: any): ReactNode | null => {
   return renderer ? renderer(part.output) : null
 }
 
-/** Nodos GenUI de un mensaje del asistente (preserva orden, deduplica por tool+args). */
+// Llama 3.3 (Groq) suele emitir la misma tool 2 veces en un turno con args
+// ligeramente distintos (ej. "Yamal" y "lamine yamal"). Dedupear por args falla
+// ahí. Usamos la SALIDA real de la tool (player.id de Supabase) como clave:
+// si los dos calls devuelven el mismo jugador, solo renderizamos uno.
+const dedupKey = (toolName: string, part: any): string => {
+  const out = part?.output
+  if (toolName === 'getPlayerStats') {
+    if (out?.found && out.player?.id) return `stats:${out.player.id}`
+    if (out?.found === false) return `stats-notfound:${(out.query ?? '').toLowerCase().trim()}`
+  }
+  if (toolName === 'getPlayerList') {
+    const ids = (out?.jugadores ?? []).map((j: any) => j.id).join(',')
+    return `list:${out?.titulo ?? ''}:${ids}`
+  }
+  return `${toolName}:${JSON.stringify(part?.input ?? {})}`
+}
+
+/** Nodos GenUI de un mensaje del asistente (preserva orden, deduplica por salida). */
 export const collectGenUI = (message: any): ReactNode[] => {
   const parts: any[] = message?.parts ?? []
   const nodes: ReactNode[] = []
@@ -58,12 +75,8 @@ export const collectGenUI = (message: any): ReactNode[] => {
   parts.forEach((part, i) => {
     const node = renderGenUIPart(part)
     if (!node) return
-    // Clave de dedup: misma herramienta + mismos args → mostrar solo una vez.
-    // Evita que un modelo que llama la tool 2-3 veces con los mismos args
-    // renderice el componente múltiples veces en el mismo mensaje.
     const toolName = getToolName(part) ?? ''
-    const argsKey = JSON.stringify(part.input ?? {})
-    const key = `${toolName}:${argsKey}`
+    const key = dedupKey(toolName, part)
     if (!seen.has(key)) {
       seen.add(key)
       nodes.push(<div key={`genui-${i}`} className="pl-8">{node}</div>)

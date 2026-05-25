@@ -11,6 +11,9 @@ export interface ChatMessagesProps {
   embedded?: boolean    // activa el layout compacto para el widget
   logoUrl?: string      // avatar del asistente (logo del Barça)
   userAvatarUrl?: string // avatar del usuario autenticado
+  // Error del stream (rate limit, context length, etc). Se renderiza como
+  // burbuja roja debajo del último mensaje para que el usuario sepa qué pasó.
+  error?: Error | null
 }
 
 // Lo que necesita el componente del input y el botón Enviar

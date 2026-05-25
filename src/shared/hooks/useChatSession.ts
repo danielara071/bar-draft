@@ -39,6 +39,9 @@ export const useChatSession = () => {
     input,
     setInput,
     messages,
+    // `error` lo expone useChat cuando el stream falla (incluye los textos que el
+    // servidor emite vía toUIMessageStreamResponse({ onError })). Lo propagamos
+    // para que ChatMessages renderice una burbuja visible.
     error,
     isLoading,
     handleSubmit,

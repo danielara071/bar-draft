@@ -1,5 +1,14 @@
 import type { Hono } from 'hono'
-import Stripe from 'stripe'
+// `import Stripe from 'stripe'` en top-level cuelga `tsx` 4.21 sobre Node 22
+// (el proceso se queda esperando para siempre justo antes de `serve()`).
+// Lo cargamos dinámicamente dentro del handler para que el server arranque normal;
+// Stripe se inicializa la primera vez que alguien llama /api/checkout.
+type StripeCtor = typeof import('stripe').default
+let stripeCtorPromise: Promise<StripeCtor> | null = null
+const loadStripe = (): Promise<StripeCtor> => {
+  stripeCtorPromise ??= import('stripe').then((m) => m.default)
+  return stripeCtorPromise
+}
 
 export function registerCheckoutRoutes(app: Hono) {
   const secretKey = process.env.STRIPE_SECRET_KEY
@@ -11,15 +20,15 @@ export function registerCheckoutRoutes(app: Hono) {
     )
   }
 
-  const stripe = secretKey ? new Stripe(secretKey) : null
-
   app.post('/api/checkout', async (c) => {
-    if (!stripe || !priceId) {
+    if (!secretKey || !priceId) {
       return c.json(
         { message: 'Stripe no está configurado en el servidor (variables de entorno).' },
         503,
       )
     }
+    const Stripe = await loadStripe()
+    const stripe = new Stripe(secretKey)
 
     let body: { id?: string; email?: string; name?: string }
     try {

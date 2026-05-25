@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node --experimental-strip-types _test4.mts)",
+      "Bash(rm -f _test-imports.mts _test2.mts _test3.mts _test4.mts)",
+      "Bash(ls _test*)"
+    ]
+  }
+}

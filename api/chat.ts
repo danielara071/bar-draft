@@ -203,17 +203,52 @@ export default async function handler(req: Request): Promise<Response> {
       tools: barcelonaTools,
       stopWhen: stepCountIs(2),
       toolChoice: 'auto',
+      // El bot solo dice una frase corta tras la tool; capar la salida reduce
+      // tokens-por-minuto y baja la probabilidad de pegar el rate limit free-tier.
+      maxOutputTokens: 200,
       onError: ({ error }) => {
         console.error('Error del streamText:', error)
       },
     })
 
-    return result.toUIMessageStreamResponse()
+    // onError aquí decide QUÉ texto recibe el cliente cuando hubo error en el
+    // stream. Sin esto, el cliente recibe un stream vacío y "parece" colgado.
+    return result.toUIMessageStreamResponse({ onError: formatStreamError })
   } catch (err) {
     console.error('Error en /api/chat:', err)
-    return new Response(JSON.stringify({ error: String(err) }), {
+    return new Response(JSON.stringify({ error: formatStreamError(err) }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     })
   }
+}
+
+// Traduce errores del proveedor (Groq) a un mensaje legible en español.
+// Detectamos 429 y "context length" porque son los dos modos de fallo del
+// tier gratuito que el usuario ve más seguido.
+function formatStreamError(error: unknown): string {
+  const raw =
+    error instanceof Error
+      ? `${error.message} ${(error as any).cause ?? ''}`
+      : typeof error === 'string'
+        ? error
+        : JSON.stringify(error ?? {})
+  const msg = raw.toLowerCase()
+
+  if (
+    msg.includes('429') ||
+    msg.includes('rate limit') ||
+    msg.includes('rate_limit') ||
+    msg.includes('too many requests') ||
+    msg.includes('quota')
+  ) {
+    return '⚠️ Límite alcanzado. Por favor espera unos segundos e intenta de nuevo.'
+  }
+  if (msg.includes('context length') || msg.includes('context_length') || msg.includes('maximum context')) {
+    return '⚠️ La conversación es demasiado larga. Recarga el chat para empezar de nuevo.'
+  }
+  if (msg.includes('401') || msg.includes('unauthorized') || msg.includes('invalid api key')) {
+    return '⚠️ Error de configuración del servidor. Avisa al administrador.'
+  }
+  return '⚠️ Ocurrió un error al generar la respuesta. Inténtalo de nuevo.'
 }

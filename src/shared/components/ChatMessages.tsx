@@ -2,6 +2,18 @@ import { useEffect, useRef, type FC } from 'react'
 import type { ChatMessagesProps } from '../interfaces/chat'
 import { collectGenUI } from '../genui/registry'
 
+// El servidor ya emite mensajes en español con el formato "⚠️ ..." cuando es
+// un error conocido (rate limit, contexto, auth). Para errores genéricos
+// (red caída, JSON malformado, etc.) usamos este fallback.
+const formatErrorMessage = (error: Error): string => {
+  const msg = error?.message ?? ''
+  if (msg.startsWith('⚠️')) return msg
+  if (msg.toLowerCase().includes('failed to fetch')) {
+    return '⚠️ No hay conexión con el servidor. Revisa tu internet.'
+  }
+  return '⚠️ Ocurrió un error al generar la respuesta. Inténtalo de nuevo.'
+}
+
 export const ChatMessages: FC<ChatMessagesProps> = ({
   messages,
   isLoading,
@@ -9,13 +21,14 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
   embedded,
   logoUrl,
   userAvatarUrl,
+  error,
 }) => {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   // cada vez que llega un mensaje nuevo bajamos al fondo automáticamente
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, isLoading])
+  }, [messages, isLoading, error])
 
   if (embedded) {
     return (
@@ -92,6 +105,21 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
           </div>
         )}
 
+        {/* Burbuja de error: solo aparece cuando NO está cargando (durante el
+            stream, useChat puede tener error transitorio que se resuelve solo) */}
+        {error && !isLoading && (
+          <div className="flex items-end gap-2 justify-start" role="alert">
+            <img
+              src={logoUrl}
+              alt="Barçabot"
+              className="w-6 h-6 rounded-full object-contain flex-shrink-0 bg-white border border-slate-200"
+            />
+            <div className="max-w-[75%] px-3 py-2 rounded-2xl rounded-bl-sm text-sm leading-snug bg-red-50 text-red-700 border border-red-200">
+              {formatErrorMessage(error)}
+            </div>
+          </div>
+        )}
+
         {/* div invisible al que hacemos scroll para siempre ver el último mensaje */}
         <div ref={bottomRef} />
       </div>
@@ -125,6 +153,11 @@ export const ChatMessages: FC<ChatMessagesProps> = ({
         )
       })}
       {isLoading && <p>Pensando...</p>}
+      {error && !isLoading && (
+        <p role="alert" style={{ color: '#b91c1c', background: '#fef2f2', padding: '8px 12px', borderRadius: '8px', border: '1px solid #fecaca' }}>
+          {formatErrorMessage(error)}
+        </p>
+      )}
       <div ref={bottomRef} />
     </div>
   )
