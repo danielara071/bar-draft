@@ -60,19 +60,19 @@ export default function StatsCard() {
         <div className="bg-brand-navy rounded-xl px-4 py-5 flex flex-col items-center justify-center gap-1">
           <IoPeople className="text-white"/>
           <p className="text-white text-3xl font-bold">{stats.total_players}</p>
-          <p className="text-zinc-400 text-[10px] uppercase tracking-wide">Jugadores Totales</p>
+          <p className="text-white text-[10px] font-bold uppercase tracking-wide">Jugadores Totales</p>
         </div>
 
         <div className="bg-green-600 rounded-xl px-4 py-5 flex flex-col items-center justify-center gap-1">
           <GiBullseye className="text-white"/>
           <p className="text-white text-3xl font-bold">{stats.total_won}</p>
-          <p className="text-green-200 text-[10px] uppercase tracking-wide">Acertaron</p>
+          <p className="text-white text-[10px] font-bold uppercase tracking-wide">Acertaron</p>
         </div>
 
         <div className="bg-yellow-400 rounded-xl px-4 py-5 flex flex-col items-center justify-center gap-1">
           <GoGraph className="text-brand-navy"/>
           <p className="text-brand-navy text-3xl font-bold">{stats.success_rate}%</p>
-          <p className="text-yellow-700 text-[10px] uppercase tracking-wide">Tasa de Éxito</p>
+          <p className="text-brand-navy text-[10px] font-bold uppercase tracking-wide">Tasa de Éxito</p>
         </div>
       </div>
 
