@@ -39,32 +39,13 @@ function AdminMapaTrofeos() {
       descripcion: string;
       latitud: number;
       longitud: number;
-      archivo: File | null;
       nombreArchivo: string;
       nombre_lugar: string;
     }) => {
       setCargando(true);
       try {
         console.log("Datos recibidos en AdminMapaTrofeos:", datos);
-
-        if (!datos.archivo) {
-          throw new Error("El archivo .glb es obligatorio.");
-        }
-
-        const { data: storageData, error: storageError } = await supabase.storage
-          .from('trofeos_bucket')
-          .upload(datos.nombreArchivo, datos.archivo);
-        
-        if (storageError && storageError.message !== "The resource already exists") {
-          throw new Error(`Error al subir el archivo: ${storageError.message}`);
-        }
-        else if (storageError && storageError.message === "The resource already exists") {
-          console.warn(`Archivo ${datos.nombreArchivo} ya existe en el bucket. Continuando con la URL existente.`);
-        }
-        else {
-          console.log("Archivo subido con éxito:", storageData);
-        }
-        const { data } = supabase.storage.from('trofeos_bucket').getPublicUrl(datos.nombreArchivo)
+        const { data } = supabase.storage.from('trofeos_bucket').getPublicUrl(datos.nombreArchivo + ".glb");  
         console.log(data.publicUrl)
         const formatoTextoFileUrl = data.publicUrl;
 
