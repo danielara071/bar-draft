@@ -16,6 +16,7 @@ type PerfilUsuarioProps = {
   logro:string;
 
   onLogoutFunc: () => void;
+  onGestionarPerfil?: () => void;
   onLogoutText: string;
   
 };
@@ -35,6 +36,7 @@ export default function PerfilUsuario({
   logro,
 
   onLogoutFunc,
+  onGestionarPerfil,
   onLogoutText,
 }: PerfilUsuarioProps) {
   return (
@@ -55,12 +57,23 @@ export default function PerfilUsuario({
         
         <div className="py-4 flex justify-between">
             <h2 className="text-white text-4xl font-semibold">@{username}</h2>
-                <button
-                    onClick={onLogoutFunc}
-                    className="text-white bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-md"
-                >
-                    {onLogoutText}
-                </button>
+            <div className="flex justify-end gap-4">
+              {onGestionarPerfil && (
+                  <button
+                      onClick={onGestionarPerfil}
+                      className="text-black bg-brand-yellow hover:bg-[#ffd11f] px-4 py-2 rounded-full text-md"
+                  >
+                      Gestionar Perfil
+                  </button>
+              )}
+              <button
+                  onClick={onLogoutFunc}
+                  className="text-white bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-md"
+              >
+                  {onLogoutText}
+              </button>
+              </div>
+
         </div>
 
         <div className="flex flex-row gap-1 mb-5">

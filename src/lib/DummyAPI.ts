@@ -92,7 +92,7 @@ export async function fetchAmigosByName(friend_name: string): Promise<Amigo[]> {
 }
 
 export async function fetchUsuarioLogros(id: string): Promise<Logro[]> {
-  console.log(supabaseUrl, "FROm fetchUsuarioByName but apikey ", supabaseAPIKey);
+  console.log(supabaseUrl, "FROm fetchUsuarioByName ");
   
   const response = await fetch(
     `${supabaseUrl}/rest/v1/rpc/get_user_logros`,
@@ -117,6 +117,7 @@ export async function fetchUsuarioLogros(id: string): Promise<Logro[]> {
   return data;
 }
 export async function updateUsuarioLogro(user_id: string, nuevo_logro: number): Promise<void> {
+  
   const response = await fetch(
     `${supabaseUrl}/rest/v1/rpc/update_logro`,
     {
@@ -214,6 +215,5 @@ export async function get_friend_status(user_id: string, friend_id: string): Pro
     })
     }
   );
-  console.log("Response from updateUsuarioLogro: ", response);
   return handleResponse<string>(response, "");
 }
