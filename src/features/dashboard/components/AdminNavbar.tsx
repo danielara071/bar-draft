@@ -6,6 +6,7 @@ import {
   Video,
   Store,
   Map,
+  Ticket,
 } from "lucide-react";
 
 const navItems = [
@@ -15,6 +16,7 @@ const navItems = [
   { name: "Gestión de Tienda", path: "/dashboard/tienda", icon: Store },
   { name: "Mapa de Trofeos", path: "/dashboard/mapaTrofeos", icon: Map },
   { name: "Palabras Wordle", path: "/dashboard/wordle", icon: LetterText },
+  { name: "Gestión Rifas", path: "/dashboard/rifas", icon: Ticket },
 ];
 
 const AdminNavbar = () => {

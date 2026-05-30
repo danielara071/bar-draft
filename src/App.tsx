@@ -23,6 +23,7 @@ import ReportesAdmin from "./pages/ReportesAdmin";
 import NewsManagerPage from "./features/dashboard/pages/NewsManagerPager";
 import StoreManager from "./features/dashboard/pages/StoreManager";
 import WordleManagerPage from "./features/dashboard/pages/WordleManagerPage";
+import RifaManager from "./features/dashboard/pages/RifaManager";
 import HealthCheck from "./pages/HealthCheck";
 
 function App() {
@@ -61,6 +62,7 @@ function App() {
         <Route path="wordle" element={<WordleManagerPage />} />
         <Route path="noticias" element={<NewsManagerPage />} />
         <Route path="tienda" element={<StoreManager />} />
+        <Route path="rifas" element={<RifaManager />} />
 
       </Route>
     </Routes>
