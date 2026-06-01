@@ -5,4 +5,4 @@ export default function LockIcon({ size = 48 }: { size?: number }) {
       <path d="M8 11V7a4 4 0 018 0v4" stroke="rgba(10,21,53,0.15)" strokeWidth={1.8} strokeLinecap="round" />
     </svg>
   )
-}
+} 
