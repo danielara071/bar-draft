@@ -62,16 +62,15 @@ function Perfil() {
             onGestionarPerfil={irPerfil}
             onLogoutFunc={cerrar_sesion}
             onLogoutText="Cerrar sesión"
+            insignia_url={Usuario?.insignia_url}
           />
         </div>
 
       </div>
       <div className="bg-gray-100" >
         <div className="bg-gray-100 mx-auto py-8 max-w-5xl">
-            <AmigosContainer 
-              amigos={(Amigo || [])}
-              text="MIS AMIGOS"
-            />
+            
+            <AmigosContainer amigos={(Amigo || [])} text="MIS AMIGOS"/>
 
             <LogrosContainer logros={Logro || []} text="MIS LOGROS"/>
         </div>

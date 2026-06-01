@@ -10,6 +10,7 @@ export type Usuario = {
   predicciones : number;
   pais : string;
   ranking: number;
+  insignia_url?: string;
 };
 export type Logro = {
   logro_id: number;

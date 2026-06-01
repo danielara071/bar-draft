@@ -5,11 +5,12 @@ import { useState, useEffect } from "react";
 type GestionarPerfilUsuarioProps = {
   username: string;
   avatarUrl: string;
-  logro:string;
+  logro?:string;
   user_id : string;
   onLogoutFunc: () => void;
   onLogoutText: string;
-  
+
+  insignia_url?: string;
 };
 
 export default function GestionarPerfilUsuario({
@@ -19,6 +20,8 @@ export default function GestionarPerfilUsuario({
   user_id,
   onLogoutFunc,
   onLogoutText,
+  insignia_url,
+
 }: GestionarPerfilUsuarioProps) {
   const [currentAvatarUrl, setCurrentAvatarUrl] = useState(initialAvatarUrl);
   
@@ -44,11 +47,22 @@ export default function GestionarPerfilUsuario({
           onUpdateSuccess={handleAvatarUpdate}
           />
           </div>
-          <img
-            src={logro}
-            alt="avatar"
-            className="w-40 h-40 object-cover rounded-lg"
-          />
+          <div className="flex justify-end">
+          {insignia_url && (
+            <img
+              src={insignia_url}
+              alt="insignia"
+              className="mt-5 mr-5 w-30 h-30 object-cover"
+            />
+          )}
+          {logro && (
+            <img
+              src={logro}
+              alt="avatar"
+              className="w-40 h-40 object-cover rounded-lg"
+            />
+          )}
+          </div>
         </div>
         
         <div className="py-4 flex justify-between">
