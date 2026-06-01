@@ -8,7 +8,7 @@ interface UseCompassResult {
 
 //useCompass — gestiona el heading del dispositivo.
 // Móvil: escucha deviceorientation / deviceorientationabsolute con permisos iOS.
-// PC:    simula la brújula con teclas ◄ ► (±5°).
+// PC:    simula la brújula con teclas 
 
 
 export function useCompass(started: boolean): UseCompassResult {

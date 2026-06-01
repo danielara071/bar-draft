@@ -6,7 +6,7 @@ import LockIcon from '../icons/LockIcon'
 import fondoarmario from '../../../assets/Logros/fondoarmario.png'
 
 interface ArmarioProps {
-  trophies: TrophyWithCapture[]  // ahora recibe TODOS
+  trophies: TrophyWithCapture[]  
   loading: boolean
 }
 
