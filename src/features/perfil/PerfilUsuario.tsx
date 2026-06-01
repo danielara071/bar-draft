@@ -13,10 +13,13 @@ type PerfilUsuarioProps = {
   xpActual: number;
   xpMax: number;
 
-  logro:string;
+  logro?:string;
 
   onLogoutFunc: () => void;
+  onGestionarPerfil?: () => void;
   onLogoutText: string;
+
+  insignia_url?: string;
   
 };
 
@@ -33,10 +36,14 @@ export default function PerfilUsuario({
   xpActual,
   xpMax,
   logro,
+  insignia_url,
 
   onLogoutFunc,
+  onGestionarPerfil,
   onLogoutText,
+  
 }: PerfilUsuarioProps) {
+  console.log("insignia url en PerfilUsuario: ", insignia_url);
   return (
     <div className="p-6"> 
       <div className="space-y-5">
@@ -46,21 +53,43 @@ export default function PerfilUsuario({
             alt="avatar"
             className="w-40 h-40 rounded-full object-cover"
           />
-          <img
-            src={logro}
-            alt="avatar"
-            className="w-40 h-40 object-cover rounded-lg"
-          />
+          <div className="flex justify-end">
+          {insignia_url && (
+            <img
+              src={insignia_url}
+              alt="insignia"
+              className="mt-5 mr-5 w-30 h-30 object-cover"
+            />
+          )}
+          {logro && (
+            <img
+              src={logro}
+              alt="avatar"
+              className="w-40 h-40 object-cover rounded-lg"
+            />
+          )}
+          </div>
         </div>
         
         <div className="py-4 flex justify-between">
             <h2 className="text-white text-4xl font-semibold">@{username}</h2>
-                <button
-                    onClick={onLogoutFunc}
-                    className="text-white bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-md"
-                >
-                    {onLogoutText}
-                </button>
+            <div className="flex justify-end gap-4">
+              {onGestionarPerfil && (
+                  <button
+                      onClick={onGestionarPerfil}
+                      className="text-black bg-brand-yellow hover:bg-[#ffd11f] px-4 py-2 rounded-full text-md"
+                  >
+                      Gestionar Perfil
+                  </button>
+              )}
+              <button
+                  onClick={onLogoutFunc}
+                  className="text-white bg-[#A50044] hover:bg-pink-700 px-4 py-2 rounded-full text-md"
+              >
+                  {onLogoutText}
+              </button>
+              </div>
+
         </div>
 
         <div className="flex flex-row gap-1 mb-5">
