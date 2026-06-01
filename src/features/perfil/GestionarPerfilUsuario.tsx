@@ -1,4 +1,3 @@
-import { FiEdit } from "react-icons/fi";
 import ChangeProfilePicture from "./ChangeProfilePicture";
 import ChangeName from "./ChangeName";
 import { useState, useEffect } from "react";
