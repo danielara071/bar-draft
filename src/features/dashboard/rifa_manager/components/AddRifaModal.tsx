@@ -64,7 +64,7 @@ const AddRifaModal = ({ onClose, onCreated }: AddRifaModalProps) => {
     return data.publicUrl;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMsg("");
 
@@ -109,7 +109,8 @@ const AddRifaModal = ({ onClose, onCreated }: AddRifaModalProps) => {
     setSaving(false);
 
     if (error) {
-      setErrorMsg("Error al crear la rifa.");
+      setErrorMsg(`Error al crear la rifa: ${error.message}`);
+      console.error("Supabase insert rifas:", error);
       return;
     }
 
