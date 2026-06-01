@@ -1,5 +1,6 @@
 import { FiEdit } from "react-icons/fi";
 import ChangeProfilePicture from "./ChangeProfilePicture";
+import ChangeName from "./ChangeName";
 import { useState, useEffect } from "react";
 
 type GestionarPerfilUsuarioProps = {
@@ -68,9 +69,7 @@ export default function GestionarPerfilUsuario({
         <div className="py-4 flex justify-between">
             <div className="flex items-center justify-start gap-4">
             <h2 className="text-white text-4xl font-semibold">@{username}</h2>
-            <button className="text-black bg-brand-yellow hover:bg-[#ffd11f] px-4 py-4 rounded-full text-md" > 
-              <FiEdit size={20} />
-            </button>
+            <ChangeName user_id={user_id} currentName={username} onUpdateSuccess={(newName) => console.log("Nombre actualizado a:", newName)} />
             </div>
             <div className="flex justify-end gap-4">
               <button

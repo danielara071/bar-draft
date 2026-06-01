@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { FiEdit } from "react-icons/fi";
-// Asegúrate de importar tu cliente de supabase configurado
 import { supabase } from "@/shared/services/supabaseClient";
 
 
@@ -21,7 +20,7 @@ export default function ChangeProfilePicture({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [loadingImages, setLoadingImages] = useState(false);
 
-  // 1. Cargar las imágenes secuencialmente hasta encontrar un 404
+  // Cargar las imágenes secuencialmente hasta encontrar un 404
   useEffect(() => {
     async function discoverImages() {
       setLoadingImages(true);
