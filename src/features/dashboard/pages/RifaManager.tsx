@@ -20,6 +20,10 @@ const RifaManager = () => {
     r.name.toLowerCase().includes(search.toLowerCase())
   );
 
+  const rifasActivas     = filtered.filter((r) => r.estado === "activa");
+  const rifasPendientes  = filtered.filter((r) => r.estado === "terminada" && !r.ganador_id);
+  const rifasCompletadas = filtered.filter((r) => r.estado === "terminada" && !!r.ganador_id);
+
   const handleTerminar = async (rifa: Rifa) => {
     const { error } = await supabase
       .from("rifas")
@@ -111,8 +115,8 @@ const RifaManager = () => {
         />
       </div>
 
-      {/* Rifa list */}
-      <div className="flex flex-col gap-3">
+      {/* Rifa list — scrollable container con secciones */}
+      <div className="max-h-[65vh] overflow-y-auto rounded-[28px] border border-slate-200 bg-[#f4f6f9] p-4 flex flex-col gap-6 pr-2">
         {loading && (
           <p className="text-center text-sm text-slate-400 py-8">Cargando rifas...</p>
         )}
@@ -126,15 +130,74 @@ const RifaManager = () => {
           </div>
         )}
 
-        {filtered.map((rifa) => (
-          <RifaCard
-            key={rifa.id}
-            rifa={rifa}
-            onTerminar={() => handleTerminar(rifa)}
-            onRifar={() => { if (rifando === null) handleRifar(rifa); }}
-            onEliminar={() => setRifaAEliminar(rifa)}
-          />
-        ))}
+        {/* Sección: Activas */}
+        {rifasActivas.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                Activas
+              </span>
+              <span className="rounded-full bg-[#a50044] px-2 py-0.5 text-[10px] font-bold text-white">
+                {rifasActivas.length}
+              </span>
+            </div>
+            {rifasActivas.map((rifa) => (
+              <RifaCard
+                key={rifa.id}
+                rifa={rifa}
+                onTerminar={() => handleTerminar(rifa)}
+                onRifar={() => { if (rifando === null) handleRifar(rifa); }}
+                onEliminar={() => setRifaAEliminar(rifa)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Sección: Terminadas sin ganador */}
+        {rifasPendientes.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                Pendientes de sorteo
+              </span>
+              <span className="rounded-full bg-[#0d2b4d] px-2 py-0.5 text-[10px] font-bold text-white">
+                {rifasPendientes.length}
+              </span>
+            </div>
+            {rifasPendientes.map((rifa) => (
+              <RifaCard
+                key={rifa.id}
+                rifa={rifa}
+                onTerminar={() => handleTerminar(rifa)}
+                onRifar={() => { if (rifando === null) handleRifar(rifa); }}
+                onEliminar={() => setRifaAEliminar(rifa)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Sección: Ya rifadas */}
+        {rifasCompletadas.length > 0 && (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                Completadas
+              </span>
+              <span className="rounded-full bg-slate-400 px-2 py-0.5 text-[10px] font-bold text-white">
+                {rifasCompletadas.length}
+              </span>
+            </div>
+            {rifasCompletadas.map((rifa) => (
+              <RifaCard
+                key={rifa.id}
+                rifa={rifa}
+                onTerminar={() => handleTerminar(rifa)}
+                onRifar={() => { if (rifando === null) handleRifar(rifa); }}
+                onEliminar={() => setRifaAEliminar(rifa)}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Gestión de Ganadores — placeholder */}
