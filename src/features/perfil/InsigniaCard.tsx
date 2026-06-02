@@ -1,42 +1,37 @@
 import { useState } from "react";
 import { supabase } from "@/shared/services/supabaseClient";
 
-type LogroCardProps = {
-  logro_id: number;
-  nombre: string;
-  descripcion: string;
-  url_image: string;
-  desbloqueado: boolean;
+type InsigniaCardProps = {
   user_id: string;
-  clickable?: boolean;
+  name: string;
+  id_producto : number;
+  url_image: string;
 };
 
-export default function LogroCard({
-  logro_id,
-  nombre,
-  descripcion,
-  url_image,
-  desbloqueado = true,
+export default function InsigniaCard({
   user_id,
-  clickable = true
-}: LogroCardProps) {
+  name,
+  id_producto,
+  url_image,
+}: InsigniaCardProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
   const handleAsignar = async () => {
     setStatus('loading');
     try {
       const { error } = await supabase
         .from('profiles') 
-        .update({ logro: logro_id })
+        .update({ insignia: id_producto })
         .eq('id', user_id);
 
       if (error) throw error;
 
       setStatus('success');
       setShowConfirm(false);
-      window.location.reload(); //perdon por no usar estados :(
+      window.location.reload(); //perdon por no usar estados >.<
     } catch (error) {
-      console.error("Error al asignar logro:", error); 
+      console.error("Error al asignar insignia:", error); 
       setStatus('error');
       setShowConfirm(false);
     }
@@ -44,18 +39,17 @@ export default function LogroCard({
   return (
     <>
       <div
-        onClick={() => desbloqueado && clickable && setShowConfirm(true)}
+        onClick={() => setShowConfirm(true)}
         className={`relative cursor-pointer rounded-xl p-4 text-center transition-all hover:scale-102 ${
-          desbloqueado ? "bg-[#1a3857] text-white" : "bg-[#9d9d9d] text-gray-600"
+          "bg-[#1a3857] text-white" 
         }`}
       >
         <img
-          src={desbloqueado ? url_image : 'https://vsywrimuzdnfyztreolz.supabase.co/storage/v1/object/sign/logros/Locked.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV85YjVhN2I1MC1iNThkLTRkMzEtOTJiZS1jMWRjNjdmZjY5MGYiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJsb2dyb3MvTG9ja2VkLnBuZyIsImlhdCI6MTc3NzMwOTU5MywiZXhwIjoxODA4ODQ1NTkzfQ.z0oLl8yHtzMy4HVWmNyKT5fwlcHDQg05KWAX2fKhHTQ'}
-          alt={nombre}
+          src={url_image}
+          alt={name}
           className="w-24 h-24 mx-auto mb-2 rounded-lg"
         />
-        <p className="text-sm font-semibold">{nombre}</p>
-        <p className="text-xs mt-1 opacity-80">{descripcion}</p>
+        <p className="text-sm font-semibold">{name}</p>
       </div>
 
 
@@ -64,7 +58,7 @@ export default function LogroCard({
           <div className="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full mx-4 text-gray-800">
             <h3 className="text-xl font-bold mb-2">¿Confirmar Logro?</h3>
             <p className="text-sm text-gray-600 mb-6">
-              ¿Quieres asignar <span className="font-bold">"{nombre}"</span> como tu logro actual?
+              ¿Quieres asignar esta insignia?
             </p>
             
             <div className="flex gap-3 justify-end">
