@@ -32,9 +32,9 @@ export default function ColeccionHeader({
             </>
           )}
         </div>
-        <div className="h-2 overflow-hidden rounded-full bg-white/20">
+        <div className="h-4 overflow-hidden rounded-full bg-white/40">
           <div
-            className="h-full rounded-full bg-[#EDBB00] transition-all duration-700"
+            className="h-full rounded-full bg-white transition-all duration-700"
             style={{ width: `${progressPct}%` }}
           />
         </div>

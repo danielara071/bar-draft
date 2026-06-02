@@ -25,8 +25,8 @@ interface UseUserTrophiesResult {
   loading: boolean
   error: string | null
 }
-
-// useUserTrophies — gestiona toda la lógica de trofeos del usuario.
+ 
+// gestiona toda la lógica de trofeos del usuario.
 
 export function useUserTrophies(
   userId: string | null,
