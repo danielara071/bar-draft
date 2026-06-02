@@ -1,17 +1,20 @@
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Trash2, Trophy } from "lucide-react";
 import type { Rifa } from "../interfaces/rifa";
 
 interface RifaCardProps {
   rifa: Rifa;
   onTerminar: () => void;
   onRifar: () => void;
+  onEliminar: () => void;
 }
 
-const RifaCard = ({ rifa, onTerminar, onRifar }: RifaCardProps) => {
+const RifaCard = ({ rifa, onTerminar, onRifar, onEliminar }: RifaCardProps) => {
   const disponibles = rifa.total_boletos - rifa.boletos_vendidos;
   const progreso = rifa.total_boletos > 0
     ? Math.min((rifa.boletos_vendidos / rifa.total_boletos) * 100, 100)
     : 0;
+
+  const tieneGanador = rifa.estado === "terminada" && rifa.ganador_id !== null;
 
   return (
     <article className="w-full rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow-md">
@@ -29,9 +32,16 @@ const RifaCard = ({ rifa, onTerminar, onRifar }: RifaCardProps) => {
         </div>
 
         <div className="flex-1 min-w-0">
-          <h3 className="truncate text-base font-bold text-[#0d2b4d] md:text-lg mb-2">
-            {rifa.name}
-          </h3>
+          <div className="flex items-center gap-2 mb-2">
+            <h3 className="truncate text-base font-bold text-[#0d2b4d] md:text-lg">
+              {rifa.name}
+            </h3>
+            {tieneGanador && (
+              <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                Terminada
+              </span>
+            )}
+          </div>
 
           <div className="w-full h-2 rounded-full bg-slate-200 overflow-hidden mb-2">
             <div
@@ -40,24 +50,44 @@ const RifaCard = ({ rifa, onTerminar, onRifar }: RifaCardProps) => {
             />
           </div>
 
-          <div className="flex gap-6">
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-                Boletos Vendidos
-              </p>
-              <p className="text-sm font-bold text-[#EDBB00]">{rifa.boletos_vendidos}</p>
+          {tieneGanador ? (
+            <div className="flex items-center gap-1.5 text-sm text-slate-500">
+              <Trophy className="h-3.5 w-3.5 text-[#a50044] shrink-0" strokeWidth={2} />
+              <span>
+                Ganador:{" "}
+                <span className="font-bold text-[#0d2b4d]">
+                  {rifa.ganador_nombre ?? "—"}
+                </span>
+              </span>
             </div>
-            <div>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
-                Boletos Disponibles
-              </p>
-              <p className="text-sm font-bold text-[#EDBB00]">{disponibles}</p>
+          ) : (
+            <div className="flex gap-6">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                  Boletos Vendidos
+                </p>
+                <p className="text-sm font-bold text-[#EDBB00]">{rifa.boletos_vendidos}</p>
+              </div>
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+                  Boletos Disponibles
+                </p>
+                <p className="text-sm font-bold text-[#EDBB00]">{disponibles}</p>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
-        <div className="shrink-0 pl-2">
-          {rifa.estado === "activa" ? (
+        <div className="shrink-0 pl-2 flex items-center gap-2">
+          {tieneGanador ? (
+            <button
+              onClick={onEliminar}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#a50044]/10 text-[#a50044] transition hover:scale-105 hover:bg-[#a50044] hover:text-white"
+              aria-label="Eliminar rifa"
+            >
+              <Trash2 className="h-4 w-4" strokeWidth={2.2} />
+            </button>
+          ) : rifa.estado === "activa" ? (
             <button
               onClick={onTerminar}
               className="rounded-xl bg-[#a50044] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#870038] active:scale-95"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, Trash2 } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
 import useRifas from "../rifa_manager/hooks/useRifas";
 import RifaCard from "../rifa_manager/components/RifaCard";
@@ -13,6 +13,8 @@ const RifaManager = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [ganador, setGanador] = useState<RifaGanador | null>(null);
   const [rifando, setRifando] = useState<number | null>(null);
+  const [rifaAEliminar, setRifaAEliminar] = useState<Rifa | null>(null);
+  const [eliminando, setEliminando] = useState(false);
 
   const filtered = rifas.filter((r) =>
     r.name.toLowerCase().includes(search.toLowerCase())
@@ -47,9 +49,10 @@ const RifaManager = () => {
       ? random.profiles[0]
       : random.profiles;
 
+    // Marca como terminada y guarda el ganador en un solo update
     await supabase
       .from("rifas")
-      .update({ ganador_id: random.user_id })
+      .update({ estado: "terminada", ganador_id: random.user_id })
       .eq("id", rifa.id);
 
     await fetchRifas();
@@ -62,6 +65,21 @@ const RifaManager = () => {
         email: profile?.email ?? null,
       },
     });
+  };
+
+  const handleEliminar = async () => {
+    if (!rifaAEliminar) return;
+    setEliminando(true);
+
+    const { error } = await supabase
+      .from("rifas")
+      .delete()
+      .eq("id", rifaAEliminar.id);
+
+    setEliminando(false);
+    setRifaAEliminar(null);
+
+    if (!error) await fetchRifas();
   };
 
   return (
@@ -113,9 +131,8 @@ const RifaManager = () => {
             key={rifa.id}
             rifa={rifa}
             onTerminar={() => handleTerminar(rifa)}
-            onRifar={() => {
-              if (rifando === null) handleRifar(rifa);
-            }}
+            onRifar={() => { if (rifando === null) handleRifar(rifa); }}
+            onEliminar={() => setRifaAEliminar(rifa)}
           />
         ))}
       </div>
@@ -128,7 +145,7 @@ const RifaManager = () => {
         </p>
       </div>
 
-      {/* Modals */}
+      {/* Modal añadir */}
       {showAddModal && (
         <AddRifaModal
           onClose={() => setShowAddModal(false)}
@@ -136,11 +153,49 @@ const RifaManager = () => {
         />
       )}
 
+      {/* Modal ganador */}
       {ganador && (
         <GanadorModal
           data={ganador}
           onClose={() => setGanador(null)}
         />
+      )}
+
+      {/* Confirmación eliminar */}
+      {rifaAEliminar && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0d2b4d]/45 backdrop-blur-sm">
+          <div className="flex w-full max-w-sm flex-col items-center gap-5 rounded-[28px] bg-white p-8 shadow-2xl">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#a50044]/10">
+              <Trash2 className="h-7 w-7 text-[#a50044]" strokeWidth={1.8} />
+            </div>
+
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-[#0d2b4d]">¿Eliminar rifa?</h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                Estás a punto de eliminar{" "}
+                <span className="font-semibold text-[#0d2b4d]">{rifaAEliminar.name}</span>.
+                {" "}Esta acción no se puede deshacer.
+              </p>
+            </div>
+
+            <div className="flex w-full gap-3">
+              <button
+                onClick={() => setRifaAEliminar(null)}
+                disabled={eliminando}
+                className="flex-1 rounded-2xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleEliminar}
+                disabled={eliminando}
+                className="flex-1 rounded-2xl bg-[#a50044] py-3 text-sm font-bold text-white transition hover:bg-[#870038] disabled:opacity-50"
+              >
+                {eliminando ? "Eliminando..." : "Eliminar"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
