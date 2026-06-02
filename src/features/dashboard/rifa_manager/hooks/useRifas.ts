@@ -9,6 +9,14 @@ export default function useRifas() {
   const fetchRifas = async () => {
     setLoading(true);
 
+    // Auto-cierra rifas cuya fecha_cierre ya pasó
+    const today = new Date().toISOString().split("T")[0];
+    await supabase
+      .from("rifas")
+      .update({ estado: "terminada" })
+      .eq("estado", "activa")
+      .lte("fecha_cierre", today);
+
     const { data, error } = await supabase
       .from("rifas")
       .select("*, rifa_boletos(count)")

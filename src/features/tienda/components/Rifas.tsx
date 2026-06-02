@@ -43,6 +43,14 @@ const Rifas = () => {
     const fetchRifas = async () => {
       if (session === undefined) return;
 
+      // Auto-cierra rifas vencidas antes de mostrarlas
+      const today = new Date().toISOString().split("T")[0];
+      await supabase
+        .from("rifas")
+        .update({ estado: "terminada" })
+        .eq("estado", "activa")
+        .lte("fecha_cierre", today);
+
       const { data, error } = await supabase
         .from("rifas")
         .select("*, rifa_boletos(count)")

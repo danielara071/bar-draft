@@ -68,7 +68,7 @@ const RifaManager = () => {
     <div className="flex flex-col py-10 px-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <p className="text-2xl md:text-3xl lg:text-4xl font-sans">
+        <p className="text-2xl md:text-3xl lg:text-4xl font-semibold">
           <span className="text-black">Gestión de </span>
           <span className="text-[#EDBB00]">Rifas</span>
         </p>
@@ -122,7 +122,7 @@ const RifaManager = () => {
 
       {/* Gestión de Ganadores — placeholder */}
       <div className="mt-12">
-        <p className="text-2xl md:text-3xl lg:text-4xl font-sans">
+        <p className="text-2xl md:text-3xl lg:text-4xl font-semibold">
           <span className="text-black">Gestión de </span>
           <span className="text-[#EDBB00]">Ganadores</span>
         </p>
