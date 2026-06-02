@@ -6,6 +6,7 @@ export interface ErrorReport {
   location: string;
   screenshot_url: string | null;
   resolved?: boolean;
+  userName?: string;
 }
 
 export type ReportView = "pending" | "resolved";

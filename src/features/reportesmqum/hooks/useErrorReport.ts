@@ -1,84 +1,81 @@
-import { useState, useCallback, useMemo } from "react";
-import type { ErrorReport, ReportView, ReportFilters, ReportStats } from "./errorReports";
-
-// Mock data matching the DB schema
-const MOCK_REPORTS: ErrorReport[] = [
-  {
-    id: "a1b2c3d4-0001-0000-0000-000000000001",
-    created_at: "2026-05-12T10:00:00Z",
-    user_id: "user-001",
-    description:
-      "Realidad Aumentada tiene un defecto en la página inicial, cuando intentas acceder a ella el mapa sale muy inclinado y en móvil no funciona correctamente.",
-    location: "Realidad Aumentada",
-    screenshot_url:
-      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&q=80",
-    resolved: false,
-  },
-  {
-    id: "a1b2c3d4-0002-0000-0000-000000000002",
-    created_at: "2026-05-12T11:00:00Z",
-    user_id: "user-002",
-    description:
-      "Realidad Aumentada tiene un defecto en la página inicial, cuando intentas acceder a ella el mapa sale muy inclinado y en móvil no funciona correctamente.",
-    location: "Realidad Aumentada",
-    screenshot_url: null,
-    resolved: false,
-  },
-  {
-    id: "a1b2c3d4-0003-0000-0000-000000000003",
-    created_at: "2026-05-12T12:00:00Z",
-    user_id: "user-003",
-    description:
-      "Realidad Aumentada tiene un defecto en la página inicial, cuando intentas acceder a ella el mapa sale muy inclinado y en móvil no funciona correctamente.",
-    location: "Realidad Aumentada",
-    screenshot_url:
-      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&q=80",
-    resolved: false,
-  },
-  {
-    id: "a1b2c3d4-0004-0000-0000-000000000004",
-    created_at: "2026-05-10T09:00:00Z",
-    user_id: "user-004",
-    description:
-      "El login con Google falla intermitentemente en Safari, el usuario queda en bucle de redirección.",
-    location: "Inicio de Sesión",
-    screenshot_url:
-      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&q=80",
-    resolved: true,
-  },
-  {
-    id: "a1b2c3d4-0005-0000-0000-000000000005",
-    created_at: "2026-05-10T10:00:00Z",
-    user_id: "user-005",
-    description: "El marcador de trofeos no actualiza en tiempo real al ganar un nuevo logro.",
-    location: "Mapa de Trofeos",
-    screenshot_url: null,
-    resolved: true,
-  },
-  {
-    id: "a1b2c3d4-0006-0000-0000-000000000006",
-    created_at: "2026-05-09T15:00:00Z",
-    user_id: "user-006",
-    description:
-      "La sección de noticias no carga correctamente cuando hay más de 50 artículos publicados.",
-    location: "Gestión de Noticias",
-    screenshot_url:
-      "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&q=80",
-    resolved: true,
-  },
-];
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { supabase } from "../../../shared/services/supabaseClient"; // ajusta el path a tu cliente
+import type { ErrorReport, ReportView, ReportFilters, ReportStats } from "../interfaces/errorReports";
 
 export function useErrorReports() {
-  const [reports, setReports] = useState<ErrorReport[]>(MOCK_REPORTS);
+  const [reports, setReports] = useState<ErrorReport[]>([]);
   const [view, setView] = useState<ReportView>("pending");
   const [filters, setFilters] = useState<ReportFilters>({ pantalla: "", fecha: "" });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Carga inicial desde Supabase
+  useEffect(() => {
+    const fetchReports = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Fetch reports con join a profiles para obtener el nombre del usuario
+        const { data, error: fetchError } = await supabase
+          .from("error_reports")
+          .select(
+            `
+            id,
+            created_at,
+            user_id,
+            description,
+            location,
+            screenshot_url,
+            resolved,
+            profiles:user_id(nombre)
+          `
+          )
+          .order("created_at", { ascending: false });
+
+        if (fetchError) {
+          setError(fetchError.message);
+        } else {
+          // Transformar data para incluir el nombre del usuario
+          const transformedData = (data ?? []).map((report: any) => ({
+            ...report,
+            userName: report.profiles?.nombre || "Anónimo",
+          })) as (ErrorReport & { userName: string })[];
+          setReports(transformedData);
+        }
+
+        // Fetch total count
+        const { count, error: countError } = await supabase
+          .from("error_reports")
+          .select("*", { count: "exact", head: true });
+
+        if (countError) {
+          console.error("Error fetching count:", countError);
+        } else {
+          setTotalCount(count ?? 0);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Error desconocido");
+      }
+
+      setLoading(false);
+    };
+
+    fetchReports();
+  }, []);
 
   const stats: ReportStats = useMemo(() => {
     const resolved = reports.filter((r) => r.resolved).length;
     const pending = reports.filter((r) => !r.resolved).length;
-    return { total: reports.length + 1241, resolved, pending };
-  }, [reports]);
+    return { total: totalCount, resolved, pending };
+  }, [reports, totalCount]);
+
+  // Pantallas únicas extraídas de los reportes cargados
+  const availableLocations = useMemo(
+    () => Array.from(new Set(reports.map((r) => r.location))).sort(),
+    [reports]
+  );
 
   const pendingReports = useMemo(() => reports.filter((r) => !r.resolved), [reports]);
   const resolvedReports = useMemo(() => reports.filter((r) => r.resolved), [reports]);
@@ -87,7 +84,7 @@ export function useErrorReports() {
     (list: ErrorReport[]) => {
       return list.filter((r) => {
         const matchScreen = filters.pantalla
-          ? r.location.toLowerCase().includes(filters.pantalla.toLowerCase())
+          ? r.location === filters.pantalla
           : true;
         const matchDate = filters.fecha
           ? r.created_at.startsWith(filters.fecha)
@@ -98,24 +95,49 @@ export function useErrorReports() {
     [filters]
   );
 
-  const markAsResolved = useCallback((id: string) => {
+  const clearFilters = useCallback(() => {
+    setFilters({ pantalla: "", fecha: "" });
+  }, []);
+
+  const markAsResolved = useCallback(async (id: string) => {
     setLoading(true);
-    setTimeout(() => {
+    setError(null);
+
+    const { error: updateError } = await supabase
+      .from("error_reports")
+      .update({ resolved: true })
+      .eq("id", id);
+
+    if (updateError) {
+      setError(updateError.message);
+    } else {
+      // Actualización optimista en el estado local
       setReports((prev) =>
         prev.map((r) => (r.id === id ? { ...r, resolved: true } : r))
       );
-      setLoading(false);
-    }, 600);
+    }
+
+    setLoading(false);
   }, []);
 
-  const markAsPending = useCallback((id: string) => {
+  const markAsPending = useCallback(async (id: string) => {
     setLoading(true);
-    setTimeout(() => {
+    setError(null);
+
+    const { error: updateError } = await supabase
+      .from("error_reports")
+      .update({ resolved: false })
+      .eq("id", id);
+
+    if (updateError) {
+      setError(updateError.message);
+    } else {
       setReports((prev) =>
         prev.map((r) => (r.id === id ? { ...r, resolved: false } : r))
       );
-      setLoading(false);
-    }, 600);
+    }
+
+    setLoading(false);
   }, []);
 
   const handleSearch = useCallback((newFilters: ReportFilters) => {
@@ -128,10 +150,13 @@ export function useErrorReports() {
     stats,
     filters,
     loading,
+    error,
+    availableLocations,
     pendingReports: applyFilters(pendingReports),
     resolvedReports: applyFilters(resolvedReports),
     markAsResolved,
     markAsPending,
     handleSearch,
+    clearFilters,
   };
 }
