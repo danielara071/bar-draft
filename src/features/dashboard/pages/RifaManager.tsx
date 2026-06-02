@@ -90,9 +90,9 @@ const RifaManager = () => {
     <div className="flex flex-col py-10 px-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <p className="text-2xl md:text-3xl lg:text-4xl font-semibold">
-          <span className="text-black">Gestión de </span>
-          <span className="text-[#EDBB00]">Rifas</span>
+        <p className="text-2xl md:text-3xl lg:text-4xl font-sans font-bold">
+          <span className="text-brand-navy">Gestión de </span>
+          <span className="text-brand-yellow">Rifas</span>
         </p>
         <button
           onClick={() => setShowAddModal(true)}
@@ -183,7 +183,7 @@ const RifaManager = () => {
               <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
                 Completadas
               </span>
-              <span className="rounded-full bg-slate-400 px-2 py-0.5 text-[10px] font-bold text-white">
+              <span className="rounded-full bg-[#EDBB00] px-2 py-0.5 text-[10px] font-bold">
                 {rifasCompletadas.length}
               </span>
             </div>
@@ -202,9 +202,9 @@ const RifaManager = () => {
 
       {/* Gestión de Ganadores — placeholder */}
       <div className="mt-12">
-        <p className="text-2xl md:text-3xl lg:text-4xl font-semibold">
-          <span className="text-black">Gestión de </span>
-          <span className="text-[#EDBB00]">Ganadores</span>
+        <p className="text-2xl md:text-3xl lg:text-4xl font-sans font-bold">
+          <span className="text-brand-navy">Gestión de </span>
+          <span className="text-brand-yellow">Ganadores</span>
         </p>
       </div>
 

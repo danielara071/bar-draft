@@ -1,4 +1,4 @@
-import { ShoppingBag, Trash2, Trophy } from "lucide-react";
+import { ShoppingBag, Trophy } from "lucide-react";
 import type { Rifa } from "../interfaces/rifa";
 
 interface RifaCardProps {
@@ -37,7 +37,7 @@ const RifaCard = ({ rifa, onTerminar, onRifar, onEliminar }: RifaCardProps) => {
               {rifa.name}
             </h3>
             {tieneGanador && (
-              <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+              <span className="shrink-0 rounded-full bg-[#3FA14D] px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">
                 Terminada
               </span>
             )}
@@ -82,10 +82,9 @@ const RifaCard = ({ rifa, onTerminar, onRifar, onEliminar }: RifaCardProps) => {
           {tieneGanador ? (
             <button
               onClick={onEliminar}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-[#a50044]/10 text-[#a50044] transition hover:scale-105 hover:bg-[#a50044] hover:text-white"
-              aria-label="Eliminar rifa"
+              className="rounded-xl bg-[#EDBB00] px-4 py-2 text-sm font-bold transition hover:bg-slate-500 active:scale-95"
             >
-              <Trash2 className="h-4 w-4" strokeWidth={2.2} />
+              Eliminar Rifa
             </button>
           ) : rifa.estado === "activa" ? (
             <button
