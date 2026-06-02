@@ -5,9 +5,10 @@ import { supabase } from "../../../shared/services/supabaseClient";
 import StripeModal from "./StripeModal";
 import AlertModal from "./AlertModal";
 import AskPopUp from "../../../features/gestorAmigos/AskPopUp";
-import  {useUserInfo} from "./hooks/useUserInfo";
+import { useUserInfo } from "./hooks/useUserInfo";
 
-function mapProducto(row: Record<string, unknown>) { // Mapea los datos de la fila a la estructura esperada por ProductoCard
+function mapProducto(row: Record<string, unknown>) {
+  // Mapea los datos de la fila a la estructura esperada por ProductoCard
   const categories = row.categories as { name?: string } | null | undefined;
   return {
     id: Number(row.id),
@@ -15,22 +16,28 @@ function mapProducto(row: Record<string, unknown>) { // Mapea los datos de la fi
     precio: Number(row.price ?? 0),
     imagen: String(row.image_url ?? ""),
     premium: Boolean(row.premium ?? false),
-    categoria: {nombre: categories?.name ?? "Objeto"}
+    categoria: { nombre: categories?.name ?? "Objeto" },
   };
 }
 
 const Productos = () => {
   const session = useUserInfo();
-  const [productos, setProductos] = useState<ReturnType<typeof mapProducto>[]>([]); // El tipo de productos se infiere a partir de la función mapProducto
+  const [productos, setProductos] = useState<ReturnType<typeof mapProducto>[]>(
+    [],
+  ); // El tipo de productos se infiere a partir de la función mapProducto
   const [error, setError] = useState<string | null>(null);
   const [esPremium, setEsPremium] = useState(false);
   const [mostrarPremium, setMostrarPremium] = useState(false);
   const [monedas, setMonedas] = useState<number>(0);
   const [showStripe, setShowStripe] = useState(false);
-  const [modal, setModal] = useState<{ title: string; message: React.ReactNode } | null>(null);
+  const [modal, setModal] = useState<{
+    title: string;
+    message: React.ReactNode;
+  } | null>(null);
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
-  const [productoSeleccionado, setProductoSeleccionado] = useState<ReturnType<typeof mapProducto> | null>(null);
-  
+  const [productoSeleccionado, setProductoSeleccionado] = useState<ReturnType<
+    typeof mapProducto
+  > | null>(null);
 
   useEffect(() => {
     const run = async () => {
@@ -60,17 +67,23 @@ const Productos = () => {
 
   const confirmarCompra = async () => {
     if (!productoSeleccionado) return;
-    
+
     const producto = productoSeleccionado;
 
     if (!session?.user?.id) {
-      setModal({ title: "Aviso", message: "Debes iniciar sesión para comprar." });
+      setModal({
+        title: "Aviso",
+        message: "Debes iniciar sesión para comprar.",
+      });
       setMostrarConfirmacion(false);
       return;
     }
 
     if (monedas < producto.precio) {
-      setModal({ title: "Aviso", message: `No tienes monedas suficientes. Tienes ${(monedas).toLocaleString('en-US')} monedas y el producto cuesta ${(producto.precio).toLocaleString('en-US')}.` });
+      setModal({
+        title: "Aviso",
+        message: `No tienes monedas suficientes. Tienes ${monedas.toLocaleString("en-US")} monedas y el producto cuesta ${producto.precio.toLocaleString("en-US")}.`,
+      });
       setMostrarConfirmacion(false);
       return;
     }
@@ -82,7 +95,11 @@ const Productos = () => {
       .eq("id", session.user.id);
 
     if (updateError) {
-      setModal({ title: "Error", message: "Hubo un error al procesar tu compra. Por favor, intenta de nuevo." });
+      setModal({
+        title: "Error",
+        message:
+          "Hubo un error al procesar tu compra. Por favor, intenta de nuevo.",
+      });
       setMostrarConfirmacion(false);
       return;
     }
@@ -98,11 +115,19 @@ const Productos = () => {
     setMonedas((prev) => prev - producto.precio); // Actualiza el estado local
     setModal({
       title: "¡Compra exitosa!",
-      message: <>Te quedan <span className="font-bold text-[#A50044]">{(monedas - producto.precio).toLocaleString('en-US')} monedas</span>.</>,
+      message: (
+        <>
+          Te quedan{" "}
+          <span className="font-bold text-[#A50044]">
+            {(monedas - producto.precio).toLocaleString("en-US")} monedas
+          </span>
+          .
+        </>
+      ),
     });
     setMostrarConfirmacion(false);
     setProductoSeleccionado(null);
-    
+
     // Notifica al Navbar que debe actualizar el perfil
     window.dispatchEvent(new Event("profileUpdated"));
   };
@@ -113,7 +138,7 @@ const Productos = () => {
       if (session === undefined) return;
       let purchaseiD: number[] = [];
 
-      if (session?.user?.id){
+      if (session?.user?.id) {
         const { data: purchases } = await supabase
           .from("purchases")
           .select("product_id")
@@ -140,7 +165,6 @@ const Productos = () => {
 
       setError(null);
       setProductos(filtered);
-
     };
 
     void fetchProductos();
@@ -150,19 +174,11 @@ const Productos = () => {
   }, [session]);
 
   return (
-    <div>
-      <div className="h-25 bg-[#001E44] w-full mb-8" />
-      <h1 className="text-4xl font-bold mt-4 px-20">Tienda FC Barcelona</h1>
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-8 mx-auto max-w-7xl mt-6">
-        <p className="text-[#555555] text-[1.15rem] leading-relaxed font-normal tracking-tight">
-          Canjea tus monedas por insignias digitales exclusivas para personalizar tu perfil de culé, o
-          participa en rifas increíbles para ganar viajes a Barcelona, tours por el Camp Nou, boletos VIP
-          o incluso la oportunidad de aparecer en el estadio durante un partido.
-        </p>
-        <p className="text-[#555555] text-[1.15rem] leading-relaxed font-normal tracking-tight mt-4">
-          ¡Demuestra tu pasión blaugrana y vive experiencias únicas! Més que un club.
-        </p>
-      </div>
+    <div className="px-20 pb-10">
+      <h2 className="text-3xl font-bold mb-2">Productos</h2>
+      <p className="text-gray-500 mb-6">
+        Compra items con tus monedas.
+      </p>
 
       {error && (
         <p className="text-red-600" role="alert">
@@ -178,12 +194,12 @@ const Productos = () => {
             esPremium={esPremium}
             onPremiumClick={() => setMostrarPremium(true)}
             monedas={monedas}
-            onComprar={() => handleComprar(producto)} 
+            onComprar={() => handleComprar(producto)}
           />
         ))}
       </div>
 
-        {mostrarPremium && (
+      {mostrarPremium && (
         <PremiumWindow
           onClose={() => setMostrarPremium(false)}
           onSubscribe={() => {
@@ -211,7 +227,7 @@ const Productos = () => {
       {mostrarConfirmacion && productoSeleccionado && (
         <AskPopUp
           pregunta="¿Deseas comprar este producto?"
-          texto={`${productoSeleccionado.nombre} cuesta ${(productoSeleccionado.precio).toLocaleString('en-US')} monedas.`}
+          texto={`${productoSeleccionado.nombre} cuesta ${productoSeleccionado.precio.toLocaleString("en-US")} monedas.`}
           textConf="Cancelar"
           textDeny="Comprar"
           onConfirm={() => {
