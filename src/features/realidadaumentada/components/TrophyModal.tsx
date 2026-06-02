@@ -2,9 +2,9 @@ import { useState } from 'react'
 import type { TrophyWithCapture } from '../interfaces/ar.types'
 
 interface TrophyModalProps {
-  trophy: TrophyWithCapture
+  trophy:    TrophyWithCapture
   onCapture: (trophyId: string) => Promise<void>
-  onClose: () => void
+  onClose:   () => void
 }
 
 export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalProps) {
@@ -17,6 +17,7 @@ export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalP
       setCapturing(true)
       await onCapture(trophy.id)
       setCaptured(true)
+      onClose()
     } finally {
       setCapturing(false)
     }
@@ -24,18 +25,21 @@ export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalP
 
   return (
     <>
+      {/* Backdrop — click fuera cierra */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm"
         style={{ zIndex: 30 }}
         onClick={onClose}
       />
 
+      {/* Sheet */}
       <div
         className="fixed bottom-0 left-0 right-0 mx-auto max-w-lg rounded-t-3xl bg-[#0A1535] px-6 pb-10 pt-6 text-white"
         style={{ zIndex: 31 }}
       >
         <div className="mx-auto mb-5 h-1 w-10 rounded-full bg-white/20" />
 
+        {/* Cabecera */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[#EDBB00]/15">
             <TrophyIcon />
@@ -49,6 +53,7 @@ export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalP
           <button
             onClick={onClose}
             className="shrink-0 rounded-full bg-white/10 p-2 transition-opacity hover:opacity-70"
+            aria-label="Cerrar"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
               <path d="M18 6L6 18M6 6l12 12" stroke="white" strokeWidth="2" strokeLinecap="round" />
@@ -60,7 +65,8 @@ export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalP
           <p className="mb-6 text-sm leading-relaxed text-white/65">{trophy.descripcion}</p>
         )}
 
-        {captured ? (
+        {/* Estado: ya capturado (solo si trophy.captured era true al abrir) */}
+        {trophy.captured ? (
           <div className="flex items-center justify-center gap-2 rounded-xl bg-[#A50044]/20 px-4 py-4">
             <span className="text-lg">✅</span>
             <span className="font-sans text-sm font-semibold text-white/80">
@@ -69,14 +75,15 @@ export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalP
             {trophy.fecha_obtencion && (
               <span className="ml-auto font-sans text-xs text-white/35">
                 {new Date(trophy.fecha_obtencion).toLocaleDateString('es-ES', {
-                  day: 'numeric',
+                  day:   'numeric',
                   month: 'short',
-                  year: 'numeric',
+                  year:  'numeric',
                 })}
               </span>
             )}
           </div>
         ) : (
+          /* Botón de captura */
           <button
             onClick={handleCapture}
             disabled={capturing}
