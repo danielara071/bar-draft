@@ -74,7 +74,7 @@ function Amigo() {
             xpActual={Usuario?.experiencia || 0}
             xpMax={4000}
             logro={Usuario?.logro || ""}
-
+            insignia_url={Usuario?.insignia_url}
             onLogoutFunc={() => onRequest()}
             onLogoutText={loading ? "Cargando..." : 
               friend_status === "accepted" ? "Amigos" :

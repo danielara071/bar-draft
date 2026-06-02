@@ -20,10 +20,10 @@ export default function ARsystem({
 }: ARSystemProps) {
   return (
     <>
-      {/* ── HUD pill superior ───────────────────────────────── */}
+      {/* HUD con información del entorno */}
       <div className="fixed top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none flex flex-col items-center gap-2">
 
-        {/* Pill principal */}
+        {/* Indicador de brújula */}
         <div className="flex items-center rounded-full border border-white/10 bg-[#0A1535]/85 backdrop-blur-md px-4 py-2 whitespace-nowrap">
           {/* Brújula */}
           <div className="flex items-center gap-1.5">
