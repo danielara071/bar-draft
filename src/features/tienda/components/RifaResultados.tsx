@@ -11,6 +11,8 @@ import {
 import { supabase } from "../../../shared/services/supabaseClient";
 import { useUserInfo } from "./hooks/useUserInfo";
 
+type VideoEstado = "pendiente" | "aceptado" | "denegado";
+
 type ResultadoItem = {
   id: number;
   name: string;
@@ -19,6 +21,7 @@ type ResultadoItem = {
   gano: boolean;
   type: "boleto" | "experiencia" | "viaje";
   video_url?: string | null;
+  video_estado?: VideoEstado | null;
 };
 
 type VideoModalProps = {
@@ -346,12 +349,12 @@ const RifasResultados = () => {
 
       const { data: ganadoresData } = await supabase
         .from("rifa_ganadores")
-        .select("rifa_id, video_url")
+        .select("rifa_id, video_url, estado")
         .in("rifa_id", rifaIds);
 
-      const videoMap = new Map<number, string | null>();
+      const videoMap = new Map<number, { url: string | null; estado: VideoEstado | null }>();
       (ganadoresData ?? []).forEach((item) => {
-        videoMap.set(item.rifa_id, item.video_url);
+        videoMap.set(item.rifa_id, { url: item.video_url, estado: item.estado ?? null });
       });
 
       const mapped: ResultadoItem[] = rifasData.map((r) => ({
@@ -361,7 +364,8 @@ const RifasResultados = () => {
         fecha_cierre: r.fecha_cierre,
         gano: r.ganador_id === session.user.id,
         type: r.type,
-        video_url: videoMap.get(r.id) ?? null,
+        video_url: videoMap.get(r.id)?.url ?? null,
+        video_estado: videoMap.get(r.id)?.estado ?? null,
       }));
 
       setResultados(mapped);
@@ -423,10 +427,28 @@ const RifasResultados = () => {
                       Finalizada el {fecha}
                     </p>
                   )}
-                  {puedeSubirVideo && (
+                  {puedeSubirVideo && !r.video_url && (
                     <p className="text-[12px] text-[#004d98] font-semibold mt-1">
                       Premio especial: puedes subir un video para mostrarse en el estadio.
                     </p>
+                  )}
+                  {r.video_url && r.video_estado === "pendiente" && (
+                    <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">
+                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                      Video en revisión
+                    </span>
+                  )}
+                  {r.video_estado === "aceptado" && (
+                    <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-0.5 text-[11px] font-bold text-green-700">
+                      <CheckCircle2 size={11} />
+                      Video Aceptado
+                    </span>
+                  )}
+                  {r.video_estado === "denegado" && (
+                    <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-red-100 px-2.5 py-0.5 text-[11px] font-bold text-red-600">
+                      <CircleAlert size={11} />
+                      Video Denegado
+                    </span>
                   )}
                 </div>
 
