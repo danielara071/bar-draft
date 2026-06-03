@@ -1,11 +1,9 @@
-// Rifas.tsx
 import { useState, useEffect } from "react";
 import { supabase } from "../../../shared/services/supabaseClient";
 import RifaCard, { type RifaTienda } from "./RifaCard";
 import AlertModal from "./AlertModal";
 import AskPopUp from "../../../features/gestorAmigos/AskPopUp";
 import { useUserInfo } from "./hooks/useUserInfo";
-import RifasResultados from "./RifaResultados";
 
 const Rifas = () => {
   const session = useUserInfo();
@@ -13,10 +11,7 @@ const Rifas = () => {
   const [esPremium, setEsPremium] = useState(false);
   const [monedas, setMonedas] = useState(0);
   const [participando, setParticipando] = useState<Set<number>>(new Set());
-  const [modal, setModal] = useState<{
-    title: string;
-    message: React.ReactNode;
-  } | null>(null);
+  const [modal, setModal] = useState<{ title: string; message: React.ReactNode } | null>(null);
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [rifaSeleccionada, setRifaSeleccionada] = useState<RifaTienda | null>(null);
   const [mostrarPremium, setMostrarPremium] = useState(false);
@@ -48,6 +43,14 @@ const Rifas = () => {
     const fetchRifas = async () => {
       if (session === undefined) return;
 
+      // Auto-cierra rifas vencidas antes de mostrarlas
+      const today = new Date().toISOString().split("T")[0];
+      await supabase
+        .from("rifas")
+        .update({ estado: "terminada" })
+        .eq("estado", "activa")
+        .lte("fecha_cierre", today);
+
       const { data, error } = await supabase
         .from("rifas")
         .select("*, rifa_boletos(count)")
@@ -55,27 +58,6 @@ const Rifas = () => {
         .order("created_at", { ascending: false });
 
       if (cancelled || error || !data) return;
-
-      let boletosPorRifa: Record<number, number> = {};
-
-      if (session?.user?.id) {
-        const { data: boletos } = await supabase
-          .from("rifa_boletos")
-          .select("rifa_id")
-          .eq("user_id", session.user.id);
-
-        if (!cancelled && boletos) {
-          setParticipando(new Set(boletos.map((b) => b.rifa_id)));
-
-          boletosPorRifa = boletos.reduce(
-            (acc, b) => {
-              acc[b.rifa_id] = (acc[b.rifa_id] ?? 0) + 1;
-              return acc;
-            },
-            {} as Record<number, number>,
-          );
-        }
-      }
 
       const mapped: RifaTienda[] = data.map((r) => ({
         id: r.id,
@@ -85,22 +67,25 @@ const Rifas = () => {
         costo_monedas: r.costo_monedas,
         premium: r.premium,
         image_url: r.image_url,
-        estado: r.estado,
-        fecha_cierre: r.fecha_cierre,
-        ganador_id: r.ganador_id,
         boletos_vendidos: r.rifa_boletos?.[0]?.count ?? 0,
-        mis_boletos: boletosPorRifa[r.id] ?? 0,
-        gano: session?.user?.id ? r.ganador_id === session.user.id : false,
       }));
 
       setRifas(mapped);
+
+      if (session?.user?.id) {
+        const { data: boletos } = await supabase
+          .from("rifa_boletos")
+          .select("rifa_id")
+          .eq("user_id", session.user.id);
+
+        if (!cancelled && boletos) {
+          setParticipando(new Set(boletos.map((b) => b.rifa_id)));
+        }
+      }
     };
 
     void fetchRifas();
-
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [session]);
 
   const handleParticipar = (rifa: RifaTienda) => {
@@ -113,10 +98,7 @@ const Rifas = () => {
     const rifa = rifaSeleccionada;
 
     if (!session?.user?.id) {
-      setModal({
-        title: "Aviso",
-        message: "Debes iniciar sesión para participar.",
-      });
+      setModal({ title: "Aviso", message: "Debes iniciar sesión para participar." });
       setMostrarConfirmacion(false);
       return;
     }
@@ -136,10 +118,7 @@ const Rifas = () => {
       .eq("id", session.user.id);
 
     if (updateError) {
-      setModal({
-        title: "Error",
-        message: "Hubo un error al procesar tu compra. Intenta de nuevo.",
-      });
+      setModal({ title: "Error", message: "Hubo un error al procesar tu compra. Intenta de nuevo." });
       setMostrarConfirmacion(false);
       return;
     }
@@ -152,33 +131,15 @@ const Rifas = () => {
     const nuevasMonedas = monedas - rifa.costo_monedas;
     setMonedas(nuevasMonedas);
     setParticipando((prev) => new Set(prev).add(rifa.id));
-
-    setRifas((prev) =>
-      prev.map((item) =>
-        item.id === rifa.id
-          ? {
-              ...item,
-              boletos_vendidos: item.boletos_vendidos + 1,
-              mis_boletos: 1,
-            }
-          : item,
-      ),
-    );
-
     setModal({
       title: "¡Boleto comprado!",
       message: (
         <>
-          Ya estás participando en{" "}
-          <span className="font-bold">{rifa.name}</span>. Te quedan{" "}
-          <span className="font-bold text-[#A50044]">
-            {nuevasMonedas.toLocaleString("en-US")} monedas
-          </span>
-          .
+          Ya estás participando en <span className="font-bold">{rifa.name}</span>.{" "}
+          Te quedan <span className="font-bold text-[#A50044]">{nuevasMonedas.toLocaleString("en-US")} monedas</span>.
         </>
       ),
     });
-
     setMostrarConfirmacion(false);
     setRifaSeleccionada(null);
     window.dispatchEvent(new Event("profileUpdated"));
@@ -189,11 +150,9 @@ const Rifas = () => {
   return (
     <div className="px-20 pb-10">
       <h2 className="text-3xl font-bold mb-2">Rifas</h2>
-      <p className="text-gray-500 mb-6">
-        Participa en rifas.
-      </p>
+      <p className="text-gray-500 mb-6">Compra un boleto con tus monedas y participa para ganar experiencias únicas.</p>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {rifas.map((rifa) => (
           <RifaCard
             key={rifa.id}
@@ -207,22 +166,14 @@ const Rifas = () => {
         ))}
       </div>
 
-      <div>
-        <RifasResultados />
-      </div>
-
       {mostrarPremium && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="bg-white rounded-2xl p-10 max-w-md w-full text-center shadow-2xl">
-            <h2 className="text-2xl font-black text-gray-900 mb-2">
-              Contenido Premium
-            </h2>
-            <p className="mb-6 text-gray-600">
-              Esta rifa es exclusiva para miembros Premium.
-            </p>
+            <h2 className="text-2xl font-black text-gray-900 mb-2">Contenido Premium</h2>
+            <p className="mb-6 text-gray-600">Esta rifa es exclusiva para miembros Premium.</p>
             <button
               type="button"
-              className="w-full py-3 rounded-xl bg-[#A50044] text-white font-bold hover:bg-[#8a003a] transition"
+              className="w-full py-3 rounded-xl bg-[#A50044] text-white font-bold"
               onClick={() => setMostrarPremium(false)}
             >
               Cerrar
@@ -232,11 +183,7 @@ const Rifas = () => {
       )}
 
       {modal && (
-        <AlertModal
-          title={modal.title}
-          message={modal.message}
-          onClose={() => setModal(null)}
-        />
+        <AlertModal title={modal.title} message={modal.message} onClose={() => setModal(null)} />
       )}
 
       {mostrarConfirmacion && rifaSeleccionada && (
