@@ -6,6 +6,7 @@ import RifaCard from "../rifa_manager/components/RifaCard";
 import AddRifaModal from "../rifa_manager/components/AddRifaModal";
 import GanadorModal from "../rifa_manager/components/GanadorModal";
 import type { Rifa, RifaGanador } from "../rifa_manager/interfaces/rifa";
+import GanadoresManager from "../rifa_manager/components/GanadoresManager";
 
 const RifaManager = () => {
   const { rifas, loading, fetchRifas } = useRifas();
@@ -25,6 +26,8 @@ const RifaManager = () => {
   const rifasCompletadas = filtered.filter((r) => r.estado === "terminada" && !!r.ganador_id);
 
   const handleTerminar = async (rifa: Rifa) => {
+    if (rifa.boletos_vendidos === 0) return;
+
     const { error } = await supabase
       .from("rifas")
       .update({ estado: "terminada" })
@@ -200,12 +203,13 @@ const RifaManager = () => {
         )}
       </div>
 
-      {/* Gestión de Ganadores — placeholder */}
+      {/* Gestión de Ganadores */}
       <div className="mt-12">
         <p className="text-2xl md:text-3xl lg:text-4xl font-sans font-bold">
           <span className="text-brand-navy">Gestión de </span>
           <span className="text-brand-yellow">Ganadores</span>
         </p>
+        <GanadoresManager />
       </div>
 
       {/* Modal añadir */}

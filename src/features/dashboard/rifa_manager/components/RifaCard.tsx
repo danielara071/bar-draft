@@ -87,12 +87,20 @@ const RifaCard = ({ rifa, onTerminar, onRifar, onEliminar }: RifaCardProps) => {
               Eliminar Rifa
             </button>
           ) : rifa.estado === "activa" ? (
-            <button
-              onClick={onTerminar}
-              className="rounded-xl bg-[#a50044] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#870038] active:scale-95"
-            >
-              Terminar Rifa
-            </button>
+            <div className="relative group">
+              <button
+                onClick={onTerminar}
+                disabled={rifa.boletos_vendidos === 0}
+                className="rounded-xl bg-[#a50044] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#870038] active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Terminar Rifa
+              </button>
+              {rifa.boletos_vendidos === 0 && (
+                <div className="pointer-events-none absolute bottom-full right-0 mb-2 hidden w-44 rounded-xl bg-[#0d2b4d] px-3 py-2 text-center text-[11px] text-white shadow-lg group-hover:block">
+                  No hay participantes aún
+                </div>
+              )}
+            </div>
           ) : (
             <button
               onClick={onRifar}

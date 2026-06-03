@@ -212,6 +212,11 @@ const AddRifaModal = ({ onClose, onCreated }: AddRifaModalProps) => {
             <input
               type="date"
               value={fechaCierre}
+              min={(() => {
+                const d = new Date();
+                d.setDate(d.getDate() + 1);
+                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+              })()}
               onChange={(e) => setFechaCierre(e.target.value)}
               className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-[#0d2b4d]"
             />
