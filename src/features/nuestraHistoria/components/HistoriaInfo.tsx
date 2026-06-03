@@ -6,7 +6,13 @@ type HistoriaInfoProps = {
   align: "left" | "right";
 };
 
-const HistoriaInfo = ({ year, title, description, badge, align }: HistoriaInfoProps) => {
+const HistoriaInfo = ({
+  year,
+  title,
+  description,
+  badge,
+  align,
+}: HistoriaInfoProps) => {
   const isLeft = align === "left";
 
   return (

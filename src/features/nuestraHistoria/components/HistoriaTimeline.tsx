@@ -7,7 +7,11 @@ type HistoriaTimelineProps = {
   events: HistoriaEvent[];
 };
 
-const HistoriaTimeline = ({ title, subtitle, events }: HistoriaTimelineProps) => {
+const HistoriaTimeline = ({
+  title,
+  subtitle,
+  events,
+}: HistoriaTimelineProps) => {
   return (
     <section className="relative mx-auto w-full max-w-6xl px-5 py-10 md:py-16">
       <div className="mb-10 max-w-2xl">
@@ -17,7 +21,9 @@ const HistoriaTimeline = ({ title, subtitle, events }: HistoriaTimelineProps) =>
         <h1 className="mt-3 text-3xl font-bold tracking-tight text-brand-navy md:text-[2.75rem]">
           {title}
         </h1>
-        <p className="mt-2 text-sm text-brand-navy/60 md:text-base">{subtitle}</p>
+        <p className="mt-2 text-sm text-brand-navy/60 md:text-base">
+          {subtitle}
+        </p>
       </div>
 
       <div className="relative">

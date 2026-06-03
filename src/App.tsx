@@ -63,7 +63,6 @@ function App() {
         <Route path="wordle" element={<WordleManagerPage />} />
         <Route path="noticias" element={<NewsManagerPage />} />
         <Route path="tienda" element={<StoreManager />} />
-
       </Route>
     </Routes>
   );
