@@ -24,6 +24,7 @@ import NewsManagerPage from "./features/dashboard/pages/NewsManagerPager";
 import StoreManager from "./features/dashboard/pages/StoreManager";
 import WordleManagerPage from "./features/dashboard/pages/WordleManagerPage";
 import HealthCheck from "./pages/HealthCheck";
+import NuestraHistoria from "./pages/nuestraHistoria";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
         <Route path="/tienda" element={<Tienda />} />
         <Route path="/reels/:id" element={<Reels />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/nuestra-historia" element={<NuestraHistoria />} />
         <Route path="/amigo" element={<Amigo />} />
         <Route path="/gestionarAmigos" element={<GestionarAmigos />} />
         <Route path="/estadisticas" element={<Estadisticas />} />
