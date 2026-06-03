@@ -181,7 +181,7 @@ const RifaManager = () => {
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                Completadas
+                Terminadas
               </span>
               <span className="rounded-full bg-[#EDBB00] px-2 py-0.5 text-[10px] font-bold">
                 {rifasCompletadas.length}
