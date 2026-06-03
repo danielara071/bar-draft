@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Countdown from '../../shared/components/Countdown'
-import { SecondaryButton } from '../../shared/components/Buttons';
+import { PrimaryButton, SecondaryButton } from '../../shared/components/Buttons';
 import Noticias from '../../shared/components/Noticias'
 import useSession from "../../shared/hooks/useSession"
 import { useProfile } from "../../shared/hooks/useProfile"
 import Socials from '../../shared/components/Socials'
+import ReportModal from './ReportModal';
+import ConfirmationPopup from '../dashboard/components/ConfirmationPopUp';
 
 function LoggedIn() {
     const navigate = useNavigate()
@@ -15,6 +17,9 @@ function LoggedIn() {
     const levelXP = 2000;
     const progreso = profile ? ((profile.puntos % levelXP) / levelXP) * 100 : 0;
     const [category, setCategory] = useState<"varonil" | "femenil" | null>(null);
+    const [showModal, setShowModal] = useState(false); 
+    const [showConfirmation, setShowConfirmation] = useState(false);
+
     return (
         <>
             <section className="relative bg-cover bg-center min-h-screen flex items-center justify-center text-center bg-[url('https://www.fcbarcelona.com/photo-resources/2025/11/15/43dcea0d-71dc-414f-9bcc-4e827c927693/JCAG3702.jpg?width=3200&_gl=1*1t7pif5*_gcl_aw*R0NMLjE3NzMzNDE0MTcuQ2p3S0NBand5TW5OQmhCTkVpd0EtS2NndTVneXE2dEVQNGZldjVWZmNwa2dJRGZ0clpiZGxNZTVDZGNwTXo4UkNZUnFWVmZuM19GcW5Sb0NTNGdRQXZEX0J3RQ..*_gcl_dc*R0NMLjE3NzMzNDE0MTcuQ2p3S0NBand5TW5OQmhCTkVpd0EtS2NndTVneXE2dEVQNGZldjVWZmNwa2dJRGZ0clpiZGxNZTVDZGNwTXo4UkNZUnFWVmZuM19GcW5Sb0NTNGdRQXZEX0J3RQ..*_gcl_au*OTk4NjYyNjc0LjE3NzA5MjMxMDM.')]">
@@ -110,6 +115,27 @@ function LoggedIn() {
                     <h2 className="text-2xl sm:text-4xl md:text-4xl font-bold mb-4 font-sans tracking-tight text-left">Som Un Equip!</h2>
                 </div>
             </section>
+            <div className="relative flex text-center justify-center flex-col gap-8 mt-15">
+                <h1 className="text-2xl md:text-3xl lg:text-4xl font-light">Ayudanos a Mejorar</h1>
+                <p className="text-xs md:text-sm text-brand-gray-mid">¿Algo no funciona como esperabas? Háznoslo saber!</p>
+                <div className="mt-6">
+                    <PrimaryButton onClick={() => setShowModal(true)} size="md" className="w-96 md:w-148 lg:w-164">Reportar</PrimaryButton>
+                </div>
+            </div>
+            <ReportModal
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+                onSuccess={() => setShowConfirmation(true)}
+                userId={session?.user?.id}
+                />
+
+            {showConfirmation && (
+                <ConfirmationPopup
+                    message="¡Reporte enviado! Gracias por ayudarnos."
+                    success={true}
+                    onClose={() => setShowConfirmation(false)}
+                />
+            )}
         </>
     )
 }
