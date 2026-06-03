@@ -42,6 +42,15 @@ const Rifas = () => {
     const fetchRifas = async () => {
       setLoading(true);
 
+      // Auto-cierra rifas vencidas usando fecha local (no UTC)
+      const now = new Date();
+      const localToday = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+      await supabase
+        .from("rifas")
+        .update({ estado: "terminada" })
+        .eq("estado", "activa")
+        .lt("fecha_cierre", localToday);
+
       // Intenta con join para el conteo total; si RLS lo bloquea usa fallback sin join
       let rifasData: Record<string, unknown>[] = [];
 
