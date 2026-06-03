@@ -26,6 +26,8 @@ const RifaManager = () => {
   const rifasCompletadas = filtered.filter((r) => r.estado === "terminada" && !!r.ganador_id);
 
   const handleTerminar = async (rifa: Rifa) => {
+    if (rifa.boletos_vendidos === 0) return;
+
     const { error } = await supabase
       .from("rifas")
       .update({ estado: "terminada" })
