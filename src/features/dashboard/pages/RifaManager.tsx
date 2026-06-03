@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search, Trash2 } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
 import useRifas from "../rifa_manager/hooks/useRifas";
 import RifaCard from "../rifa_manager/components/RifaCard";
@@ -13,16 +13,10 @@ const RifaManager = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [ganador, setGanador] = useState<RifaGanador | null>(null);
   const [rifando, setRifando] = useState<number | null>(null);
-  const [rifaAEliminar, setRifaAEliminar] = useState<Rifa | null>(null);
-  const [eliminando, setEliminando] = useState(false);
 
   const filtered = rifas.filter((r) =>
     r.name.toLowerCase().includes(search.toLowerCase())
   );
-
-  const rifasActivas     = filtered.filter((r) => r.estado === "activa");
-  const rifasPendientes  = filtered.filter((r) => r.estado === "terminada" && !r.ganador_id);
-  const rifasCompletadas = filtered.filter((r) => r.estado === "terminada" && !!r.ganador_id);
 
   const handleTerminar = async (rifa: Rifa) => {
     const { error } = await supabase
@@ -53,10 +47,9 @@ const RifaManager = () => {
       ? random.profiles[0]
       : random.profiles;
 
-    // Marca como terminada y guarda el ganador en un solo update
     await supabase
       .from("rifas")
-      .update({ estado: "terminada", ganador_id: random.user_id })
+      .update({ ganador_id: random.user_id })
       .eq("id", rifa.id);
 
     await fetchRifas();
@@ -71,28 +64,13 @@ const RifaManager = () => {
     });
   };
 
-  const handleEliminar = async () => {
-    if (!rifaAEliminar) return;
-    setEliminando(true);
-
-    const { error } = await supabase
-      .from("rifas")
-      .delete()
-      .eq("id", rifaAEliminar.id);
-
-    setEliminando(false);
-    setRifaAEliminar(null);
-
-    if (!error) await fetchRifas();
-  };
-
   return (
     <div className="flex flex-col py-10 px-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <p className="text-2xl md:text-3xl lg:text-4xl font-sans font-bold">
-          <span className="text-brand-navy">Gestión de </span>
-          <span className="text-brand-yellow">Rifas</span>
+        <p className="text-2xl md:text-3xl lg:text-4xl font-sans">
+          <span className="text-black">Gestión de </span>
+          <span className="text-[#EDBB00]">Rifas</span>
         </p>
         <button
           onClick={() => setShowAddModal(true)}
@@ -115,8 +93,8 @@ const RifaManager = () => {
         />
       </div>
 
-      {/* Rifa list — scrollable container con secciones */}
-      <div className="max-h-[65vh] overflow-y-auto rounded-[28px] border border-slate-200 bg-[#f4f6f9] p-4 flex flex-col gap-6 pr-2">
+      {/* Rifa list */}
+      <div className="flex flex-col gap-3">
         {loading && (
           <p className="text-center text-sm text-slate-400 py-8">Cargando rifas...</p>
         )}
@@ -130,85 +108,27 @@ const RifaManager = () => {
           </div>
         )}
 
-        {/* Sección: Activas */}
-        {rifasActivas.length > 0 && (
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                Activas
-              </span>
-              <span className="rounded-full bg-[#a50044] px-2 py-0.5 text-[10px] font-bold text-white">
-                {rifasActivas.length}
-              </span>
-            </div>
-            {rifasActivas.map((rifa) => (
-              <RifaCard
-                key={rifa.id}
-                rifa={rifa}
-                onTerminar={() => handleTerminar(rifa)}
-                onRifar={() => { if (rifando === null) handleRifar(rifa); }}
-                onEliminar={() => setRifaAEliminar(rifa)}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Sección: Terminadas sin ganador */}
-        {rifasPendientes.length > 0 && (
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                Pendientes de sorteo
-              </span>
-              <span className="rounded-full bg-[#0d2b4d] px-2 py-0.5 text-[10px] font-bold text-white">
-                {rifasPendientes.length}
-              </span>
-            </div>
-            {rifasPendientes.map((rifa) => (
-              <RifaCard
-                key={rifa.id}
-                rifa={rifa}
-                onTerminar={() => handleTerminar(rifa)}
-                onRifar={() => { if (rifando === null) handleRifar(rifa); }}
-                onEliminar={() => setRifaAEliminar(rifa)}
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Sección: Ya rifadas */}
-        {rifasCompletadas.length > 0 && (
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                Terminadas
-              </span>
-              <span className="rounded-full bg-[#EDBB00] px-2 py-0.5 text-[10px] font-bold">
-                {rifasCompletadas.length}
-              </span>
-            </div>
-            {rifasCompletadas.map((rifa) => (
-              <RifaCard
-                key={rifa.id}
-                rifa={rifa}
-                onTerminar={() => handleTerminar(rifa)}
-                onRifar={() => { if (rifando === null) handleRifar(rifa); }}
-                onEliminar={() => setRifaAEliminar(rifa)}
-              />
-            ))}
-          </div>
-        )}
+        {filtered.map((rifa) => (
+          <RifaCard
+            key={rifa.id}
+            rifa={rifa}
+            onTerminar={() => handleTerminar(rifa)}
+            onRifar={() => {
+              if (rifando === null) handleRifar(rifa);
+            }}
+          />
+        ))}
       </div>
 
       {/* Gestión de Ganadores — placeholder */}
       <div className="mt-12">
-        <p className="text-2xl md:text-3xl lg:text-4xl font-sans font-bold">
-          <span className="text-brand-navy">Gestión de </span>
-          <span className="text-brand-yellow">Ganadores</span>
+        <p className="text-2xl md:text-3xl lg:text-4xl font-sans">
+          <span className="text-black">Gestión de </span>
+          <span className="text-[#EDBB00]">Ganadores</span>
         </p>
       </div>
 
-      {/* Modal añadir */}
+      {/* Modals */}
       {showAddModal && (
         <AddRifaModal
           onClose={() => setShowAddModal(false)}
@@ -216,49 +136,11 @@ const RifaManager = () => {
         />
       )}
 
-      {/* Modal ganador */}
       {ganador && (
         <GanadorModal
           data={ganador}
           onClose={() => setGanador(null)}
         />
-      )}
-
-      {/* Confirmación eliminar */}
-      {rifaAEliminar && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0d2b4d]/45 backdrop-blur-sm">
-          <div className="flex w-full max-w-sm flex-col items-center gap-5 rounded-[28px] bg-white p-8 shadow-2xl">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#a50044]/10">
-              <Trash2 className="h-7 w-7 text-[#a50044]" strokeWidth={1.8} />
-            </div>
-
-            <div className="text-center">
-              <h2 className="text-xl font-bold text-[#0d2b4d]">¿Eliminar rifa?</h2>
-              <p className="mt-2 text-sm leading-relaxed text-slate-500">
-                Estás a punto de eliminar{" "}
-                <span className="font-semibold text-[#0d2b4d]">{rifaAEliminar.name}</span>.
-                {" "}Esta acción no se puede deshacer.
-              </p>
-            </div>
-
-            <div className="flex w-full gap-3">
-              <button
-                onClick={() => setRifaAEliminar(null)}
-                disabled={eliminando}
-                className="flex-1 rounded-2xl border border-slate-200 py-3 text-sm font-semibold text-slate-600 transition hover:bg-slate-50 disabled:opacity-50"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleEliminar}
-                disabled={eliminando}
-                className="flex-1 rounded-2xl bg-[#a50044] py-3 text-sm font-bold text-white transition hover:bg-[#870038] disabled:opacity-50"
-              >
-                {eliminando ? "Eliminando..." : "Eliminar"}
-              </button>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );

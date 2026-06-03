@@ -9,7 +9,6 @@ export interface Rifa {
   estado: "activa" | "terminada";
   fecha_cierre: string | null;
   ganador_id: string | null;
-  ganador_nombre: string | null;
   created_at: string;
   boletos_vendidos: number;
 }
