@@ -226,7 +226,7 @@ export const ResolvedReportCard: React.FC<ResolvedReportCardProps> = ({ report, 
 
           <button
             onClick={() => onMoveToPending(report.id)}
-            className="flex items-center gap-2 bg-amber-400 text-brand-navy border-none rounded-full py-3 px-6 font-['DM_Sans'] text-[0.88rem] font-bold cursor-pointer transition-all hover:bg-[#e08e00] hover:-translate-y-px active:translate-y-0"
+            className="flex items-center gap-2 bg-brand-yellow text-brand-navy border-none rounded-full py-3 px-6 font-['DM_Sans'] text-[0.88rem] font-bold cursor-pointer transition-all hover:bg-[#e08e00] hover:-translate-y-px active:translate-y-0"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="19" y1="12" x2="5" y2="12" />
