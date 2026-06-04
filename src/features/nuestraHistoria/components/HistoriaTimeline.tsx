@@ -32,7 +32,7 @@ const HistoriaTimeline = ({
       <div className="relative">
         <div className="pointer-events-none absolute left-1/2 top-0 hidden h-full w-px -translate-x-1/2 bg-[linear-gradient(180deg,rgba(181,23,75,0.22),rgba(15,45,82,0.06),rgba(181,23,75,0.18))] md:block" />
 
-        <div className="space-y-12 md:space-y-24">
+        <div className="space-y-12 md:space-y-20">
           {events.map((event, index) => (
             <HistoriaCard
               key={`${event.year}-${event.title}`}

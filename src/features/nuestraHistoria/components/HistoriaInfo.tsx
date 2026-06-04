@@ -15,22 +15,20 @@ const HistoriaInfo = ({
 
   return (
     <div
-      className={`order-1 flex h-full flex-col justify-center gap-5 ${
-        isLeft
-          ? "md:col-start-1 md:justify-self-end md:text-right"
-          : "md:col-start-3 md:justify-self-start md:text-left"
+      className={`flex h-full min-h-80 flex-col justify-center gap-5 ${
+        isLeft ? "text-left md:text-right" : "text-left md:text-left"
       }`}
     >
       <div
         className={`inline-flex w-fit items-center rounded-full bg-brand-crimson px-4 py-2 text-xs font-bold tracking-spaced text-brand-white shadow-[0_12px_30px_rgba(181,23,75,0.2)] ${
-          isLeft ? "md:self-end" : "md:self-start"
+          isLeft ? "self-end md:self-end" : "self-start md:self-start"
         }`}
       >
         {year}
       </div>
 
       <div className="space-y-4 max-w-xl">
-        <h3 className="text-2xl md:text-[2rem] leading-tight font-bold text-brand-navy">
+        <h3 className="text-2xl font-bold leading-tight text-brand-navy md:text-[2rem]">
           {title}
         </h3>
 
