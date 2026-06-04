@@ -64,7 +64,7 @@ const NuestraHistoriaSection = ({
         </div>
       </div>
 
-      <HistoriaTimeline events={events} />
+      <HistoriaTimeline events={events} team={selectedTeam} />
 
       <div className="mx-auto w-full max-w-6xl px-5 pb-8 text-center">
         <p

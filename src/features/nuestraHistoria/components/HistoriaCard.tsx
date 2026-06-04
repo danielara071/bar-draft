@@ -6,9 +6,10 @@ import HistoriaInfo from "./HistoriaInfo";
 type HistoriaCardProps = {
   event: HistoriaEvent;
   align: "left" | "right";
+  team: "femenil" | "varonil";
 };
 
-const HistoriaCard = ({ event, align }: HistoriaCardProps) => {
+const HistoriaCard = ({ event, align, team }: HistoriaCardProps) => {
   const isLeft = align === "left";
 
   return (
@@ -44,7 +45,7 @@ const HistoriaCard = ({ event, align }: HistoriaCardProps) => {
       </div>
 
       <div className="pointer-events-none absolute left-1/2 top-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-        <HistoriaIconoCentral icon={event.icon} />
+        <HistoriaIconoCentral icon={event.icon} team={team} />
       </div>
     </article>
   );
