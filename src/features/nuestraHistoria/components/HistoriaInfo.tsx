@@ -15,7 +15,7 @@ const HistoriaInfo = ({
 
   return (
     <div
-      className={`order-1 flex flex-col gap-5 ${
+      className={`order-1 flex h-full flex-col justify-center gap-5 ${
         isLeft
           ? "md:col-start-1 md:justify-self-end md:text-right"
           : "md:col-start-3 md:justify-self-start md:text-left"

@@ -10,7 +10,7 @@ type HistoriaCardProps = {
 
 const HistoriaCard = ({ event, align }: HistoriaCardProps) => {
   return (
-    <article className="relative grid gap-6 md:grid-cols-[minmax(0,1fr)_6rem_minmax(0,1fr)] md:items-center">
+    <article className="relative grid gap-6 md:grid-cols-[minmax(0,1fr)_6rem_minmax(0,1fr)] md:items-stretch">
       <HistoriaInfo
         year={event.year}
         title={event.title}

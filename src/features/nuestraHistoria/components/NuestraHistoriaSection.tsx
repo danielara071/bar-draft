@@ -16,6 +16,8 @@ const NuestraHistoriaSection = ({
 
   const events =
     selectedTeam === "femenil" ? historiaEventsFemenil : historiaEventsVaronil;
+  const closingTextClass =
+    selectedTeam === "femenil" ? "text-brand-crimson" : "text-brand-navy";
 
   return (
     <section className="py-10 md:py-16">
@@ -63,6 +65,14 @@ const NuestraHistoriaSection = ({
       </div>
 
       <HistoriaTimeline events={events} />
+
+      <div className="mx-auto w-full max-w-6xl px-5 pb-8 text-center">
+        <p
+          className={`text-2xl md:text-[2rem] font-bold leading-tight ${closingTextClass}`}
+        >
+          ...y seguimos haciendo historia, contigo
+        </p>
+      </div>
 
       <div className="mx-auto flex w-full max-w-6xl justify-center px-5 pb-10 md:pb-16">
         <PrimaryButton
