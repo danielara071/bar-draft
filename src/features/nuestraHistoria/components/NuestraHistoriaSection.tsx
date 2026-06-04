@@ -38,7 +38,7 @@ const NuestraHistoriaSection = ({
               type="button"
               onClick={() => setSelectedTeam("femenil")}
               aria-pressed={selectedTeam === "femenil"}
-              className={`rounded-full px-5 py-2 text-sm font-bold tracking-wide transition-all duration-150 ${
+              className={`rounded-full px-6 py-3 text-base font-bold tracking-wide transition-all duration-150 ${
                 selectedTeam === "femenil"
                   ? "bg-brand-crimson text-white shadow-[0_10px_24px_rgba(181,23,75,0.22)]"
                   : "bg-white text-brand-crimson border border-brand-crimson/30 hover:bg-brand-crimson/5"
@@ -50,7 +50,7 @@ const NuestraHistoriaSection = ({
               type="button"
               onClick={() => setSelectedTeam("varonil")}
               aria-pressed={selectedTeam === "varonil"}
-              className={`rounded-full px-5 py-2 text-sm font-bold tracking-wide transition-all duration-150 ${
+              className={`rounded-full px-6 py-3 text-base font-bold tracking-wide transition-all duration-150 ${
                 selectedTeam === "varonil"
                   ? "bg-brand-navy text-white shadow-[0_10px_24px_rgba(15,45,82,0.22)]"
                   : "bg-white text-brand-navy border border-brand-navy/30 hover:bg-brand-navy/5"
