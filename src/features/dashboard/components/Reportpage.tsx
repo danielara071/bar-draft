@@ -26,7 +26,7 @@ export const ReportesPage: React.FC = () => {
       <h1 className="text-[2.4rem] font-bold text-(--navy) tracking-tight leading-none m-0">
         Reportes{" "}
         <span className="font-semibold text-(--navy)">de la</span>{" "}
-        <span className="text-(--red)">página</span>
+        <span className="text-amber-400">página</span>
       </h1>
 
       {/* ── Filters ── */}
