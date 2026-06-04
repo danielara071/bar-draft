@@ -1,4 +1,4 @@
-import { Building2, Medal, Trophy, Users } from "lucide-react";
+import {Medal, Trophy, Calendar1, BadgePlus, Table, Crown, Earth, ScissorsLineDashed, Star } from "lucide-react";
 import type { HistoriaEvent } from "./types";
 
 export const historiaEventsFemenil: HistoriaEvent[] = [
@@ -10,7 +10,7 @@ export const historiaEventsFemenil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Balón de fútbol sobre el césped en un entrenamiento",
-    icon: Building2,
+    icon: Calendar1,
   },
   {
     year: "1994",
@@ -20,7 +20,7 @@ export const historiaEventsFemenil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Futbolista golpeando el balón en un estadio",
-    icon: Trophy,
+    icon: Medal,
   },
   {
     year: "2002",
@@ -30,7 +30,7 @@ export const historiaEventsFemenil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1529900748604-07564a03e7a6?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Balón de fútbol apoyado sobre la cancha",
-    icon: Medal,
+    icon: BadgePlus,
   },
   {
     year: "2012",
@@ -40,7 +40,7 @@ export const historiaEventsFemenil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Vista panorámica de un estadio de fútbol lleno",
-    icon: Users,
+    icon: Table,
   },
   {
     year: "2021",
@@ -50,7 +50,7 @@ export const historiaEventsFemenil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Jugadoras celebrando una victoria en el campo",
-    icon: Trophy,
+    icon: Crown,
   },
   {
     year: "2023–2024",
@@ -60,7 +60,7 @@ export const historiaEventsFemenil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1547347298-4074fc3086f0?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Estadio iluminado durante un partido nocturno",
-    icon: Users,
+    icon: Earth,
   },
 ];
 
@@ -73,7 +73,7 @@ export const historiaEventsVaronil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1522778119026-d647f0596c20?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Estadio de fútbol visto desde la grada",
-    icon: Building2,
+    icon: Calendar1,
   },
   {
     year: "1929",
@@ -83,7 +83,7 @@ export const historiaEventsVaronil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Futbolista conduciendo el balón sobre el césped",
-    icon: Trophy,
+    icon: Medal,
   },
   {
     year: "1952",
@@ -93,7 +93,7 @@ export const historiaEventsVaronil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Balón de fútbol en el centro del campo",
-    icon: Medal,
+    icon: Trophy,
   },
   {
     year: "1957",
@@ -103,7 +103,7 @@ export const historiaEventsVaronil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1547347298-4074fc3086f0?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Estadio iluminado en una noche de partido",
-    icon: Users,
+    icon: ScissorsLineDashed,
   },
   {
     year: "1992",
@@ -113,7 +113,7 @@ export const historiaEventsVaronil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Equipo celebrando en un estadio europeo",
-    icon: Trophy,
+    icon: Star,
   },
   {
     year: "2009",
@@ -123,6 +123,6 @@ export const historiaEventsVaronil: HistoriaEvent[] = [
     imageSrc:
       "https://images.unsplash.com/photo-1529900748604-07564a03e7a6?auto=format&fit=crop&w=1200&q=80",
     imageAlt: "Balón de fútbol apoyado sobre la cancha",
-    icon: Medal,
+    icon: Crown,
   },
 ];
