@@ -144,7 +144,9 @@ function LoggedIn() {
         </div>
         <hr className="mt-15 border-brand-gray-light" />
         <div className="flex justify-center py-8 md:py-10">
-          <HistoriaButton onClick={() => setShowHistoria(true)} />
+          <HistoriaButton
+            onClick={() => setShowHistoria((current) => !current)}
+          />
         </div>
         {showHistoria && (
           <NuestraHistoriaSection onCollapse={() => setShowHistoria(false)} />

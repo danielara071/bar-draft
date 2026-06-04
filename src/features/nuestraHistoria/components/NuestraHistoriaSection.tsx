@@ -66,7 +66,7 @@ const NuestraHistoriaSection = ({
 
       <HistoriaTimeline events={events} team={selectedTeam} />
 
-      <div className="mx-auto w-full max-w-6xl px-5 pb-8 text-center">
+      <div className="mx-auto w-full max-w-6xl px-5 py-14 text-center md:py-60">
         <p
           className={`text-2xl md:text-[2rem] font-bold leading-tight ${closingTextClass}`}
         >
