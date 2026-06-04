@@ -2,7 +2,6 @@ type HistoriaInfoProps = {
   year: string;
   title: string;
   description: string;
-  badge: string;
   align: "left" | "right";
 };
 
@@ -10,7 +9,6 @@ const HistoriaInfo = ({
   year,
   title,
   description,
-  badge,
   align,
 }: HistoriaInfoProps) => {
   const isLeft = align === "left";
@@ -32,14 +30,6 @@ const HistoriaInfo = ({
       </div>
 
       <div className="space-y-4 max-w-xl">
-        <div
-          className={`inline-flex items-center gap-2 rounded-full bg-brand-crimson/10 px-4 py-2 text-xs font-semibold text-brand-crimson ${
-            isLeft ? "md:ml-auto" : ""
-          }`}
-        >
-          {badge}
-        </div>
-
         <h3 className="text-2xl md:text-[2rem] leading-tight font-bold text-brand-navy">
           {title}
         </h3>

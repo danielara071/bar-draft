@@ -23,7 +23,7 @@ const NuestraHistoriaSection = ({
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="text-left">
             <h2 className="text-xs font-bold uppercase tracking-[0.28em] text-brand-crimson">
-              Historia del club
+              Nuestra Historia
             </h2>
             <h3 className="mt-3 text-3xl font-bold tracking-tight text-brand-navy md:text-[2.75rem]">
               Un club, dos trayectos

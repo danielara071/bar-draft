@@ -15,7 +15,6 @@ const HistoriaCard = ({ event, align }: HistoriaCardProps) => {
         year={event.year}
         title={event.title}
         description={event.description}
-        badge={event.badge}
         align={align}
       />
 
