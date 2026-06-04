@@ -14,7 +14,7 @@ const HistoriaButton = ({ onClick, className = "" }: HistoriaButtonProps) => {
           size="lg"
           className={`w-full max-w-3xl text-lg md:text-xl lg:text-2xl py-5 md:py-6 ${className}`}
         >
-          Conoce nuestras historias
+          Conoce ambos trayectos
         </PrimaryButton>
       </div>
       <hr className="mt-8 w-full border-brand-gray-light" />

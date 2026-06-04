@@ -1,8 +1,7 @@
 import { Building2, Medal, Trophy, Users } from "lucide-react";
-import HistoriaTimeline from "../features/nuestraHistoria/components/HistoriaTimeline";
-import type { HistoriaEvent } from "../features/nuestraHistoria/types";
+import type { HistoriaEvent } from "./types";
 
-const historiaEvents: HistoriaEvent[] = [
+export const historiaEvents: HistoriaEvent[] = [
   {
     year: "2001",
     title: "Fundación del Equipo",
@@ -48,17 +47,3 @@ const historiaEvents: HistoriaEvent[] = [
     icon: Users,
   },
 ];
-
-const NuestraHistoria = () => {
-  return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,rgba(15,45,82,0.03),rgba(255,255,255,0)_240px)]">
-      <HistoriaTimeline
-        title="Nuestra Historia"
-        subtitle="Un viaje a través del tiempo"
-        events={historiaEvents}
-      />
-    </div>
-  );
-};
-
-export default NuestraHistoria;

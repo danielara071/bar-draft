@@ -6,6 +6,7 @@ import {
   SecondaryButton,
 } from "../../shared/components/Buttons";
 import HistoriaButton from "../../shared/components/HistoriaButton";
+import NuestraHistoriaSection from "../nuestraHistoria/components/NuestraHistoriaSection";
 import Noticias from "../../shared/components/Noticias";
 import StatCard from "../../shared/components/StatCard";
 import InfoCard from "../../shared/components/InfoCard";
@@ -15,6 +16,7 @@ import Socials from "../../shared/components/Socials";
 function LoggedOut() {
   const navigate = useNavigate();
   const [category, setCategory] = useState<"varonil" | "femenil" | null>(null);
+  const [showHistoria, setShowHistoria] = useState(false);
   return (
     <>
       <section className="relative bg-cover bg-center min-h-screen flex items-center justify-center text-center bg-[url('https://www.fcbarcelona.com/photo-resources/2025/11/15/43dcea0d-71dc-414f-9bcc-4e827c927693/JCAG3702.jpg?width=3200&_gl=1*1t7pif5*_gcl_aw*R0NMLjE3NzMzNDE0MTcuQ2p3S0NBand5TW5OQmhCTkVpd0EtS2NndTVneXE2dEVQNGZldjVWZmNwa2dJRGZ0clpiZGxNZTVDZGNwTXo4UkNZUnFWVmZuM19GcW5Sb0NTNGdRQXZEX0J3RQ..*_gcl_dc*R0NMLjE3NzMzNDE0MTcuQ2p3S0NBand5TW5OQmhCTkVpd0EtS2NndTVneXE2dEVQNGZldjVWZmNwa2dJRGZ0clpiZGxNZTVDZGNwTXo4UkNZUnFWVmZuM19GcW5Sb0NTNGdRQXZEX0J3RQ..*_gcl_au*OTk4NjYyNjc0LjE3NzA5MjMxMDM.')]">
@@ -58,8 +60,11 @@ function LoggedOut() {
         </div>
         <hr className="mt-15 border-brand-gray-light" />
         <div className="flex justify-center py-8 md:py-10">
-          <HistoriaButton onClick={() => navigate("/nuestra-historia")} />
+          <HistoriaButton onClick={() => setShowHistoria(true)} />
         </div>
+        {showHistoria && (
+          <NuestraHistoriaSection onCollapse={() => setShowHistoria(false)} />
+        )}
         <p className="py-10 text-sm md:text-base font-sans text-brand-navy ">
           Lo Último
         </p>
@@ -132,7 +137,7 @@ function LoggedOut() {
           <img src={fan} className="w-full h-auto" />
           <div className="flex flex-col gap-10">
             <hr className="border-brand-gray-light" />
-            <p className="text-1xl md:text-3xl lg:text-4xl font-light">
+            <p className="text-xl md:text-3xl lg:text-4xl font-light">
               “Era fan del Barça, pero solo del varonil. Entré a Més Que Un
               Club, me enganché con el equipo femenino, acumulé puntos — y gané
               un viaje al Camp Nou para verlas en vivo. Nunca lo hubiera
@@ -150,7 +155,7 @@ function LoggedOut() {
 
       <Socials />
 
-      <section className="relative h-[500px] md:h-[800px] bg-cover bg-center flex items-center mt-15 items-start justify-start text-center bg-[url('https://www.fcbarcelona.com/photo-resources/2025/05/24/7f4cd67e-658f-431a-bbc0-63ad6f52610b/_GP13348.jpg?width=2400&height=1500')]">
+      <section className="relative h-125 md:h-200 bg-cover bg-center flex mt-15 justify-start text-center bg-[url('https://www.fcbarcelona.com/photo-resources/2025/05/24/7f4cd67e-658f-431a-bbc0-63ad6f52610b/_GP13348.jpg?width=2400&height=1500')]">
         <div className="relative text-white pt-24 pl-24 md:pt-32 md:pl-80 max-w-xl">
           <h2 className="text-2xl sm:text-4xl md:text-4xl font-bold mb-4 font-sans tracking-tight text-left">
             Som Un Equip!

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Countdown from "../../shared/components/Countdown";
 import { SecondaryButton } from "../../shared/components/Buttons";
 import HistoriaButton from "../../shared/components/HistoriaButton";
+import NuestraHistoriaSection from "../nuestraHistoria/components/NuestraHistoriaSection";
 import Noticias from "../../shared/components/Noticias";
 import useSession from "../../shared/hooks/useSession";
 import { useProfile } from "../../shared/hooks/useProfile";
@@ -17,6 +18,7 @@ function LoggedIn() {
   const levelXP = 2000;
   const progreso = profile ? ((profile.puntos % levelXP) / levelXP) * 100 : 0;
   const [category, setCategory] = useState<"varonil" | "femenil" | null>(null);
+  const [showHistoria, setShowHistoria] = useState(false);
   return (
     <>
       <section className="relative bg-cover bg-center min-h-screen flex items-center justify-center text-center bg-[url('https://www.fcbarcelona.com/photo-resources/2025/11/15/43dcea0d-71dc-414f-9bcc-4e827c927693/JCAG3702.jpg?width=3200&_gl=1*1t7pif5*_gcl_aw*R0NMLjE3NzMzNDE0MTcuQ2p3S0NBand5TW5OQmhCTkVpd0EtS2NndTVneXE2dEVQNGZldjVWZmNwa2dJRGZ0clpiZGxNZTVDZGNwTXo4UkNZUnFWVmZuM19GcW5Sb0NTNGdRQXZEX0J3RQ..*_gcl_dc*R0NMLjE3NzMzNDE0MTcuQ2p3S0NBand5TW5OQmhCTkVpd0EtS2NndTVneXE2dEVQNGZldjVWZmNwa2dJRGZ0clpiZGxNZTVDZGNwTXo4UkNZUnFWVmZuM19GcW5Sb0NTNGdRQXZEX0J3RQ..*_gcl_au*OTk4NjYyNjc0LjE3NzA5MjMxMDM.')]">
@@ -142,8 +144,11 @@ function LoggedIn() {
         </div>
         <hr className="mt-15 border-brand-gray-light" />
         <div className="flex justify-center py-8 md:py-10">
-          <HistoriaButton onClick={() => navigate("/nuestra-historia")} />
+          <HistoriaButton onClick={() => setShowHistoria(true)} />
         </div>
+        {showHistoria && (
+          <NuestraHistoriaSection onCollapse={() => setShowHistoria(false)} />
+        )}
         <p className="py-10 text-sm md:text-base font-sans text-brand-navy ">
           Lo Último
         </p>
