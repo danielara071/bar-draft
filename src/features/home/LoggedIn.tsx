@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Countdown from "../../shared/components/Countdown";
 import { PrimaryButton, SecondaryButton } from "../../shared/components/Buttons";
@@ -23,6 +23,7 @@ function LoggedIn() {
   const [category, setCategory] = useState<"varonil" | "femenil" | null>(null);
   
   const [showHistoria, setShowHistoria] = useState(false);
+  const historiaButtonRef = useRef<HTMLDivElement>(null);
   const [showModal, setShowModal] = useState(false); 
   const [showConfirmation, setShowConfirmation] = useState(false);
 
@@ -150,14 +151,28 @@ function LoggedIn() {
           </p>
         </div>
         <hr className="mt-15 border-brand-gray-light" />
+        <div
+          ref={historiaButtonRef}
+          className="flex justify-center py-8 md:py-10"
+        >
         
-        <div className="flex justify-center py-8 md:py-10">
           <HistoriaButton
             onClick={() => setShowHistoria((current) => !current)}
           />
         </div>
         {showHistoria && (
-          <NuestraHistoriaSection onCollapse={() => setShowHistoria(false)} />
+          <NuestraHistoriaSection
+            onCollapse={() => {
+              setShowHistoria(false);
+
+              setTimeout(() => {
+                window.scrollTo({
+                  top: (historiaButtonRef.current?.offsetWidth ?? 0) - 100,
+                  behavior: "smooth",
+                });
+              }, 100);
+            }}
+          />
         )}
 
         <p className="py-10 text-sm md:text-base font-sans text-brand-navy ">
