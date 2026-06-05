@@ -1,7 +1,10 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Countdown from "../../shared/components/Countdown";
-import { PrimaryButton, SecondaryButton } from "../../shared/components/Buttons";
+import {
+  PrimaryButton,
+  SecondaryButton,
+} from "../../shared/components/Buttons";
 import HistoriaButton from "../../shared/components/HistoriaButton";
 import NuestraHistoriaSection from "../nuestraHistoria/components/NuestraHistoriaSection";
 import Noticias from "../../shared/components/Noticias";
@@ -15,16 +18,17 @@ function LoggedIn() {
   const navigate = useNavigate();
   const session = useSession();
   const profile = useProfile();
-  
-  const name = profile?.nombre || session?.user?.user_metadata?.full_name.split(" ")[0];
+
+  const name =
+    profile?.nombre || session?.user?.user_metadata?.full_name.split(" ")[0];
   const levelXP = 2000;
   const progreso = profile ? ((profile.puntos % levelXP) / levelXP) * 100 : 0;
-  
+
   const [category, setCategory] = useState<"varonil" | "femenil" | null>(null);
-  
+
   const [showHistoria, setShowHistoria] = useState(false);
   const historiaButtonRef = useRef<HTMLDivElement>(null);
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
 
   return (
@@ -151,15 +155,39 @@ function LoggedIn() {
           </p>
         </div>
         <hr className="mt-15 border-brand-gray-light" />
-        <div
-          ref={historiaButtonRef}
-          className="flex justify-center py-8 md:py-10"
-        >
-        
-          <HistoriaButton
-            onClick={() => setShowHistoria((current) => !current)}
-          />
+
+        <p className="py-10 text-sm md:text-base font-sans text-brand-navy ">
+          Lo Último
+        </p>
+        <p className="text-2xl md:text-3xl lg:text-4xl font-sans text-black">
+          <span className="text-black">Noticias del </span>
+          <span className="text-brand-yellow">Club</span>
+        </p>
+        <div className="relative">
+          <Noticias />
         </div>
+      </div>
+
+      <div className="px-4 md:px-8 lg:px-20">
+        <hr className="mt-15 border-brand-gray-light" />
+
+        <div className="relative flex text-center justify-center flex-col gap-8 mt-15 mb-15">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-light">
+            Nuestra Historia
+          </h1>
+
+          <p className="text-xs md:text-sm text-brand-gray-mid">
+            Descubre los momentos, protagonistas y capítulos que han dado forma
+            al club.
+          </p>
+
+          <div ref={historiaButtonRef} className="mt-6 flex justify-center">
+            <HistoriaButton
+              onClick={() => setShowHistoria((current) => !current)}
+            />
+          </div>
+        </div>
+
         {showHistoria && (
           <NuestraHistoriaSection
             onCollapse={() => {
@@ -174,17 +202,6 @@ function LoggedIn() {
             }}
           />
         )}
-
-        <p className="py-10 text-sm md:text-base font-sans text-brand-navy ">
-          Lo Último
-        </p>
-        <p className="text-2xl md:text-3xl lg:text-4xl font-sans text-black">
-          <span className="text-black">Noticias del </span>
-          <span className="text-brand-yellow">Club</span>
-        </p>
-        <div className="relative">
-          <Noticias />
-        </div>
       </div>
 
       <Socials />
@@ -198,10 +215,18 @@ function LoggedIn() {
       </section>
 
       <div className="relative flex text-center justify-center flex-col gap-8 mt-15 mb-20">
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-light">Ayudanos a Mejorar</h1>
-        <p className="text-xs md:text-sm text-brand-gray-mid">¿Algo no funciona como esperabas? Háznoslo saber!</p>
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-light">
+          Ayudanos a Mejorar
+        </h1>
+        <p className="text-xs md:text-sm text-brand-gray-mid">
+          ¿Algo no funciona como esperabas? Háznoslo saber!
+        </p>
         <div className="mt-6 flex justify-center">
-          <PrimaryButton onClick={() => setShowModal(true)} size="md" className="w-96 md:w-148 lg:w-164">
+          <PrimaryButton
+            onClick={() => setShowModal(true)}
+            size="md"
+            className="w-96 md:w-148 lg:w-164"
+          >
             Reportar
           </PrimaryButton>
         </div>

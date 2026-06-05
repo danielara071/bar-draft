@@ -1,4 +1,4 @@
-import { PrimaryButton } from "./Buttons";
+import { LoginButton } from "./Buttons";
 
 type HistoriaButtonProps = {
   onClick: () => void;
@@ -9,13 +9,13 @@ const HistoriaButton = ({ onClick, className = "" }: HistoriaButtonProps) => {
   return (
     <div className="w-full">
       <div className="flex justify-center">
-        <PrimaryButton
+        <LoginButton
           onClick={onClick}
-          size="lg"
-          className={`w-full max-w-3xl text-lg md:text-xl lg:text-2xl py-5 md:py-6 ${className}`}
+          size="sm"
+          className={`w-150 text-sm md:text-xl  py-3 md:py-3 ${className}`}
         >
           Conoce ambos trayectos
-        </PrimaryButton>
+        </LoginButton>
       </div>
       <hr className="mt-8 w-full border-brand-gray-light" />
     </div>
