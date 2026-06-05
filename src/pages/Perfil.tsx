@@ -8,6 +8,7 @@ import { useUsuarioLogros } from "../shared/hooks/useLogros";
 import { useFetchAmigos } from "../shared/hooks/useAmigos";
 import { supabase } from "@/shared/services/supabaseClient";
 
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -28,6 +29,10 @@ function Perfil() {
       console.log("Sesión cerrada");
     }
   };
+  const navigate = useNavigate();
+  const irPerfil = () => {
+    navigate("/gestionarPerfil")
+  }
   if (user_id == ""){
     return (
     <div className="min-h-screen">
@@ -54,19 +59,18 @@ function Perfil() {
             xpActual={Usuario?.experiencia || 0}
             xpMax={4000}
             logro={Usuario?.logro || ""}
-
+            onGestionarPerfil={irPerfil}
             onLogoutFunc={cerrar_sesion}
             onLogoutText="Cerrar sesión"
+            insignia_url={Usuario?.insignia_url}
           />
         </div>
 
       </div>
       <div className="bg-gray-100" >
         <div className="bg-gray-100 mx-auto py-8 max-w-5xl">
-            <AmigosContainer 
-              amigos={(Amigo || [])}
-              text="MIS AMIGOS"
-            />
+            
+            <AmigosContainer amigos={(Amigo || [])} text="MIS AMIGOS"/>
 
             <LogrosContainer logros={Logro || []} text="MIS LOGROS"/>
         </div>

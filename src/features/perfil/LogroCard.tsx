@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { updateUsuarioLogro } from "../../lib/DummyAPI";
+import { supabase } from "@/shared/services/supabaseClient";
 
 type LogroCardProps = {
   logro_id: number;
@@ -21,21 +21,26 @@ export default function LogroCard({
   clickable = true
 }: LogroCardProps) {
   const [showConfirm, setShowConfirm] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success'>('idle');
-
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const handleAsignar = async () => {
     setStatus('loading');
     try {
-      await updateUsuarioLogro(user_id, logro_id);
+      const { error } = await supabase
+        .from('profiles') 
+        .update({ logro: logro_id })
+        .eq('id', user_id);
+
+      if (error) throw error;
+
       setStatus('success');
       setShowConfirm(false);
+      window.location.reload(); //perdon por no usar estados :(
     } catch (error) {
-      console.error(error); //Nota, el void me lo marca como error 
-      setStatus('idle');
-      setShowConfirm(false)
+      console.error("Error al asignar logro:", error); 
+      setStatus('error');
+      setShowConfirm(false);
     }
   };
-
   return (
     <>
       <div
@@ -51,13 +56,6 @@ export default function LogroCard({
         />
         <p className="text-sm font-semibold">{nombre}</p>
         <p className="text-xs mt-1 opacity-80">{descripcion}</p>
-
-        {/* Indicador de éxito*/}
-        {status === 'success' && (
-          <div className="absolute top-2 right-2 bg-green-500 text-white text-[10px] px-2 py-1 rounded-full">
-            ¡Asignado!
-          </div>
-        )}
       </div>
 
 

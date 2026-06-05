@@ -7,6 +7,7 @@ import WatchParty from "./pages/WatchParty";
 import WatchPartyHUB from "./pages/WatchPartyHUB/pages/WatchPartyPage";
 import Wordle from "./pages/Wordle";
 import Perfil from "./pages/Perfil";
+import GestionarPerfil from "./pages/GestionarPerfil";
 import Amigo from "./pages/Amigo";
 import Reels from "./pages/Reels";
 import Home from "./pages/Home";
@@ -23,7 +24,9 @@ import ReportesAdmin from "./pages/ReportesAdmin";
 import NewsManagerPage from "./features/dashboard/pages/NewsManagerPager";
 import StoreManager from "./features/dashboard/pages/StoreManager";
 import WordleManagerPage from "./features/dashboard/pages/WordleManagerPage";
+import RifaManager from "./features/dashboard/pages/RifaManager";
 import HealthCheck from "./pages/HealthCheck";
+import ReportAppPage from "./features/dashboard/pages/ReportAppPage";
 
 function App() {
   return (
@@ -42,6 +45,7 @@ function App() {
         <Route path="/tienda" element={<Tienda />} />
         <Route path="/reels/:id" element={<Reels />} />
         <Route path="/perfil" element={<Perfil />} />
+        <Route path="/gestionarPerfil" element={<GestionarPerfil />} />
         <Route path="/amigo" element={<Amigo />} />
         <Route path="/gestionarAmigos" element={<GestionarAmigos />} />
         <Route path="/estadisticas" element={<Estadisticas />} />
@@ -61,6 +65,9 @@ function App() {
         <Route path="wordle" element={<WordleManagerPage />} />
         <Route path="noticias" element={<NewsManagerPage />} />
         <Route path="tienda" element={<StoreManager />} />
+        <Route path="rifas" element={<RifaManager />} />
+        <Route path="errorespagina" element={<ReportAppPage />} />
+
       </Route>
     </Routes>
   );

@@ -6,6 +6,8 @@ import {
   Video,
   Store,
   Map,
+  Ticket,
+  TriangleAlert,
 } from "lucide-react";
 
 const navItems = [
@@ -15,6 +17,8 @@ const navItems = [
   { name: "Gestión de Tienda", path: "/dashboard/tienda", icon: Store },
   { name: "Mapa de Trofeos", path: "/dashboard/mapaTrofeos", icon: Map },
   { name: "Palabras Wordle", path: "/dashboard/wordle", icon: LetterText },
+  { name: "Gestión Rifas", path: "/dashboard/rifas", icon: Ticket },
+  { name: "Reportes de la página", path: "/dashboard/errorespagina", icon: TriangleAlert },
 ];
 
 const AdminNavbar = () => {

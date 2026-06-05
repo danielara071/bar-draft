@@ -4,6 +4,7 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -1135,4 +1136,27 @@ body {
   .pred-btn--skip {
     flex: 1;
   }
+}
+/* ═══════════════════════════════════════════════
+   TOKENS — match the navy/gold/red design system
+═══════════════════════════════════════════════ */
+:root {
+  --bg: #f4f6fb;
+  --navy: #0d1b3e;
+  --navy-light: #1a2d5a;
+  --gold: #f59e0b;
+  --red: #e63946;
+  --white: #ffffff;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-400: #94a3b8;
+  --gray-600: #475569;
+  --gray-800: #1e293b;
+  --green: #10b981;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow-sm: 0 2px 8px rgba(13, 27, 62, 0.08);
+  --shadow-md: 0 4px 20px rgba(13, 27, 62, 0.12);
+  --font-heading: "Barlow Condensed", "Arial Narrow", Arial, sans-serif;
+  --font-body: "DM Sans", "Segoe UI", sans-serif;
 }
