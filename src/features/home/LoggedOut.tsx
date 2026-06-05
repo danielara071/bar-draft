@@ -60,29 +60,7 @@ function LoggedOut() {
             ... para vernos otra vez
           </p>
         </div>
-        <hr className="mt-15 border-brand-gray-light" />
-        <div
-          ref={historiaButtonRef}
-          className="flex justify-center py-8 md:py-10"
-        >
-          <HistoriaButton
-            onClick={() => setShowHistoria((current) => !current)}
-          />
-        </div>
-        {showHistoria && (
-          <NuestraHistoriaSection
-            onCollapse={() => {
-              setShowHistoria(false);
 
-              setTimeout(() => {
-                window.scrollTo({
-                  top: (historiaButtonRef.current?.offsetWidth ?? 0) - 100,
-                  behavior: "smooth",
-                });
-              }, 100);
-            }}
-          />
-        )}
         <p className="py-10 text-sm md:text-base font-sans text-brand-navy ">
           Lo Último
         </p>
@@ -171,7 +149,41 @@ function LoggedOut() {
         </div>
       </div>
 
-      <Socials />
+      <div className="px-4 md:px-8 lg:px-20">
+        <hr className="mt-15 border-brand-gray-light" />
+
+        <div className="relative flex text-center justify-center flex-col gap-8 mt-15 mb-15">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-light">
+            Nuestra Historia
+          </h1>
+
+          <p className="text-xs md:text-sm text-brand-gray-mid">
+            Descubre los momentos, protagonistas y capítulos que han dado forma
+            al club.
+          </p>
+
+          <div ref={historiaButtonRef} className="mt-6 flex justify-center">
+            <HistoriaButton
+              onClick={() => setShowHistoria((current) => !current)}
+            />
+          </div>
+        </div>
+
+        {showHistoria && (
+          <NuestraHistoriaSection
+            onCollapse={() => {
+              setShowHistoria(false);
+
+              setTimeout(() => {
+                window.scrollTo({
+                  top: (historiaButtonRef.current?.offsetWidth ?? 0) - 100,
+                  behavior: "smooth",
+                });
+              }, 100);
+            }}
+          />
+        )}
+      </div>
 
       <section className="relative h-125 md:h-200 bg-cover bg-center flex mt-15 justify-start text-center bg-[url('https://www.fcbarcelona.com/photo-resources/2025/05/24/7f4cd67e-658f-431a-bbc0-63ad6f52610b/_GP13348.jpg?width=2400&height=1500')]">
         <div className="relative text-white pt-24 pl-24 md:pt-32 md:pl-80 max-w-xl">
@@ -180,6 +192,7 @@ function LoggedOut() {
           </h2>
         </div>
       </section>
+      <Socials />
     </>
   );
 }
