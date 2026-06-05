@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Countdown from "../../shared/components/Countdown";
 import {
@@ -17,6 +17,8 @@ function LoggedOut() {
   const navigate = useNavigate();
   const [category, setCategory] = useState<"varonil" | "femenil" | null>(null);
   const [showHistoria, setShowHistoria] = useState(false);
+  const historiaButtonRef = useRef<HTMLDivElement>(null);
+
   return (
     <>
       <section className="relative bg-cover bg-center min-h-screen flex items-center justify-center text-center bg-[url('https://www.fcbarcelona.com/photo-resources/2025/11/15/43dcea0d-71dc-414f-9bcc-4e827c927693/JCAG3702.jpg?width=3200&_gl=1*1t7pif5*_gcl_aw*R0NMLjE3NzMzNDE0MTcuQ2p3S0NBand5TW5OQmhCTkVpd0EtS2NndTVneXE2dEVQNGZldjVWZmNwa2dJRGZ0clpiZGxNZTVDZGNwTXo4UkNZUnFWVmZuM19GcW5Sb0NTNGdRQXZEX0J3RQ..*_gcl_dc*R0NMLjE3NzMzNDE0MTcuQ2p3S0NBand5TW5OQmhCTkVpd0EtS2NndTVneXE2dEVQNGZldjVWZmNwa2dJRGZ0clpiZGxNZTVDZGNwTXo4UkNZUnFWVmZuM19GcW5Sb0NTNGdRQXZEX0J3RQ..*_gcl_au*OTk4NjYyNjc0LjE3NzA5MjMxMDM.')]">
@@ -59,13 +61,27 @@ function LoggedOut() {
           </p>
         </div>
         <hr className="mt-15 border-brand-gray-light" />
-        <div className="flex justify-center py-8 md:py-10">
+        <div
+          ref={historiaButtonRef}
+          className="flex justify-center py-8 md:py-10"
+        >
           <HistoriaButton
             onClick={() => setShowHistoria((current) => !current)}
           />
         </div>
         {showHistoria && (
-          <NuestraHistoriaSection onCollapse={() => setShowHistoria(false)} />
+          <NuestraHistoriaSection
+            onCollapse={() => {
+              setShowHistoria(false);
+
+              setTimeout(() => {
+                window.scrollTo({
+                  top: (historiaButtonRef.current?.offsetWidth ?? 0) - 100,
+                  behavior: "smooth",
+                });
+              }, 100);
+            }}
+          />
         )}
         <p className="py-10 text-sm md:text-base font-sans text-brand-navy ">
           Lo Último
