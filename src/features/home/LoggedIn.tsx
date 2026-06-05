@@ -204,8 +204,6 @@ function LoggedIn() {
         )}
       </div>
 
-      <Socials />
-
       <section className="relative h-125 md:h-200 bg-cover bg-center flex items-center mt-15 justify-start text-center bg-[url('https://www.fcbarcelona.com/photo-resources/2025/05/24/7f4cd67e-658f-431a-bbc0-63ad6f52610b/_GP13348.jpg?width=2400&height=1500')]">
         <div className="relative text-white pt-24 pl-24 md:pt-32 md:pl-80 max-w-xl">
           <h2 className="text-2xl sm:text-4xl md:text-4xl font-bold mb-4 font-sans tracking-tight text-left">
@@ -246,6 +244,7 @@ function LoggedIn() {
           onClose={() => setShowConfirmation(false)}
         />
       )}
+      <Socials />
     </>
   );
 }
