@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import ProductoCard from "./ProductoCard";
 import PremiumWindow from "./PremiumWindow";
@@ -8,6 +9,7 @@ import AskPopUp from "../../../features/gestorAmigos/AskPopUp";
 import  {useUserInfo} from "./hooks/useUserInfo";
 
 function mapProducto(row: Record<string, unknown>) { // Mapea los datos de la fila a la estructura esperada por ProductoCard
+
   const categories = row.categories as { name?: string } | null | undefined;
   return {
     id: Number(row.id),
@@ -22,15 +24,21 @@ function mapProducto(row: Record<string, unknown>) { // Mapea los datos de la fi
 const Productos = () => {
   const session = useUserInfo();
   const [productos, setProductos] = useState<ReturnType<typeof mapProducto>[]>([]); // El tipo de productos se infiere a partir de la función mapProducto
+
+
   const [error, setError] = useState<string | null>(null);
   const [esPremium, setEsPremium] = useState(false);
   const [mostrarPremium, setMostrarPremium] = useState(false);
   const [monedas, setMonedas] = useState<number>(0);
   const [showStripe, setShowStripe] = useState(false);
   const [modal, setModal] = useState<{ title: string; message: React.ReactNode } | null>(null);
+
+
+
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState<ReturnType<typeof mapProducto> | null>(null);
   
+
 
   useEffect(() => {
     const run = async () => {
@@ -65,12 +73,18 @@ const Productos = () => {
 
     if (!session?.user?.id) {
       setModal({ title: "Aviso", message: "Debes iniciar sesión para comprar." });
+
+
+
       setMostrarConfirmacion(false);
       return;
     }
 
     if (monedas < producto.precio) {
       setModal({ title: "Aviso", message: `No tienes monedas suficientes. Tienes ${(monedas).toLocaleString('en-US')} monedas y el producto cuesta ${(producto.precio).toLocaleString('en-US')}.` });
+
+
+
       setMostrarConfirmacion(false);
       return;
     }
@@ -83,6 +97,10 @@ const Productos = () => {
 
     if (updateError) {
       setModal({ title: "Error", message: "Hubo un error al procesar tu compra. Por favor, intenta de nuevo." });
+
+
+
+
       setMostrarConfirmacion(false);
       return;
     }
@@ -99,6 +117,14 @@ const Productos = () => {
     setModal({
       title: "¡Compra exitosa!",
       message: <>Te quedan <span className="font-bold text-[#A50044]">{(monedas - producto.precio).toLocaleString('en-US')} monedas</span>.</>,
+
+
+
+
+
+
+
+
     });
     setMostrarConfirmacion(false);
     setProductoSeleccionado(null);
@@ -151,26 +177,13 @@ const Productos = () => {
 
   return (
     <div>
-      <div className="h-25 bg-[#001E44] w-full mb-8" />
-      <h1 className="text-4xl font-bold mt-4 px-20">Tienda FC Barcelona</h1>
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm p-8 mx-auto max-w-7xl mt-6">
-        <p className="text-[#555555] text-[1.15rem] leading-relaxed font-normal tracking-tight">
-          Canjea tus monedas por insignias digitales exclusivas para personalizar tu perfil de culé, o
-          participa en rifas increíbles para ganar viajes a Barcelona, tours por el Camp Nou, boletos VIP
-          o incluso la oportunidad de aparecer en el estadio durante un partido.
-        </p>
-        <p className="text-[#555555] text-[1.15rem] leading-relaxed font-normal tracking-tight mt-4">
-          ¡Demuestra tu pasión blaugrana y vive experiencias únicas! Més que un club.
-        </p>
-      </div>
-
       {error && (
         <p className="text-red-600" role="alert">
           {error}
         </p>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 px-20 pb-20">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-6 px-20 pb-20">
         {productos.map((producto) => (
           <ProductoCard
             key={producto.id}
