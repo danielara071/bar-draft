@@ -22,7 +22,7 @@ export const ReportStatsBar: React.FC<ReportStatsBarProps> = ({ stats, onViewRes
         <p className=" text-[2.8rem] font-bold text-white mt-1 leading-none">
           {stats.total.toLocaleString()}
         </p>
-        <p className=" text-[0.8rem] font-medium uppercase tracking-[0.5px] text-amber-400">
+        <p className=" text-[0.8rem] font-medium uppercase tracking-[0.5px] text-brand-yellow">
           Reportes totales
         </p>
       </div>

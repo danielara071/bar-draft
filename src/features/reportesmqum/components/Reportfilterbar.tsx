@@ -90,7 +90,7 @@ export const ReportFiltersBar: React.FC<ReportFiltersBarProps> = ({
         {/* ── Buscar ── */}
         <button
           onClick={handleSearch}
-          className="flex items-center justify-center gap-2 bg-amber-400 text-(--navy) border-none rounded-full py-3.5 px-7  text-base font-bold tracking-[0.5px] cursor-pointer whitespace-nowrap transition-all hover:bg-[#e08e00] hover:-translate-y-px active:translate-y-0"
+          className="flex items-center justify-center gap-2 bg-brand-yellow text-(--navy) border-none rounded-full py-3.5 px-7  text-base font-bold tracking-[0.5px] cursor-pointer whitespace-nowrap transition-all hover:bg-[#e08e00] hover:-translate-y-px active:translate-y-0"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <circle cx="11" cy="11" r="8" />
