@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search, Trash2 } from "lucide-react";
+import { AlertCircle, Plus, Search, Trash2 } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
 import useRifas from "../rifa_manager/hooks/useRifas";
 import RifaCard from "../rifa_manager/components/RifaCard";
@@ -16,6 +16,7 @@ const RifaManager = () => {
   const [rifando, setRifando] = useState<number | null>(null);
   const [rifaAEliminar, setRifaAEliminar] = useState<Rifa | null>(null);
   const [eliminando, setEliminando] = useState(false);
+  const [showSinParticipantes, setShowSinParticipantes] = useState(false);
 
   const filtered = rifas.filter((r) =>
     r.name.toLowerCase().includes(search.toLowerCase())
@@ -47,7 +48,7 @@ const RifaManager = () => {
     setRifando(null);
 
     if (error || !boletos || boletos.length === 0) {
-      alert("No hay participantes en esta rifa.");
+      setShowSinParticipantes(true);
       return;
     }
 
@@ -226,6 +227,31 @@ const RifaManager = () => {
           data={ganador}
           onClose={() => setGanador(null)}
         />
+      )}
+
+      {/* Sin participantes */}
+      {showSinParticipantes && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0d2b4d]/45 backdrop-blur-sm">
+          <div className="flex w-full max-w-sm flex-col items-center gap-5 rounded-[28px] bg-white p-8 shadow-2xl">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#EDBB00]/15">
+              <AlertCircle className="h-7 w-7 text-[#EDBB00]" strokeWidth={1.8} />
+            </div>
+
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-[#0d2b4d]">Sin participantes</h2>
+              <p className="mt-2 text-sm leading-relaxed text-slate-500">
+                Esta rifa no tiene boletos comprados aún. Espera a que haya participantes para poder realizar el sorteo.
+              </p>
+            </div>
+
+            <button
+              onClick={() => setShowSinParticipantes(false)}
+              className="w-full rounded-2xl bg-[#EDBB00] py-3 text-sm font-bold text-[#0d2b4d] transition hover:bg-[#d4a800] active:scale-95"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
       )}
 
       {/* Confirmación eliminar */}

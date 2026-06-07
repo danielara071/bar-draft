@@ -3,7 +3,7 @@ import { Search, CheckCircle, XCircle, Clock } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
 import useGanadores, { type Ganador } from "../hooks/useGanadores";
 
-const ESTADO_CONFIG = {
+const estadoVideo = {
   aceptado: {
     label: "Video Aceptado",
     className: "bg-green-100 text-green-700",
@@ -206,7 +206,7 @@ const GanadoresManager = () => {
               <p className="py-4 text-center text-xs text-slate-400">Sin resultados</p>
             ) : (
               historialFiltrado.map((g) => {
-                const cfg = ESTADO_CONFIG[g.estado];
+                const cfg = estadoVideo[g.estado];
                 return (
                   <div
                     key={g.id}
