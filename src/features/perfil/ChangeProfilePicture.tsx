@@ -84,6 +84,7 @@ export default function ChangeProfilePicture({
       <button 
         className="text-black bg-brand-yellow hover:bg-[#ffd11f] px-4 py-4 rounded-full text-md transition-colors" 
         onClick={() => setShowConfirm(true)}
+        data-cy="editar-foto-perfil"
       > 
         <FiEdit size={20} />
       </button>
@@ -109,6 +110,7 @@ export default function ChangeProfilePicture({
                     const isSelected = selectedImage === url;
                     return (
                       <button
+                      data-cy="nueva-foto-perfil"
                         key={url}
                         onClick={() => setSelectedImage(url)}
                         className={`relative aspect-square rounded-full overflow-hidden border-4 transition-all bg-gray-50 

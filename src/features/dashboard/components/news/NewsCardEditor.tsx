@@ -52,7 +52,7 @@ export default function NewsCardEditor({ article, isSelected, onToggle, onEdited
           />
         )}
        
-        <button className=" absolute top-0 left-0 bg-white rounded-full p-2 m-2" onClick={() => setEdit(true)}> <LuPencil className="text-brand-navy" /> </button>
+        <button className=" absolute top-0 left-0 bg-white rounded-full p-2 m-2" data-cy="edit-article" onClick={() => setEdit(true)}> <LuPencil className="text-brand-navy" /> </button>
         {isSelected ? (<button className=" absolute top-0 right-0 bg-brand-navy rounded-full p-2 m-2" onClick={() => console.log("edit")}> <GoCheck className="text-brand-white" /> </button>) : <div></div>}
       </div>
 
@@ -81,7 +81,7 @@ export default function NewsCardEditor({ article, isSelected, onToggle, onEdited
       )}
 
       {edit ? (
-      <EditArticleModal article={currArticle} onClose={() => setEdit(false)} onSave={(updated) => {handleSave(updated); onEdited();}} />) : (<div></div>)}
+      <EditArticleModal  article={currArticle} onClose={() => setEdit(false)} onSave={(updated) => {handleSave(updated); onEdited();}} />) : (<div></div>)}
 
     </div>
   );

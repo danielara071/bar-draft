@@ -129,6 +129,7 @@ const ReelInfoCard = ({
             setMessage(false);
           }}
           className="absolute right-5 top-5 cursor-pointer border  hover:border-black/20 border-slate-50  transition rounded-4xl"
+          data-cy="cancel-info"
         >
           <X color="gray" />
         </button>

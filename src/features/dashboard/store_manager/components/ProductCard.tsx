@@ -78,6 +78,7 @@ const ProductCard = ({
 
         <div className="flex items-center gap-2 lg:pl-4">
           <button
+            data-cy="edit-product-panel"
             type="button"
             onClick={onEdit}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0d2b4d] text-white transition hover:scale-105 hover:bg-[#091f38]"

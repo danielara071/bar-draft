@@ -70,6 +70,7 @@ export default function ChangeName({
     <div>
       <button 
         className="text-black bg-brand-yellow hover:bg-[#ffd11f] px-4 py-4 rounded-full text-md transition-colors" 
+        data-cy="editar-nombre-perfil"
         onClick={() => {
           setNewName(currentName);
           setErrorMessage(null);
@@ -94,6 +95,7 @@ export default function ChangeName({
             {/* Input de Texto */}
             <div className="mb-4">
               <input
+                data-cy="text-edit-nombre-perfil"
                 type="text"
                 maxLength={30}
                 value={newName}

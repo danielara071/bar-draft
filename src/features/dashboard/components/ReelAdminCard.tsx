@@ -51,7 +51,8 @@ const ReelAdminCard = ({
           <p className="text-brand-white text-sm font-bold absolute bottom-0 left-0 right-0 p-2">
             {caption}
           </p>
-          <p className="group-hover:opacity-100 opacity-0  text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <p className="group-hover:opacity-100 opacity-0  text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          data-cy="mas-info">
             Más info
           </p>
         </div>

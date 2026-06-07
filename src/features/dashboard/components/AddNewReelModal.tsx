@@ -88,6 +88,7 @@ const AddNewReelModal = ({ toggleCard, updated }: AddNewReelModalProps) => {
         onClick={(e) => e.stopPropagation()}
       >
         <button
+          data-cy="cancel"
           onClick={() => {
             toggleCard();
             setMessage(false);

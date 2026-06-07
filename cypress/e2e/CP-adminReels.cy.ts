@@ -1,0 +1,39 @@
+describe('adminReels', () => {
+
+beforeEach(() => {
+
+    cy.session('test-user', () => {
+
+      cy.request({
+        method: 'POST',
+        url: `${Cypress.env('VITE_SUPABASE_URL')}/auth/v1/token?grant_type=password`,
+        headers: {
+          apikey: Cypress.env('VITE_SUPABASE_ANON_KEY')
+        },
+        body: {
+          email: Cypress.env('TEST_EMAIL'),
+          password: Cypress.env('TEST_PASSWORD')
+        }
+      }).then(({ body }) => {
+
+        window.localStorage.setItem(
+          'sb-vsywrimuzdnfyztreolz-auth-token',
+          JSON.stringify(body)
+        )
+
+      })
+
+    })
+
+  })
+  it('CP-080 Pop up agregar Reel', () => {
+    cy.visit('/dashboard/reels')
+    cy.get('[data-cy="add-new-reel"]').click()
+    cy.get('[data-cy="cancel"]').click()
+  })
+  it('CP-081 Pop up información de Reel', () => {
+    cy.visit('/dashboard/reels')
+    cy.get('[data-cy="mas-info"]').first().click()
+    cy.get('[data-cy="cancel-info"]').click()
+  })
+})
