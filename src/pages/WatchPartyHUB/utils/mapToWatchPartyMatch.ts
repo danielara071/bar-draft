@@ -12,6 +12,7 @@ export function mapToWatchPartyMatch(wp: WatchParty): WatchPartyMatch {
 
   return {
     id:          wp.fixture_id,
+    fixture_id: wp.fixture_id,
     type:        wp.fixture_id.startsWith("femenil") ? "femenil" : "varonil",
     title:       `${wp.home_team} vs ${wp.away_team}`,
     competition: wp.name,

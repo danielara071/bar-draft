@@ -47,7 +47,6 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
         .from("watch_parties")
         .select("*")
         .in("created_by", creatorIds)
-        .gte("match_date", new Date().toISOString())
         .order("match_date", { ascending: true })
         .limit(10);
 
@@ -118,7 +117,7 @@ export function useFriendWatchParties(userId: string | undefined): UseFriendWatc
           if (!mountedRef.current) return;
           const updated = payload.new as { fixture_id: string; status: string };
           if (updated.status === "done" || updated.status === "finished") {
-            setParties((prev) => prev.filter((p) => p.id !== updated.fixture_id));
+            setParties((prev) => prev.filter((p) => p.fixture_id !== updated.fixture_id));
           }
         }
       )

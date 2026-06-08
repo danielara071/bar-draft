@@ -208,7 +208,7 @@ export default function WatchPartyPage() {
           title="En Vivo"
           matches={publicParties}
           onCardClick={handleCardClick}
-          isLoading={publicLoading}
+          isLoading={publicLoading}  // ← agregar esto
         />
       </div>
 

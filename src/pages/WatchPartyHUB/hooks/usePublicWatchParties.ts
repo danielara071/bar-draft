@@ -93,7 +93,7 @@ export function usePublicWatchParties(): UsePublicWatchPartiesReturn {
           if (!mountedRef.current) return;
           const updated = payload.new as { fixture_id: string; status: string };
           if (updated.status === "done" || updated.status === "finished") {
-            setParties((prev) => prev.filter((p) => p.id !== updated.fixture_id));
+            setParties((prev) => prev.filter((p) => p.fixture_id !== updated.fixture_id));
           }
         }
       )

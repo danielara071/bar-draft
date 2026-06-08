@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import {useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePredicciones } from "../hooks/usePredicciones";
 import type { WatchPartyMatch } from "../interfaces/index.interfaces";
+import { useJugadores } from "../hooks/useJugadores";
 
 type GolesRango = "0-1" | "2-3" | "4-5" | "6+";
 type MedioTiempo = 1 | 0 | -1;
@@ -164,6 +165,9 @@ export function PrediccionesModal({ match, onClose }: PrediccionesModalProps) {
   const [primerGol, setPrimerGol] = useState("");
   const [medioTiempo, setMedioTiempo] = useState<MedioTiempo | null>(null);
 
+  const { jugadores, isSearching, buscar, limpiar } = useJugadores();
+  const [dropdownAbierto, setDropdownAbierto] = useState(false);
+  const inputRef = useRef<HTMLDivElement>(null);
   // Al abrir el modal, verificar si ya existe predicción para este partido
   useEffect(() => {
     if (!match) return;
@@ -267,13 +271,60 @@ export function PrediccionesModal({ match, onClose }: PrediccionesModalProps) {
 
             {/* Primer gol de... */}
             <Section label="Primer gol de...">
-              <input
-                type="text"
-                value={primerGol}
-                onChange={(e) => setPrimerGol(e.target.value)}
-                placeholder="Nombre del jugador"
-                className="w-full border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2.5 text-sm bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white outline-none focus:border-[#A3205A]"
-              />
+              <div className="relative" ref={inputRef}>
+                <input
+                  type="text"
+                  value={primerGol}
+                  onChange={(e) => {
+                    setPrimerGol(e.target.value);
+                    buscar(e.target.value);
+                    setDropdownAbierto(true);
+                  }}
+                  onFocus={() => {
+                    if (primerGol.length >= 2) setDropdownAbierto(true);
+                  }}
+                  onBlur={() => {
+                    // Delay para permitir click en dropdown
+                    setTimeout(() => setDropdownAbierto(false), 150);
+                  }}
+                  placeholder="Nombre del jugador"
+                  autoComplete="off"
+                  className="w-full border border-neutral-200 dark:border-neutral-700 rounded-xl px-3 py-2.5 text-sm bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white outline-none focus:border-[#A3205A]"
+                />
+
+                {/* Spinner de búsqueda */}
+                {isSearching && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                    <div className="w-3.5 h-3.5 rounded-full border-2 border-[#A3205A] border-t-transparent animate-spin" />
+                  </div>
+                )}
+
+                {/* Dropdown de sugerencias */}
+                {dropdownAbierto && jugadores.length > 0 && (
+                  <ul className="absolute z-10 mt-1 w-full bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-xl shadow-lg overflow-hidden max-h-52 overflow-y-auto">
+                    {jugadores.map((j) => (
+                      <li
+                        key={j.id}
+                        onMouseDown={() => {
+                          setPrimerGol(j.nombre);
+                          limpiar();
+                          setDropdownAbierto(false);
+                        }}
+                        className="flex items-center justify-between px-3 py-2.5 cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-700 transition-colors"
+                      >
+                        <span className="text-sm text-neutral-900 dark:text-white font-medium">
+                          {j.nombre}
+                        </span>
+                        {j.equipo && (
+                          <span className="text-xs text-neutral-400 dark:text-neutral-500 ml-2 shrink-0">
+                            {j.equipo}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </Section>
 
             {/* Total de goles */}
