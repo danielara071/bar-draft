@@ -1,3 +1,5 @@
+import { formatNumber } from "@/lib/utils";
+
 type AttemptBarProps = {
   label: string;
   value: number;
@@ -22,7 +24,7 @@ export default function AttemptBar({ label, value, total, max }: AttemptBarProps
           style={{ width: `${barWidth}%`, minWidth: value > 0 ? "2rem" : "0" }}
         >
           {value > 0 && (
-            <span className="text-white text-xs font-semibold">{value}</span>
+            <span className="text-white text-xs font-semibold">{formatNumber(value)}</span>
           )}
         </div>
       </div>

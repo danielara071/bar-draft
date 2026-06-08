@@ -1,5 +1,6 @@
 import type { TeamType } from "../types";
 import type { ScorerCardData } from "../types";
+import { formatNumber } from "@/lib/utils";
 import TeamCard from "./TeamCard";
 import PlayerImage from "./PlayerImage";
 import WhiteLineChart from "./WhiteLineChart";
@@ -18,7 +19,7 @@ function ScorerCard({ teamType, data }: { teamType: TeamType; data: ScorerCardDa
       <h3 className="text-xl font-bold text-center mb-3">{data.player.nombre}</h3>
       <PlayerImage src={data.player.imagen_url} alt={data.player.nombre} />
       <p className="mt-4 text-left text-base text-lg">
-        <span className="font-bold">Goles:</span> {data.totalGoles}
+        <span className="font-bold">Goles:</span> {formatNumber(data.totalGoles)}
       </p>
       <WhiteLineChart data={data.series} />
     </TeamCard>

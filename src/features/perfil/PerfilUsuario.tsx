@@ -1,4 +1,5 @@
 import NivelFan from "./NivelFan";
+import { formatNumber } from "@/lib/utils";
 
 type PerfilUsuarioProps = {
   username: string;
@@ -109,17 +110,17 @@ export default function PerfilUsuario({
       {/* Stats */}
       <div className="grid grid-cols-3 text-center mt-6 text-4xl font-bold">
         <div>
-          <p className="text-yellow-400">{puntos}</p>
+          <p className="text-yellow-400">{formatNumber(puntos)}</p>
           <p className="text-xl text-gray-300">Puntos Totales</p>
         </div>
 
         <div>
-          <p className="text-yellow-400">{logros}</p>
+          <p className="text-yellow-400">{formatNumber(logros)}</p>
           <p className="text-xl text-gray-300 ">Logros</p>
         </div>
 
         <div>
-          <p className="text-yellow-400">{predicciones}</p>
+          <p className="text-yellow-400">{formatNumber(predicciones)}</p>
           <p className="text-xl text-gray-300">Predicciones Acertadas</p>
         </div>
       </div>

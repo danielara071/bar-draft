@@ -1,5 +1,6 @@
 import React from "react";
 import type { ReportStats } from "../interfaces/errorReports";
+import { formatNumber } from "@/lib/utils";
 
 interface ReportStatsBarProps {
   stats: ReportStats;
@@ -44,7 +45,7 @@ export const ReportStatsBar: React.FC<ReportStatsBarProps> = ({ stats, onViewRes
           </span>
         </div>
         <p className=" text-[3rem] font-bold text-brand-navy leading-none ml-1 ">
-          {stats.resolved}
+          {formatNumber(stats.resolved)}
         </p>
         <span className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -66,7 +67,7 @@ export const ReportStatsBar: React.FC<ReportStatsBarProps> = ({ stats, onViewRes
           </span>
         </div>
         <p className=" text-[3rem] font-bold text-brand-navy leading-none ml-1 ">
-          {stats.pending}
+          {formatNumber(stats.pending)}
         </p>
       </div>
 

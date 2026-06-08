@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { formatNumber } from "@/lib/utils";
 import Countdown from "../../shared/components/Countdown";
 import {
   PrimaryButton,
@@ -66,7 +67,7 @@ function LoggedIn() {
             />
             <div className="flex-1 mx-8">
               <p className="text-end px-2 pb-1 text-sm md:text-base font-sans">
-                {profile?.puntos} / {profile ? profile.nivel * levelXP : 0}{" "}
+                {formatNumber(profile?.puntos ?? 0)} / {formatNumber(profile ? profile.nivel * levelXP : 0)}{" "}
                 XP{" "}
               </p>
               <div className="w-full bg-brand-gray-light rounded-md h-5">
@@ -78,7 +79,7 @@ function LoggedIn() {
               <p className="pt-1 text-sm md:text-base font-sans">
                 <span>Necesitas </span>
                 <span className="text-brand-crimson">
-                  {profile ? levelXP - (profile.puntos % levelXP) : 0} XP
+                  {formatNumber(profile ? levelXP - (profile.puntos % levelXP) : 0)} XP
                   más{" "}
                 </span>
                 <span>
@@ -96,7 +97,7 @@ function LoggedIn() {
           <div className="flex items-center justify-start gap-20 my-15 mx-15">
             <div>
               <p className="text-brand-navy text-3xl md:text-4xl font-bold">
-                {profile?.puntos ?? 0}
+                {formatNumber(profile?.puntos ?? 0)}
               </p>
               <p className="text-sm text-brand-gray-mid font-sans">
                 Puntos Totales
@@ -105,14 +106,14 @@ function LoggedIn() {
 
             <div>
               <p className="text-brand-navy text-3xl md:text-4xl font-bold">
-                {profile?.logros ?? 0}
+                {formatNumber(profile?.logros ?? 0)}
               </p>
               <p className="text-sm text-brand-gray-mid font-sans">Logros</p>
             </div>
 
             <div>
               <p className="text-brand-navy text-3xl md:text-4xl font-bold">
-                {profile?.predicciones ?? 0}
+                {formatNumber(profile?.predicciones ?? 0)}
               </p>
               <p className="text-sm text-brand-gray-mid font-sans">
                 Predicciones Acertadas

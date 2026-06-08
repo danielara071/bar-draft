@@ -1,5 +1,6 @@
 import { ShoppingBag, Trophy } from "lucide-react";
 import type { Rifa } from "../interfaces/rifa";
+import { formatNumber } from "@/lib/utils";
 
 interface RifaCardProps {
   rifa: Rifa;
@@ -66,13 +67,13 @@ const RifaCard = ({ rifa, onTerminar, onRifar, onEliminar }: RifaCardProps) => {
                 <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
                   Boletos Vendidos
                 </p>
-                <p className="text-sm font-bold text-[#EDBB00]">{rifa.boletos_vendidos}</p>
+                <p className="text-sm font-bold text-[#EDBB00]">{formatNumber(rifa.boletos_vendidos)}</p>
               </div>
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
                   Boletos Disponibles
                 </p>
-                <p className="text-sm font-bold text-[#EDBB00]">{disponibles}</p>
+                <p className="text-sm font-bold text-[#EDBB00]">{formatNumber(disponibles)}</p>
               </div>
             </div>
           )}

@@ -1,5 +1,6 @@
 import type { TeamType } from "../types";
 import type { AssisterCardData } from "../types";
+import { formatNumber } from "@/lib/utils";
 import TeamCard from "./TeamCard";
 import PlayerImage from "./PlayerImage";
 
@@ -24,7 +25,7 @@ function AssisterCard({
       <PlayerImage src={data.player.imagen_url} alt={data.player.nombre} />
       <p className="mt-4 text-center text-white/90">Mayor asistidor(a) con</p>
       <p className="text-center text-6xl leading-none font-extrabold mt-1">
-        {data.totalAsistencias}
+        {formatNumber(data.totalAsistencias)}
       </p>
       <p className="text-center text-xl mt-1">asistencias</p>
     </TeamCard>

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import  useSession  from "../../hooks/useSession";
 import { useProfileWithRefetch } from "../../hooks/useProfile";
 import { LoginButton } from "../Buttons";
+import { formatNumber } from "@/lib/utils";
 
 const navItems = [
   { name: "Inicio",      path: "/" },
@@ -84,7 +85,7 @@ const Navbar = () => {
           {isLoggedIn ? (
             <div className="flex items-center gap-1.5 rounded-full px-3 py-1">
               <span>🪙</span>
-              <span className="text-sm font-semibold">{profile?.monedas} Monedas</span>
+              <span className="text-sm font-semibold">{formatNumber(profile?.monedas ?? 0)} Monedas</span>
             </div>
           ) : (
             <LoginButton onClick={() => navigate("/login")} size="sm">Iniciar Sesión</LoginButton>

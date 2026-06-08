@@ -44,7 +44,7 @@ const ProductCard = ({
                   Precio
                 </p>
                 <p className="mt-1 text-sm font-bold tabular-nums text-[#0d2b4d] md:text-base">
-                  ${price.toFixed(2)}
+                  ${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
               </div>
 

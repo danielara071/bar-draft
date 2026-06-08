@@ -1,3 +1,5 @@
+import { formatNumber } from "@/lib/utils";
+
 function PalmaresBanner({ count, label }: { count: number; label: string }) {
   return (
     <article
@@ -7,7 +9,7 @@ function PalmaresBanner({ count, label }: { count: number; label: string }) {
       }}
     >
       <p className="text-3xl md:text-4xl font-extrabold tracking-tight" style={{ color: "#D4A017" }}>
-        {count}
+        {formatNumber(count)}
       </p>
       <p className="mt-1 text-xl md:text-base font-medium text-white">{label}</p>
     </article>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Crown, Users, Ticket, X, MapPin, Star, Plane } from "lucide-react";
+import { formatNumber } from "@/lib/utils";
 
 export type RifaTienda = {
   id: number;
@@ -222,7 +223,7 @@ const RifaDetalleModal = ({
                 />
               </div>
               <span className="text-[10px] text-gray-400">
-                {rifa.boletos_vendidos} / {rifa.total_boletos} boletos vendidos
+                {formatNumber(rifa.boletos_vendidos)} / {formatNumber(rifa.total_boletos)} boletos vendidos
               </span>
             </div>
           )}
@@ -458,7 +459,7 @@ const RifaCard = ({
                 />
               </div>
               <span className="text-[10px] text-gray-400">
-                {rifa.boletos_vendidos} / {rifa.total_boletos} boletos vendidos
+                {formatNumber(rifa.boletos_vendidos)} / {formatNumber(rifa.total_boletos)} boletos vendidos
               </span>
             </div>
           )}
