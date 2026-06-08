@@ -5,9 +5,10 @@ interface TrophyModalProps {
   trophy:    TrophyWithCapture
   onCapture: (trophyId: string) => Promise<void>
   onClose:   () => void
+  onGoToArmario?: () => void   // nueva prop: navega al hub y hace scroll al armario
 }
 
-export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalProps) {
+export default function TrophyModal({ trophy, onCapture, onClose, onGoToArmario }: TrophyModalProps) {
   const [capturing, setCapturing] = useState(false)
   const [captured, setCaptured]   = useState(trophy.captured)
 
@@ -20,6 +21,22 @@ export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalP
       onClose()
     } finally {
       setCapturing(false)
+    }
+  }
+
+  /**
+   * Navega al ARHub y hace scroll hasta el elemento #armario.
+   * Si se pasa `onGoToArmario` el padre maneja la navegación;
+   * de lo contrario usamos la ancla directamente (SPA hash-scroll).
+   */
+  const handleGoToArmario = () => {
+    onClose()
+    if (onGoToArmario) {
+      onGoToArmario()
+    } else {
+      // Fallback: navega a la raíz con el ancla #armario.
+      // Ajusta la ruta si tu ARHub vive en otra URL.
+      window.location.href = '/#armario'
     }
   }
 
@@ -65,22 +82,34 @@ export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalP
           <p className="mb-6 text-sm leading-relaxed text-white/65">{trophy.descripcion}</p>
         )}
 
-        {/* Estado: ya capturado (solo si trophy.captured era true al abrir) */}
+        {/* Estado: ya capturado → botón para ir al armario */}
         {trophy.captured ? (
-          <div className="flex items-center justify-center gap-2 rounded-xl bg-[#A50044]/20 px-4 py-4">
-            <span className="text-lg">✅</span>
-            <span className="font-sans text-sm font-semibold text-white/80">
-              ¡Ya tienes este trofeo!
-            </span>
-            {trophy.fecha_obtencion && (
-              <span className="ml-auto font-sans text-xs text-white/35">
-                {new Date(trophy.fecha_obtencion).toLocaleDateString('es-ES', {
-                  day:   'numeric',
-                  month: 'short',
-                  year:  'numeric',
-                })}
+          <div className="flex flex-col gap-3">
+            {/* Indicador sutil de que ya fue capturado */}
+            <div className="flex items-center gap-2 rounded-xl bg-white/5 px-4 py-3">
+              <span className="text-base">✅</span>
+              <span className="font-sans text-xs text-white/50">
+                Trofeo obtenido
               </span>
-            )}
+              {trophy.fecha_obtencion && (
+                <span className="ml-auto font-sans text-xs text-white/30">
+                  {new Date(trophy.fecha_obtencion).toLocaleDateString('es-ES', {
+                    day:   'numeric',
+                    month: 'short',
+                    year:  'numeric',
+                  })}
+                </span>
+              )}
+            </div>
+
+            {/* CTA principal: ir al armario */}
+            <button
+              onClick={handleGoToArmario}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#EDBB00] py-4 font-sans text-base font-bold text-[#0A1535] transition-opacity hover:opacity-90 active:opacity-75"
+            >
+              <WardrobeIcon />
+              Da click para consultar en tu armario
+            </button>
           </div>
         ) : (
           /* Botón de captura */
@@ -104,12 +133,28 @@ export default function TrophyModal({ trophy, onCapture, onClose }: TrophyModalP
   )
 }
 
+// ── Iconos ────────────────────────────────────────────────────────────────────
+
 function TrophyIcon() {
   return (
     <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
       <path
         d="M6 2h12v6a6 6 0 01-12 0V2zM4 2h2M18 2h2M4 4H2v2a4 4 0 004 4M20 4h2v2a4 4 0 01-4 4M12 14v4M8 22h8M9 18h6"
         stroke="#EDBB00"
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function WardrobeIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M4 3h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1V4a1 1 0 011-1zM12 3v18M8 10h1M15 10h1"
+        stroke="#0A1535"
         strokeWidth={1.8}
         strokeLinecap="round"
         strokeLinejoin="round"

@@ -9,8 +9,9 @@ import TrophyModal from './TrophyModal'
 import { getDistanceMeters, getBearing } from '../../../lib/geoUtils'
 
 interface ARSceneProps {
-  userId: string
-  onBack: () => void
+  userId:          string
+  onBack:          () => void
+  onGoToArmario?:  () => void   // ← nueva prop: navega al hub y hace scroll al armario
 }
 
 const FOV_DEGREES = 30
@@ -20,7 +21,7 @@ function angleDiff(a: number, b: number): number {
   return diff > 180 ? 360 - diff : diff
 }
 
-export default function ARScene({ userId, onBack }: ARSceneProps) {
+export default function ARScene({ userId, onBack, onGoToArmario }: ARSceneProps) {
   const { userCoords, error: gpsError } = useGPS(true)
   const { compassRef, compassReady }    = useCompass(true)
   const [modalOpen, setModalOpen]       = useState(false)
@@ -42,7 +43,6 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
     onBack()
   }
 
-  
   useEffect(() => {
     if (!userCoords || nearbyWorldObjects.length === 0) return
 
@@ -100,7 +100,7 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
     inFovRef.current = null
   }
 
-  // Error de GPS: no se puede usar la escena AR sin ubicación. Mostrar mensaje y botón de volver al hub.
+  // ── Error GPS ────────────────────────────────────────────────────
   if (gpsError) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center bg-linear-to-br from-[#0f0f1a] to-[#1a0f2e] font-sans">
@@ -116,7 +116,7 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
     )
   }
 
-
+  // ── Esperando GPS ────────────────────────────────────────────────
   if (!userCoords) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center bg-linear-to-br from-[#0f0f1a] to-[#1a0f2e] font-sans">
@@ -145,7 +145,7 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
         onSelectObject={(obj) => selectTrophy(obj.id)}
       />
 
-      {/* Botón atrás flotante — siempre visible, apaga cámara al salir */}
+      {/* Botón atrás flotante */}
       <button
         onClick={handleBack}
         className="fixed top-4 left-4 z-40 flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm text-white text-xl leading-none hover:bg-black/60 transition-colors"
@@ -154,7 +154,7 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
         ←
       </button>
 
-      {/* Panel "Coleccióname" — solo si NO está capturado y NO hay modal abierto */}
+      {/* Panel "Coleccióname" */}
       <ARsystem
         nearbyCount={nearbyWorldObjects.length}
         compassDeg={compassRef.current}
@@ -177,12 +177,13 @@ export default function ARScene({ userId, onBack }: ARSceneProps) {
         onCollect={() => setModalOpen(true)}
       />
 
-      {/* Modal: capturado  */}
+      {/* Modal: trofeo seleccionado */}
       {modalOpen && selectedTrophy && (
         <TrophyModal
           trophy={selectedTrophy}
           onCapture={capture}
           onClose={selectedTrophy.captured ? handleBack : handleCloseAll}
+          onGoToArmario={onGoToArmario}   // ← se pasa tal cual desde el hub
         />
       )}
     </div>

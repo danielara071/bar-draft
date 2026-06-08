@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import ARScene from '../components/ARScene'
 import HeroSection from '../components/HeroSection'
 import ColeccionHeader from '../components/ColectionHeader'
@@ -11,9 +11,28 @@ interface ARHubProps {
 
 export default function ARHub({ userId }: ARHubProps) {
   const [arActive, setArActive] = useState(false)
+  const armarioRef = useRef<HTMLDivElement>(null)
   const { allTrophies, collected, totalTrophies, progressPct, loading } = useColeccion(userId)
 
-  if (arActive) return <ARScene userId={userId} onBack={() => setArActive(false)} />
+  const scrollToArmario = () => {
+    armarioRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const handleGoToArmario = () => {
+    setArActive(false)
+    // requestAnimationFrame garantiza que el hub ya está montado antes de hacer scroll
+    requestAnimationFrame(scrollToArmario)
+  }
+
+  if (arActive) {
+    return (
+      <ARScene
+        userId={userId}
+        onBack={() => setArActive(false)}
+        onGoToArmario={handleGoToArmario}
+      />
+    )
+  }
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#002244] font-serif text-white">
@@ -28,7 +47,11 @@ export default function ARHub({ userId }: ARHubProps) {
             progressPct={progressPct}
             loading={loading}
           />
-          <Armario trophies={allTrophies} loading={loading} />
+
+          {/* ref para scroll programático + id para hash #armario */}
+          <div ref={armarioRef} id="armario" className="scroll-mt-6">
+            <Armario trophies={allTrophies} loading={loading} />
+          </div>
         </div>
       </section>
 
