@@ -109,6 +109,7 @@ export function useWatchPartyModal(
     // Construir el WatchPartyMatch para pasarlo a PrediccionesModal
     const newMatch: WatchPartyMatch = {
       id: fixture.fixture_id,
+      fixture_id: fixture.fixture_id, // ← agregar esta línea
       type: fixture.category,
       title: `${fixture.homeTeam} vs ${fixture.awayTeam}`,
       competition: fixture.competition,

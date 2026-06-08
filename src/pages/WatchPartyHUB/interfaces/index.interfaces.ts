@@ -47,7 +47,7 @@ export interface Friendship {
 
 export interface WatchPartyMatch {
   id:          string;
-  fixture_id: string;
+  fixture_id: string ;
   type:        MatchType;
   title:       string;
   competition: string;
