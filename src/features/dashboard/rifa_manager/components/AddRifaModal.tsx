@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { X, UploadCloud } from "lucide-react";
+import { X } from "lucide-react";
 import { supabase } from "@/shared/services/supabaseClient";
 
 interface AddRifaModalProps {
@@ -196,7 +196,7 @@ const AddRifaModal = ({ onClose, onCreated }: AddRifaModalProps) => {
               </label>
               <input
                 type="number"
-                min={0}
+                min={1}
                 value={costoMonedas}
                 onChange={(e) => setCostoMonedas(Number(e.target.value))}
                 className="w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-[#0d2b4d]"
@@ -258,17 +258,33 @@ const AddRifaModal = ({ onClose, onCreated }: AddRifaModalProps) => {
             <label className="mb-2 block text-sm font-semibold text-slate-700">
               Agrega imagen
             </label>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-slate-500 transition hover:border-[#0d2b4d] hover:bg-slate-100"
+            <div
+              onClick={() => !imagePreview && fileInputRef.current?.click()}
+              className="relative w-full min-h-[100px] rounded-xl border border-gray-200 overflow-hidden cursor-pointer hover:bg-gray-50 transition"
             >
-              <UploadCloud className="h-8 w-8" />
-              <span className="text-sm font-medium">
-                {imageFile ? imageFile.name : "Sube tu imagen..."}
-              </span>
-              <span className="text-xs text-slate-400">PNG, JPG, WEBP — máx. 5 MB</span>
-            </button>
+              {imagePreview ? (
+                <>
+                  <img src={imagePreview} alt="Vista previa" className="w-full object-contain max-h-44" />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      URL.revokeObjectURL(imagePreview);
+                      setImageFile(null);
+                      setImagePreview("");
+                    }}
+                    className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full w-6 h-6 text-xs flex items-center justify-center"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center h-24 text-gray-400 text-sm gap-1">
+                  <span className="material-symbols-outlined text-2xl">upload</span>
+                  <span>Haz clic para subir una imagen</span>
+                </div>
+              )}
+            </div>
             <input
               ref={fileInputRef}
               type="file"
@@ -276,11 +292,6 @@ const AddRifaModal = ({ onClose, onCreated }: AddRifaModalProps) => {
               className="hidden"
               onChange={handleFileChange}
             />
-            {imagePreview && (
-              <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200">
-                <img src={imagePreview} alt="Vista previa" className="h-40 w-full object-contain" />
-              </div>
-            )}
           </div>
 
           {errorMsg && (
