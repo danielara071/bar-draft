@@ -62,7 +62,7 @@ const Grid = ({ guesses, currentGuess, dailyWord }: GridProps) => {
               return (
                 <div
                   key={colIndex}
-                  className={`flex items-center justify-center w-[62px] h-[62px] border-0 border-gray rounded text-2xl font-bold uppercase ${colorClass}`}
+                  className={`flex items-center justify-center w-[48px] h-[48px] sm:w-[62px] sm:h-[62px] border-0 border-gray rounded text-xl sm:text-2xl font-bold uppercase ${colorClass}`}
                 >
                   {letter}
                 </div>

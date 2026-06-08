@@ -62,7 +62,7 @@ function Wordle() {
 };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-6 bg-[#002244]">
+    <div className="flex flex-col items-center justify-center min-h-screen gap-4 py-4 bg-[#002244] overflow-y-auto">
       <div className="relative w-full flex items-center justify-center">
         <h1 className='text-3xl font-extrabold text-white'>Barca Wordle</h1>
         <div className="absolute left-1/2 translate-x-50 flex gap-3">
