@@ -27,15 +27,16 @@ const Keyboard = ({ onKeyPress, letterStates }: KeyboardProps) => {
   return (
     <div className="flex flex-col gap-2 px-2 w-full max-w-[500px] mx-auto">
       {KEYBOARD_ROWS.map((row, rowIndex) => (
-        <div key={rowIndex} className="flex justify-center gap-[6px] w-full">
+        <div key={rowIndex} className="flex justify-center gap-[5px] w-full">
           {row.map((key) => {
             const label = key === "Backspace" ? "⌫" : key;
             const bgClass = letterStates[key] ?? 'bg-gray-500 hover:bg-gray-700';
+            const isSpecial = key === "Enter" || key === "Backspace";
             return (
               <button
                 key={key}
                 onClick={() => onKeyPress(key.toUpperCase())}
-                className={`font-bold border-0 h-[58px] w-[58px] px-3 cursor-pointer ${bgClass} rounded text-white text-xs uppercase`}
+                className={`font-bold border-0 h-[45px] sm:h-[58px] min-w-0 px-1 cursor-pointer ${bgClass} rounded text-white text-xs uppercase ${isSpecial ? 'flex-[1.5]' : 'flex-1'}`}
               >
                 {label}
               </button>
