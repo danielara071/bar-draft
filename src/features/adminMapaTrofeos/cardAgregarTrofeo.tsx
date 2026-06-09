@@ -94,30 +94,52 @@ function CardAgregarTrofeo({
               {/*Fin Columnas*/}
               <label className="text-sm text-brand-yellow font-sans">COORDENADAS</label>
               <div className="grid grid-cols-2 gap-8 mt-4 mb-4">
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm text-brand-yellow font-sans ">
-                    Latitud
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="100000"
-                    value={latitud}
-                    onChange={(e) => setLatitud(parseInt(e.target.value) || 0)}
-                    className="w-full bg-white text-gray-500 rounded-full py-3 px-6 outline-none focus:ring-2 focus:ring-[#f4bd0e]"
-                    />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm text-brand-yellow">
-                    Longitud
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="100000"
-                    value={longitud}
-                    onChange={(e) => setLongitud(parseInt(e.target.value) || 0)}
-                    className="w-full bg-white text-gray-500 rounded-full py-3 px-6 outline-none focus:ring-2 focus:ring-[#f4bd0e]"
-                   />
-                </div>
+               <div className="flex flex-col gap-2">
+  <label className="text-sm text-brand-yellow font-sans">
+    Latitud
+  </label>
+  <input
+    type="number"
+    inputMode="decimal"
+    placeholder="100000"
+    value={latitud || ""}
+    onChange={(e) => {
+      const val = e.target.value;
+      // Permite números negativos, dígitos, un punto y más dígitos
+      if (/^-?\d*\.?\d*$/.test(val)) {
+        setLatitud(Number(val)); 
+      }
+    }}
+    onKeyDown={(e) => {
+      const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "-", "."];
+      if (!allowed.includes(e.key) && !/^\d$/.test(e.key)) e.preventDefault();
+    }}
+    className="w-full bg-white text-gray-500 rounded-full py-3 px-6 outline-none focus:ring-2 focus:ring-[#f4bd0e]"
+  />
+</div>
+
+<div className="flex flex-col gap-2">
+  <label className="text-sm text-brand-yellow">
+    Longitud
+  </label>
+  <input
+    type="number"
+    inputMode="decimal"
+    placeholder="100000"
+    value={longitud || ""}
+    onChange={(e) => {
+      const val = e.target.value;
+      if (/^-?\d*\.?\d*$/.test(val)) {
+        setLongitud(Number(val));
+      }
+    }}
+    onKeyDown={(e) => {
+      const allowed = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab", "-", "."];
+      if (!allowed.includes(e.key) && !/^\d$/.test(e.key)) e.preventDefault();
+    }}
+    className="w-full bg-white text-gray-500 rounded-full py-3 px-6 outline-none focus:ring-2 focus:ring-[#f4bd0e]"
+  />
+</div>
               </div>
               {/*botones*/}
               <div className="flex justify-between items-center mt-8">
