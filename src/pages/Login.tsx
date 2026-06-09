@@ -26,15 +26,6 @@ const Index = () => {
     });
   };
 
-  const signInSpotify = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "spotify",
-      options: {
-        redirectTo: `${window.location.origin}`,
-      },
-    });
-  };
-
   return (
     <div className="h-dvh overflow-hidden bg-white">
       <div className="grid h-full grid-cols-1 lg:grid-cols-2">
@@ -70,14 +61,6 @@ const Index = () => {
                 logoAlt="Google"
                 className="flex w-full items-center justify-center gap-3 rounded-full border border-brand-gray-light bg-white px-6 py-2 text-lg font-semibold text-brand-black transition hover:bg-gray-50"
                 logoClassName="h-10 w-auto"
-              />
-              <SignInButton
-                onClick={signInSpotify}
-                label="Continuar con Spotify"
-                logoSrc="/Primary_Logo_White_RGB.svg"
-                logoAlt="Spotify"
-                className="flex w-full cursor-default items-center justify-center gap-3 rounded-full bg-green-500 px-6 py-4 text-lg font-semibold text-white transition hover:bg-green-600"
-                logoClassName="h-6 w-auto"
               />
             </div>
 
