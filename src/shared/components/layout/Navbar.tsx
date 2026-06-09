@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ShieldCheck } from "lucide-react";
 import  useSession  from "../../hooks/useSession";
 import { useProfileWithRefetch } from "../../hooks/useProfile";
+import { useUserRole } from "@/auth/hooks/useUserRole";
 import { LoginButton } from "../Buttons";
 import { formatNumber } from "@/lib/utils";
 
@@ -20,7 +22,9 @@ const navItems = [
 const Navbar = () => {
   const session = useSession();
   const { profile, refetch } = useProfileWithRefetch();
+  const { role } = useUserRole(session?.user.id);
   const isLoggedIn = session !== null;
+  const isAdmin = role === "admin";
   const navigate = useNavigate();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -91,6 +95,18 @@ const Navbar = () => {
             <LoginButton onClick={() => navigate("/login")} size="sm">Iniciar Sesión</LoginButton>
           )}
 
+          {isAdmin && (
+            <Link
+              to="/dashboard/reportes"
+              aria-label="Entrar al panel admin"
+              title="Panel admin"
+              className="hidden md:inline-flex h-9 items-center gap-2 rounded-full bg-brand-navy px-3 text-sm font-bold text-white shadow-sm transition hover:bg-brand-crimson focus:outline-none focus:ring-2 focus:ring-brand-crimson focus:ring-offset-2"
+            >
+              <ShieldCheck size={16} className="shrink-0" />
+              <span className="hidden lg:inline">Admin</span>
+            </Link>
+          )}
+
           {/* boton menu */}
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -116,6 +132,17 @@ const Navbar = () => {
               {item.name}
             </Link>
           ))}
+
+          {isAdmin && (
+            <Link
+              to="/dashboard"
+              onClick={() => setMenuOpen(false)}
+              className="mt-2 flex items-center gap-2 border-t border-slate-200 px-3 pt-3 pb-1.5 text-sm font-bold text-brand-navy hover:text-brand-crimson"
+            >
+              <ShieldCheck size={16} className="shrink-0" />
+              Panel admin
+            </Link>
+          )}
         </div>
       )}
     </>
