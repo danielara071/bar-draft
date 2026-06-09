@@ -3,7 +3,10 @@ import type { WatchParty, WatchPartyMatch } from "../interfaces/index.interfaces
 /**
  * Formatea la fecha del partido como "Dom 25 · 20:00"
  */
-export function mapToWatchPartyMatch(wp: WatchParty): WatchPartyMatch {
+export function mapToWatchPartyMatch(
+  wp: WatchParty,
+  category?: WatchPartyMatch["type"],
+): WatchPartyMatch {
   const date = new Date(wp.match_date);
 
   const weekday = date.toLocaleString("es-MX", { weekday: "short" });
@@ -13,7 +16,9 @@ export function mapToWatchPartyMatch(wp: WatchParty): WatchPartyMatch {
   return {
     id:          wp.fixture_id,
     fixture_id: wp.fixture_id,
-    type:        wp.fixture_id.startsWith("femenil") ? "femenil" : "varonil",
+    type:
+      category ??
+      (wp.fixture_id.startsWith("femenil") ? "femenil" : "varonil"),
     title:       `${wp.home_team} vs ${wp.away_team}`,
     competition: wp.name,
     time:        `${weekday} ${day} · ${hour}`,

@@ -14,9 +14,11 @@ export interface PrediccionPayload {
 interface UsePrediccionesReturn {
   isLoading: boolean;
   error: string | null;
-  guardar: (payload: PrediccionPayload) => Promise<boolean>;
+  guardar: (payload: PrediccionPayload) => Promise<SavePredictionResult>;
   verificar: (partido_id: string) => Promise<boolean>;
 }
+
+export type SavePredictionResult = "saved" | "existing" | "failed";
 
 export function usePredicciones(): UsePrediccionesReturn {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +45,9 @@ export function usePredicciones(): UsePrediccionesReturn {
     return data !== null;
   }, []);
 
-  const guardar = useCallback(async (payload: PrediccionPayload): Promise<boolean> => {
+  const guardar = useCallback(async (
+    payload: PrediccionPayload,
+  ): Promise<SavePredictionResult> => {
     setIsLoading(true);
     setError(null);
 
@@ -53,7 +57,7 @@ export function usePredicciones(): UsePrediccionesReturn {
     if (!userId) {
       setError("Debes iniciar sesión para guardar predicciones.");
       setIsLoading(false);
-      return false;
+      return "failed";
     }
 
     const { error: sbError } = await supabase.from("predicciones").insert({
@@ -71,16 +75,29 @@ export function usePredicciones(): UsePrediccionesReturn {
 
     if (sbError) {
       if (sbError.code === "23505") {
-        setError("Ya tienes una predicción para este partido.");
+        return "existing";
       } else if (sbError.code === "42501") {
-        setError("No tienes permisos para predecir.");
+        const { data: existingPrediction } = await supabase
+          .from("predicciones")
+          .select("id")
+          .eq("partido_id", payload.partido_id)
+          .eq("user_id", userId)
+          .maybeSingle();
+
+        if (existingPrediction) {
+          return "existing";
+        }
+
+        setError(
+          "No se pudo guardar la predicción. Actualiza la política de predicciones en Supabase.",
+        );
       } else {
         setError(sbError.message);
       }
-      return false;
+      return "failed";
     }
 
-    return true;
+    return "saved";
   }, []);
 
   return { isLoading, error, guardar, verificar };
