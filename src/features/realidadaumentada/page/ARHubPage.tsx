@@ -12,7 +12,7 @@ interface ARHubProps {
 export default function ARHub({ userId }: ARHubProps) {
   const [arActive, setArActive] = useState(false)
   const armarioRef = useRef<HTMLDivElement>(null)
-  const { allTrophies, collected, totalTrophies, progressPct, loading } = useColeccion(userId)
+  const { allTrophies, collected, totalTrophies, progressPct, loading, refetch } = useColeccion(userId)
 
   const scrollToArmario = () => {
     armarioRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -20,6 +20,7 @@ export default function ARHub({ userId }: ARHubProps) {
 
   const handleGoToArmario = () => {
     setArActive(false)
+    refetch()
     // requestAnimationFrame garantiza que el hub ya está montado antes de hacer scroll
     requestAnimationFrame(scrollToArmario)
   }

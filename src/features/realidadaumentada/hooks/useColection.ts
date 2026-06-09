@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { getTrophiesByUser } from './trophyService'
 import { supabase } from '../../../shared/services/supabaseClient'
 import { TIPO_TROFEO_URLS } from './trophyService'
@@ -47,6 +47,7 @@ interface UseColeccionResult {
   totalTrophies: number
   progressPct:   number
   loading:       boolean
+  refetch:       () => Promise<void>
 }
 
 export function useColeccion(userId: string): UseColeccionResult {
@@ -54,36 +55,36 @@ export function useColeccion(userId: string): UseColeccionResult {
   const [collected, setCollected]     = useState<TrophyWithCapture[]>([])
   const [loading, setLoading]         = useState(true)
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true)
-        const [all, userTrophies] = await Promise.all([
-          fetchAllTrophies(),
-          getTrophiesByUser(userId),
-        ])
+  const load = useCallback(async () => {
+    try {
+      setLoading(true)
+      const [all, userTrophies] = await Promise.all([
+        fetchAllTrophies(),
+        getTrophiesByUser(userId),
+      ])
 
-        const capturedMap = new Map(userTrophies.map((t) => [t.id, t]))
+      const capturedMap = new Map(userTrophies.map((t) => [t.id, t]))
 
-  
-        const merged = all.map((t) =>
-          capturedMap.has(t.id)
-            ? capturedMap.get(t.id)!
-            : { ...t, captured: false, descripcion: 'No disponible hasta captura' }
-        )
+      const merged = all.map((t) =>
+        capturedMap.has(t.id)
+          ? capturedMap.get(t.id)!
+          : { ...t, captured: false, descripcion: 'No disponible hasta captura' }
+      )
 
-        setAllTrophies(merged)
-        setCollected(userTrophies)
-      } finally {
-        setLoading(false)
-      }
+      setAllTrophies(merged)
+      setCollected(userTrophies)
+    } finally {
+      setLoading(false)
     }
-    load()
   }, [userId])
+
+  useEffect(() => {
+    load()
+  }, [load])
 
   const progressPct = allTrophies.length > 0
     ? Math.round((collected.length / allTrophies.length) * 100)
     : 0
 
-  return { allTrophies, collected, totalTrophies: allTrophies.length, progressPct, loading }
+  return { allTrophies, collected, totalTrophies: allTrophies.length, progressPct, loading, refetch: load }
 }
