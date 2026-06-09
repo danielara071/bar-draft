@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import useSession from "../../../features/WatchParty/Hooks/SessionLogic";
+import { usePredictionResults } from "../../../features/WatchParty/Hooks/usePredictionResults";
+import PredictionResultModal from "../../../features/WatchParty/Components/PredictionResultModal";
+import type { PredictionHistoryItem } from "../../../features/WatchParty/Types/predictionResults";
 import type { WatchPartyMatch } from "../interfaces/index.interfaces";
 import { useFriendWatchParties } from "../hooks/useFriendWatchParties";
 import { usePublicWatchParties } from "../hooks/usePublicWatchParties";
@@ -13,6 +17,7 @@ import WatchPartyModal from "../components/WatchPartyModal";
 import WatchPartyJoinModal from "../components/WatchPartyJoinModal";
 import WatchPartySuspendedModal from "../components/WatchPartySuspendedModal";
 import { PrediccionesModal } from "../components/PrediccionesModal";
+import PredictionHistory from "../components/PredictionHistory";
 
 
 function useCountdown(targetDate: Date | null) {
@@ -133,6 +138,8 @@ function JoinErrorBanner({
 
 // ── Página principal ──────────────────────────────────────────────────────────
 export default function WatchPartyPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const session = useSession();
   const userId = session?.user?.id;
   const { isBanned } = useBannedWatchPartyAccess(userId);
@@ -144,6 +151,8 @@ export default function WatchPartyPage() {
   const [prediccionMatch, setPrediccionMatch] =
     useState<WatchPartyMatch | null>(null);
   const [suspendedModalOpen, setSuspendedModalOpen] = useState(false);
+  const [selectedResult, setSelectedResult] =
+    useState<PredictionHistoryItem | null>(null);
 
   // Para el contador: guardamos la fecha del partido bloqueado
   const [tooEarlyDate, setTooEarlyDate] = useState<Date | null>(null);
@@ -157,6 +166,28 @@ export default function WatchPartyPage() {
 
   const { parties: publicParties, isLoading: publicLoading } =
     usePublicWatchParties();
+  const {
+    results: predictionResults,
+    isLoading: resultsLoading,
+    error: resultsError,
+  } = usePredictionResults();
+
+  const navigationState = location.state as
+    | { predictionResultFixtureId?: string }
+    | null;
+  const automaticResult =
+    predictionResults.find(
+      (item) =>
+        item.fixtureId === navigationState?.predictionResultFixtureId,
+    ) ?? null;
+  const activeResult = selectedResult ?? automaticResult;
+
+  const closeResultModal = () => {
+    setSelectedResult(null);
+    if (navigationState?.predictionResultFixtureId) {
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  };
 
   const handleCardClick = (match: WatchPartyMatch): void => {
     if (isBanned && match.privacy === "publica") {
@@ -173,6 +204,8 @@ export default function WatchPartyPage() {
 
     if (result === "allowed") {
       setPrediccionMatch(match);
+    } else if (result === "results_pending") {
+      navigate(`/watchParty/${match.code}`);
     } else if (result === "too_early" && match.match_date) {
       // Calculamos la fecha objetivo: match_date - 5 minutos
       const matchMs = new Date(match.match_date).getTime();
@@ -210,6 +243,13 @@ export default function WatchPartyPage() {
           onCardClick={handleCardClick}
           isLoading={publicLoading}  // ← agregar esto
         />
+
+        <PredictionHistory
+          results={predictionResults}
+          isLoading={resultsLoading}
+          error={resultsError}
+          onSelect={setSelectedResult}
+        />
       </div>
 
       <WatchPartyModal
@@ -233,6 +273,11 @@ export default function WatchPartyPage() {
       <PrediccionesModal
         match={prediccionMatch}
         onClose={() => setPrediccionMatch(null)}
+      />
+
+      <PredictionResultModal
+        result={activeResult}
+        onClose={closeResultModal}
       />
 
       {/* Contador regresivo cuando es demasiado pronto */}

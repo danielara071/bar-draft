@@ -8,6 +8,8 @@ import type {
   WatchPartyMatch,
 } from "../interfaces/index.interfaces";
 
+const SCHEDULED_START_GRACE_MINUTES = 15;
+
 const INITIAL_FORM: CreatePartyForm = {
   name: "",
   fixture_id: "",
@@ -64,6 +66,31 @@ export function useWatchPartyModal(
     const fixture = fixtures.find((f) => f.fixture_id === form.fixture_id);
     if (!fixture) {
       setError("Partido no encontrado. Selecciona uno de la lista.");
+      setIsLoading(false);
+      return;
+    }
+
+    const { data: currentFixture, error: fixtureError } = await supabase
+      .from("fixtures")
+      .select("status, match_date")
+      .eq("fixture_id", fixture.fixture_id)
+      .single();
+
+    if (fixtureError || !currentFixture) {
+      setError("No se pudo verificar el estado actual del partido.");
+      setIsLoading(false);
+      return;
+    }
+
+    const isLive = currentFixture.status === "live";
+    const minutesSinceStart =
+      (Date.now() - Date.parse(currentFixture.match_date)) / 60_000;
+    const isUpcoming =
+      currentFixture.status === "scheduled" &&
+      minutesSinceStart <= SCHEDULED_START_GRACE_MINUTES;
+
+    if (!isLive && !isUpcoming) {
+      setError("Este partido ya finalizó y no admite nuevas Watch Parties.");
       setIsLoading(false);
       return;
     }

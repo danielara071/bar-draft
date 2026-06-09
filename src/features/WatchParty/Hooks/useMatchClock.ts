@@ -18,7 +18,7 @@ export const useMatchClock = (
 
   return useMemo(() => {
     if (elapsedMinutes == null) {
-      return "00:00";
+      return "--:--";
     }
 
     const syncTimeMs = fetchedAt ?? nowMs;

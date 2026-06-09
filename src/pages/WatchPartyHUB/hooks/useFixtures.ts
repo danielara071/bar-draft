@@ -2,6 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import { supabase } from "../../../shared/services/supabaseClient"; 
 import type { Fixture } from "../interfaces/index.interfaces";
 
+const SCHEDULED_START_GRACE_MINUTES = 15;
+
 interface DbFixture {
   fixture_id: string;
   category: "varonil" | "femenil";
@@ -26,18 +28,6 @@ function mapDbToFixture(row: DbFixture): Fixture {
   };
 }
 
-const FALLBACK_FIXTURES: Fixture[] = [
-  {
-    fixture_id: "fallback-var-1",
-    date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-    homeTeam: "FC Barcelona",
-    awayTeam: "Por confirmar",
-    status: "NS",
-    competition: "Por confirmar",
-    category: "varonil",
-  },
-];
-
 interface UseFixturesReturn {
   fixtures: Fixture[];
   isLoading: boolean;
@@ -55,10 +45,15 @@ export function useFixtures(): UseFixturesReturn {
     setError(null);
 
     try {
+      const scheduledCutoff = new Date(
+        Date.now() - SCHEDULED_START_GRACE_MINUTES * 60_000,
+      ).toISOString();
       const { data, error: supabaseError } = await supabase
         .from("fixtures")
         .select("*")
-        .neq("status", "finished")   // excluir partidos terminados
+        .or(
+          `status.eq.live,and(status.eq.scheduled,match_date.gt.${scheduledCutoff})`,
+        )
         .order("match_date", { ascending: true });
 
       if (supabaseError) throw new Error(supabaseError.message);
@@ -66,19 +61,23 @@ export function useFixtures(): UseFixturesReturn {
       if (data && data.length > 0) {
         setFixtures(data.map(mapDbToFixture));
       } else {
-        setFixtures(FALLBACK_FIXTURES);
+        setFixtures([]);
       }
     } catch (err) {
       console.error("Error al obtener partidos de Supabase:", err);
       setError("No se pudieron cargar los partidos en este momento.");
-      setFixtures(FALLBACK_FIXTURES);
+      setFixtures([]);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    fetchFixtures();
+    const initialLoadId = window.setTimeout(() => {
+      void fetchFixtures();
+    }, 0);
+
+    return () => window.clearTimeout(initialLoadId);
   }, [fetchFixtures]);
 
   return { fixtures, isLoading, error, refetch: fetchFixtures };

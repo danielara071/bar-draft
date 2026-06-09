@@ -168,15 +168,24 @@ export function PrediccionesModal({ match, onClose }: PrediccionesModalProps) {
   const { jugadores, isSearching, buscar, limpiar } = useJugadores();
   const [dropdownAbierto, setDropdownAbierto] = useState(false);
   const inputRef = useRef<HTMLDivElement>(null);
+  const matchId = match?.id;
+
   // Al abrir el modal, verificar si ya existe predicción para este partido
   useEffect(() => {
-    if (!match) return;
-    setYaPredicho(null); // resetear al cambiar de partido
+    if (!matchId) return;
 
-    verificar(match.id).then((existe) => {
-      setYaPredicho(existe);
-    });
-  }, [match?.id]); 
+    let cancelled = false;
+    const verificationId = window.setTimeout(async () => {
+      setYaPredicho(null);
+      const existe = await verificar(matchId);
+      if (!cancelled) setYaPredicho(existe);
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(verificationId);
+    };
+  }, [matchId, verificar]);
 
   if (!match) return null;
 
@@ -190,7 +199,7 @@ export function PrediccionesModal({ match, onClose }: PrediccionesModalProps) {
   };
 
   const handleGuardar = async () => {
-    const ok = await guardar({
+    const result = await guardar({
       partido_id: match.id,
       ganador,
       goles_local: golesLocal,
@@ -200,8 +209,8 @@ export function PrediccionesModal({ match, onClose }: PrediccionesModalProps) {
       resultado_medio_tiempo: medioTiempo,
     });
 
-    if (ok || error !== "Ya tienes una predicción para este partido.") {
-      entrarASala();
+    if (result === "saved" || result === "existing") {
+      setYaPredicho(true);
     }
   };
 

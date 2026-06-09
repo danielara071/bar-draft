@@ -21,20 +21,33 @@ function useWatchPartyFixtureId(code: string | undefined) {
 
   useEffect(() => {
     if (!code) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setLoading(false);
-      return;
+      const emptyStateId = window.setTimeout(() => {
+        setFixtureId(null);
+        setLoading(false);
+      }, 0);
+      return () => window.clearTimeout(emptyStateId);
     }
 
-    supabase
-      .from("watch_parties")
-      .select("fixture_id")
-      .eq("code", code)
-      .single()
-      .then(({ data, error }) => {
-        if (!error && data) setFixtureId(data.fixture_id);
-        setLoading(false);
-      });
+    let cancelled = false;
+    const loadId = window.setTimeout(async () => {
+      setFixtureId(null);
+      setLoading(true);
+
+      const { data, error } = await supabase
+        .from("watch_parties")
+        .select("fixture_id")
+        .eq("code", code)
+        .single();
+
+      if (cancelled) return;
+      if (!error && data) setFixtureId(data.fixture_id);
+      setLoading(false);
+    }, 0);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(loadId);
+    };
   }, [code]);
 
   return { fixtureId, loading };
@@ -94,7 +107,7 @@ const WatchParty = () => {
     loading: matchLoading,
     error,
     fetchedAt,
-  } = useMatch();
+  } = useMatch(fixtureId);
 
   const matchDateLabel = liveMatch
     ? new Date(liveMatch.fixture.date).toLocaleDateString("es-ES", {
@@ -120,6 +133,15 @@ const WatchParty = () => {
     stickers,
     sendSticker,
   } = useWatchPartyChat(session, code ?? "");
+
+  useEffect(() => {
+    if (joinStatus !== "finished" || !fixtureId) return;
+
+    navigate("/watchPartyHUB", {
+      replace: true,
+      state: { predictionResultFixtureId: fixtureId },
+    });
+  }, [fixtureId, joinStatus, navigate]);
 
   if (!code) return <Navigate to="/watchPartyHUB" replace />;
 

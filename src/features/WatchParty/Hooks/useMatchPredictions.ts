@@ -6,33 +6,37 @@ type PredictionItem = {
   value: string;
 };
 
-// Fila como viene de Supabase
-interface PrediccionRow {
-  ganador: string | null;
-  goles_local: number | null;
-  goles_visitante: number | null;
-  goles_total: string | null;
-  primer_goleador: string | null;
-  resultado_medio_tiempo: number | null;
+type Distribution = {
+  home: number;
+  draw: number;
+  away: number;
+};
+
+type PredictionStatsRow = {
+  fixture_id: string;
+  total_predictions: number;
+  winner_distribution: Distribution;
+  average_home_goals: number | null;
+  average_away_goals: number | null;
+  most_common_score: string | null;
+  goals_range_distribution: Record<string, number>;
+  most_common_first_scorer: string | null;
+  halftime_distribution: Distribution;
+};
+
+function percentage(value: number, total: number): string {
+  if (total === 0) return "0%";
+  return `${Math.round((value / total) * 100)}%`;
 }
 
-//devuelve el valor más frecuente en un array, o null si el array está vacío
-function moda<T>(values: T[]): T | null {
-  if (values.length === 0) return null;
-  const freq = new Map<T, number>();
-  for (const v of values) freq.set(v, (freq.get(v) ?? 0) + 1);
-  return [...freq.entries()].reduce((a, b) => (b[1] > a[1] ? b : a))[0];
+function mostPopularRange(distribution: Record<string, number>): string | null {
+  const entries = Object.entries(distribution);
+  if (entries.length === 0) return null;
+  return entries.sort((a, b) => b[1] - a[1])[0][0];
 }
 
-function labelMedioTiempo(value: number): string {
-  if (value === 1) return "Local gana";
-  if (value === -1) return "Visitante gana";
-  return "Empate";
-}
-
-//default en caso de no haber predicciones
-function buildPopularPredictions(rows: PrediccionRow[]): PredictionItem[] {
-  if (rows.length === 0) {
+function buildPopularPredictions(stats: PredictionStatsRow): PredictionItem[] {
+  if (stats.total_predictions === 0) {
     return [
       { label: "Ganador", value: "Sin predicciones aún" },
       { label: "Marcador final", value: "Sin predicciones aún" },
@@ -40,56 +44,38 @@ function buildPopularPredictions(rows: PrediccionRow[]): PredictionItem[] {
     ];
   }
 
-  const ganadores = rows.map((r) => r.ganador).filter(Boolean) as string[];
-  const golesTotal = rows.map((r) => r.goles_total).filter(Boolean) as string[];
-  const primerGoleador = rows.map((r) => r.primer_goleador).filter(Boolean) as string[];
-  const medioTiempo = rows.map((r) => r.resultado_medio_tiempo).filter((v) => v !== null) as number[];
+  const winner = stats.winner_distribution;
+  const halftime = stats.halftime_distribution;
 
-  const items: PredictionItem[] = [];
-
-  // 1. Ganador más votado
-  const ganadorModa = moda(ganadores);
-  items.push({
-    label: "Ganador más votado",
-    value: ganadorModa ?? "Sin datos",
-  });
-
-  // 2. Marcador más votado (local - visitante)
-  const marcadores = rows
-    .filter((r) => r.goles_local !== null && r.goles_visitante !== null)
-    .map((r) => `${r.goles_local} - ${r.goles_visitante}`);
-  const marcadorModa = moda(marcadores);
-  items.push({
-    label: "Marcador más votado",
-    value: marcadorModa ?? "Sin datos",
-  });
-
-  // 3. Total de goles más votado
-  const totalModa = moda(golesTotal);
-  items.push({
-    label: "Total de goles más votado",
-    value: totalModa ?? "Sin datos",
-  });
-
-  // 4. Primer goleador más votado (solo si hay datos)
-  const goleadorModa = moda(primerGoleador);
-  if (goleadorModa) {
-    items.push({
+  return [
+    {
+      label: "Ganador",
+      value: `Local ${percentage(winner.home, stats.total_predictions)} · Empate ${percentage(winner.draw, stats.total_predictions)} · Visitante ${percentage(winner.away, stats.total_predictions)}`,
+    },
+    {
+      label: "Promedio de goles",
+      value:
+        stats.average_home_goals == null || stats.average_away_goals == null
+          ? "Sin datos"
+          : `${stats.average_home_goals} - ${stats.average_away_goals}`,
+    },
+    {
+      label: "Marcador más votado",
+      value: stats.most_common_score ?? "Sin datos",
+    },
+    {
+      label: "Rango de goles más votado",
+      value: mostPopularRange(stats.goals_range_distribution) ?? "Sin datos",
+    },
+    {
       label: "Primer goleador más votado",
-      value: goleadorModa,
-    });
-  }
-
-  // 5. Resultado al medio tiempo más votado (solo si hay datos)
-  const medioTiempoModa = moda(medioTiempo);
-  if (medioTiempoModa !== null) {
-    items.push({
-      label: "Medio tiempo más votado",
-      value: labelMedioTiempo(medioTiempoModa),
-    });
-  }
-
-  return items;
+      value: stats.most_common_first_scorer ?? "Sin datos",
+    },
+    {
+      label: "Resultado al descanso",
+      value: `Local ${percentage(halftime.home, stats.total_predictions)} · Empate ${percentage(halftime.draw, stats.total_predictions)} · Visitante ${percentage(halftime.away, stats.total_predictions)}`,
+    },
+  ];
 }
 
 interface UseMatchPredictionsReturn {
@@ -113,14 +99,14 @@ export function useMatchPredictions(fixture_id: string | null): UseMatchPredicti
 
     setIsLoading(true);
 
-    const { data, error } = await supabase
-      .from("predicciones")
-      .select(
-        "ganador, goles_local, goles_visitante, goles_total, primer_goleador, resultado_medio_tiempo"
-      )
-      .eq("partido_id", fixture_id);
+    const { data, error } = await supabase.rpc(
+      "get_fixture_prediction_stats",
+      { p_fixture_id: fixture_id },
+    );
 
-    if (error || !data) {
+    const stats = data?.[0] as PredictionStatsRow | undefined;
+
+    if (error || !stats) {
       setPredictions([
         { label: "Ganador más votado", value: "Error al cargar" },
         { label: "Marcador más votado", value: "Error al cargar" },
@@ -130,17 +116,22 @@ export function useMatchPredictions(fixture_id: string | null): UseMatchPredicti
       return;
     }
 
-    setTotalVotes(data.length);
-    setPredictions(buildPopularPredictions(data as PrediccionRow[]));
+    setTotalVotes(Number(stats.total_predictions));
+    setPredictions(buildPopularPredictions(stats));
     setIsLoading(false);
   }, [fixture_id]);
 
   useEffect(() => {
-    void fetchPredictions();
+    const initialLoadId = window.setTimeout(() => {
+      void fetchPredictions();
+    }, 0);
 
     // Refrescar cada 2 minutos para mostrar cambios en tiempo casi-real
     const intervalId = setInterval(() => void fetchPredictions(), 2 * 60 * 1000);
-    return () => clearInterval(intervalId);
+    return () => {
+      window.clearTimeout(initialLoadId);
+      clearInterval(intervalId);
+    };
   }, [fetchPredictions]);
 
   return { predictions, isLoading, totalVotes, refetch: fetchPredictions };
