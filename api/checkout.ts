@@ -19,7 +19,7 @@ export default async function handler(req: Request): Promise<Response> {
 
   let body: { id?: string; email?: string; name?: string }
   try {
-    body = await req.json()
+    body = (await req.json()) as { id?: string; email?: string; name?: string }
   } catch {
     return new Response(
       JSON.stringify({ message: 'Cuerpo de la petición inválido.' }),
