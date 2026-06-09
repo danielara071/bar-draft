@@ -3,6 +3,7 @@ import type {
   AssisterCardData,
   DashboardStats,
   KeeperCardData,
+  PalmaresEquipo,
   RankingItem,
   ScorerCardData,
   TeamType,
@@ -11,6 +12,12 @@ import type {
 type MesRow = { mes: string; año: number | null; goles: number | null };
 type PalmaresAmbito = "Internacional" | "Nacional" | "Regional";
 type PalmaresRow = { ambito: PalmaresAmbito | null; cantidad: number | null };
+type PalmaresEquipoRow = {
+  equipo: string | null;
+  nombre_agrupado: string;
+  ambito: PalmaresAmbito | null;
+  cantidad: number | null;
+};
 
 function last4<T>(arr: T[]) {
   return arr.slice(Math.max(0, arr.length - 4));
@@ -226,6 +233,40 @@ async function fetchTopFiveKeepersBySaves(team: TeamType): Promise<RankingItem[]
   return ranked;
 }
 
+async function fetchPalmaresByEquipo(): Promise<PalmaresEquipo> {
+  const { data, error } = await supabase
+    .from("palmares_barcelona_unificado")
+    .select("equipo, nombre_agrupado, ambito, cantidad");
+
+  if (error) throw error;
+
+  const varonilMap = new Map<string, { ambito: string; cantidad: number }>();
+  const femenilMap = new Map<string, { ambito: string; cantidad: number }>();
+
+  for (const row of (data ?? []) as PalmaresEquipoRow[]) {
+    if (!row.equipo || !row.ambito) continue;
+    const key = `${row.nombre_agrupado}::${row.ambito}`;
+    const amount = Math.max(0, row.cantidad ?? 0);
+    const target = row.equipo === "Varonil" ? varonilMap : row.equipo === "Femenil" ? femenilMap : null;
+    if (!target) continue;
+    const existing = target.get(key);
+    if (existing) {
+      existing.cantidad += amount;
+    } else {
+      target.set(key, { ambito: row.ambito, cantidad: amount });
+    }
+  }
+
+  const toArray = (map: Map<string, { ambito: string; cantidad: number }>) =>
+    Array.from(map.entries()).map(([key, val]) => ({
+      nombre_agrupado: key.split("::")[0],
+      ambito: val.ambito,
+      cantidad: val.cantidad,
+    }));
+
+  return { varonil: toArray(varonilMap), femenil: toArray(femenilMap) };
+}
+
 async function fetchPalmaresByAmbito() {
   const { data, error } = await supabase
     .from("palmares_barcelona_unificado")
@@ -264,6 +305,7 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     maleKeeperTop5,
     femaleKeeperTop5,
     palmaresByAmbito,
+    palmaresEquipo,
   ] = await Promise.all([
     fetchTopScorer("male"),
     fetchTopScorer("female"),
@@ -278,6 +320,7 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     fetchTopFiveKeepersBySaves("male"),
     fetchTopFiveKeepersBySaves("female"),
     fetchPalmaresByAmbito(),
+    fetchPalmaresByEquipo(),
   ]);
 
   return {
@@ -285,6 +328,7 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     assisters: { male: maleAssists, female: femaleAssists },
     keepers: { male: maleKeeper, female: femaleKeeper },
     palmaresByAmbito,
+    palmaresEquipo,
     rankings: {
       scorers: { male: maleScorerTop5, female: femaleScorerTop5 },
       assisters: { male: maleAssisterTop5, female: femaleAssisterTop5 },

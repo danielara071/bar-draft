@@ -30,6 +30,17 @@ export type RankingItem = {
 
 export type CategoryRanking = Record<TeamType, RankingItem[]>;
 
+export type PalmaresTitulo = {
+  nombre_agrupado: string;
+  ambito: string;
+  cantidad: number;
+};
+
+export type PalmaresEquipo = {
+  varonil: PalmaresTitulo[];
+  femenil: PalmaresTitulo[];
+};
+
 export type DashboardStats = {
   scorers: Record<TeamType, ScorerCardData | null>;
   assisters: Record<TeamType, AssisterCardData | null>;
@@ -39,6 +50,7 @@ export type DashboardStats = {
     nacional: number;
     regional: number;
   };
+  palmaresEquipo: PalmaresEquipo;
   rankings: {
     scorers: CategoryRanking;
     assisters: CategoryRanking;

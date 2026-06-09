@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { fetchDashboardStats } from "../features/estadisticas/services/statsService";
 import type { DashboardStats } from "../features/estadisticas/types";
 import PalmaresBanner from "../features/estadisticas/components/PalmaresBanner";
+import PalmaresEquipoSection from "../features/estadisticas/components/PalmaresEquipoSection";
 import SectionTitle from "../features/estadisticas/components/SectionTitle";
 import ScorerCard from "../features/estadisticas/components/ScorerCard";
 import AssisterCard from "../features/estadisticas/components/AssisterCard";
@@ -19,6 +20,7 @@ const EMPTY_STATS: DashboardStats = {
     nacional: 0,
     regional: 0,
   },
+  palmaresEquipo: { varonil: [], femenil: [] },
   rankings: {
     scorers: { male: [], female: [] },
     assisters: { male: [], female: [] },
@@ -159,6 +161,7 @@ export default function Estadisticas() {
                   label="Campeonatos Regionales"
                 />
               </div>
+              <PalmaresEquipoSection data={stats.palmaresEquipo} />
             </section>
           </div>
         )}
