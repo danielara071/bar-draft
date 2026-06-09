@@ -12,7 +12,9 @@ function ClickHandler({ onMapClick }: ClickHandlerProps) {
   useMapEvents({
     click(e: any) {
       const { lat, lng } = e.latlng;
-      onMapClick(lat, lng);
+      const latRedondeada = Number(lat.toFixed(4));
+      const lngRedondeada = Number(lng.toFixed(4));
+      onMapClick(latRedondeada, lngRedondeada);
     },
   });
 

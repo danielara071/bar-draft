@@ -101,7 +101,7 @@ function CardAgregarTrofeo({
   <input
     type="number"
     inputMode="decimal"
-    placeholder="100000"
+    placeholder="50.0000"
     value={latitud || ""}
     onChange={(e) => {
       const val = e.target.value;
@@ -125,7 +125,7 @@ function CardAgregarTrofeo({
   <input
     type="number"
     inputMode="decimal"
-    placeholder="100000"
+    placeholder="60.0000"
     value={longitud || ""}
     onChange={(e) => {
       const val = e.target.value;
